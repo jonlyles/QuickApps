@@ -84,8 +84,6 @@ class ContentsController extends NodeAppController {
                 $err = true;
             }
         }
-
-        # TODO: agregar en modo edición un bloque con un listado de últimos comentarios
         
         $this->Node->recursive = 2;
         $data = $this->Node->findBySlug($slug) or $this->redirect('/admin/node/contents');

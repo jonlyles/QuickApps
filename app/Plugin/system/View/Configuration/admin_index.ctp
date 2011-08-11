@@ -2,8 +2,8 @@
     <!-- Settings -->
     <?php echo $this->Html->useTag('fieldsetstart', __t('Site information')); ?>
         <?php echo $this->Html->useTag('fieldsetstart', __t('Site details')); ?>
-            <?php echo $this->Form->input('Variable.site_online', array('type' => 'checkbox', 'label' => __t('Site online') ) ); ?>
-            
+            <!--<?php echo $this->Form->input('Variable.site_online', array('type' => 'checkbox', 'label' => __t('Site online') ) ); ?>
+            -->
             <?php echo $this->Form->input('Variable.site_name', array('required' => 'required', 'type' => 'text', 'label' => __t('Site name *') ) ); ?>
         
             <?php echo $this->Form->input('Variable.site_slogan', array('type' => 'text', 'label' => __t('Slogan') ) ); ?>

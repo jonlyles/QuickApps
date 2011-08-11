@@ -37,10 +37,6 @@ class Vocabulary extends TaxonomyAppModel {
         'title' => array( 'required' => true, 'allowEmpty' => false, 'rule' => 'notEmpty', 'message' => 'Vocabulary title can not be empty'),
     );
     
-    function afterDelete(){
-        // TODO: remove related terms
-    }
-    
     function move($id, $dir = 'up'){
         if ( !($record = $this->findById($id)) )
             return false;

@@ -260,7 +260,7 @@ class AppController extends Controller {
                 $this->request->params['controller'] != 'log' && 
                 !in_array($this->request->params['controller'], array('login', 'logout') ) 
             ){
-                # TODO: 
+                # TODO: site down throw
                 //throw new NotFoundException(__t('Site offline'), 503);
             }
         }
