@@ -1,0 +1,271 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-07-28 21:04+0100\n"
+"PO-Revision-Date: \n"
+"Last-Translator: Christopher C <y2k2000@gmail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Country: SPAIN\n"
+"X-Poedit-KeywordsList: _e;__e;__;_\n"
+"X-Poedit-Basepath: ../../../\n"
+"X-Poedit-SearchPath-0: .\n"
+
+msgid "Content"
+msgstr "Contenidos"
+
+msgid "Contents"
+msgstr "Contenidos"
+
+msgid "New Content"
+msgstr "Nuevo Contenido"
+
+msgid "Filter Options"
+msgstr "Opciones de Filtrado"
+
+msgid "Update Options"
+msgstr "Opciones de Modificación"
+
+msgid "Status"
+msgstr "Estado"
+
+msgid "Front Page"
+msgstr "En portada"
+
+msgid "Sticky"
+msgstr "Destacado"
+
+msgid "Type"
+msgstr "Tipo"
+
+msgid "Filter"
+msgstr "Filtrar"
+
+msgid "Update"
+msgstr "Modificar"
+
+msgid "Title"
+msgstr "Título"
+
+msgid "Language"
+msgstr "Idioma"
+
+msgid "Actions"
+msgstr "Acciones"
+
+msgid "edit"
+msgstr "editar"
+
+msgid "delete"
+msgstr "borrar"
+
+msgid "Clear cache"
+msgstr "Limpiar cache"
+
+msgid "Delete selected content ?"
+msgstr "Eliminar el contenido seleccionado ?"
+
+msgid "Are you sure ?"
+msgstr "Está seguro ?"
+
+msgid "Add Type"
+msgstr "Nuevo Tipo"
+
+msgid "Name"
+msgstr "Nombre"
+
+msgid "display"
+msgstr "visualización"
+
+msgid "fields"
+msgstr "campos"
+
+msgid "Fields"
+msgstr "Campos"
+
+msgid "Field"
+msgstr "Campo"
+
+msgid "move up"
+msgstr "mover arriba"
+
+msgid "move down"
+msgstr "mover abajo"
+
+msgid "configure"
+msgstr "configurar"
+
+msgid "Label"
+msgstr "Etiqueta"
+
+msgid "Field Display Settings"
+msgstr "Parámetros de Visualización de Campo"
+
+msgid "Field display settings"
+msgstr "Parámetros de visualización de campo"
+
+msgid "full"
+msgstr "Full"
+
+msgid "list"
+msgstr "List"
+
+msgid "rss"
+msgstr "RSS"
+
+msgid "print"
+msgstr "Print"
+
+msgid "default"
+msgstr "Default"
+
+msgid "Comments"
+msgstr "Comentarios"
+
+msgid "%s Hours"
+msgstr "%s Horas"
+
+msgid "%s Days"
+msgstr "%s Días"
+
+msgid "%s Weeks"
+msgstr "%s Semanas"
+
+msgid "%s Months"
+msgstr "%s Meses"
+
+msgid "%s Years"
+msgstr "%s Años"
+
+msgid "Publishing"
+msgstr "Publicación"
+
+msgid "Published"
+msgstr "Publicado"
+
+msgid "Promoted to front page"
+msgstr "Destacado en portada"
+
+msgid "Sticky at top of lists"
+msgstr "Mantener encima de listas"
+
+msgid "Cache this node for"
+msgstr "Caché para este nodo durante"
+
+msgid "Cache"
+msgstr "Caché"
+
+msgid "-- No Cache --"
+msgstr "-- Sin Caché --"
+
+msgid "Roles"
+msgstr "Roles"
+
+msgid "Show content for specific roles"
+msgstr "Mostrar este nodo para los siguientes roles"
+
+msgid "Show this content only for the selected role(s). If you select no roles, the content will be visible to all users."
+msgstr "Muestra este contenido solo para el/los roles indicados. Si selecciona niguno, el contenido será visible para todos los usuarios."
+
+msgid "Terms"
+msgstr "Términos"
+
+msgid "Language"
+msgstr "Idioma"
+
+msgid "If no language is selected (-- Any --), node will show regardless of language"
+msgstr "Si no se elige ningún idioma (-- Cualquiera --), el se mostrará sin importar el idioma"
+
+msgid "-- Any --"
+msgstr "-- Cualquiera --"
+
+msgid "Open"
+msgstr "Abiertos"
+
+msgid "Closed"
+msgstr "Cerrados"
+
+msgid "Read Only"
+msgstr "Sólo Lectura"
+
+msgid "Settings"
+msgstr "Configuración"
+
+msgid "Add"
+msgstr "Agregar"
+
+msgid "Description"
+msgstr "Descripción"
+
+msgid "A short description (255 chars. max.) about this content. Will be used as page meta-description when rendering this content node."
+msgstr "Una breve descripción (255 car. máx.) sobre este contenido. Será utilizado como meta-description para la página de este nodo."
+
+msgid "Editing"
+msgstr "Editando"
+
+msgid "Editing Content"
+msgstr "Editando Contenido"
+
+msgid "Add Content"
+msgstr "Agregar Contenido"
+
+msgid "Select content type"
+msgstr "Seleccione tipo de contenido"
+
+msgid "Updated"
+msgstr "Modificado"
+
+msgid "Publish selected content"
+msgstr "Pulicar los contenidos seleccionado"
+
+msgid "Unpublish selected content"
+msgstr "No publicar los contenidos seleccionados"
+
+msgid "Promote selected content to front page"
+msgstr "Publicar en portada los contenidos seleccionados"
+
+msgid "Demote selected content from front page"
+msgstr "Quitar de portada los contenidos seleccionados"
+
+msgid "Make selected content sticky"
+msgstr "Hacer `stiky` los contenidos seleccionados"
+
+msgid "Make selected content not sticky"
+msgstr "Quitar `stiky` a los contenidos seleccionados"
+
+msgid "Delete selected content"
+msgstr "Eliminar los contenidos seleccionados"
+
+msgid "updated"
+msgstr "modificado"
+
+msgid "Required"
+msgstr "Requerido"
+
+msgid "Add field"
+msgstr "Nuevo campo"
+
+msgid "Search"
+msgstr "Buscar"
+
+msgid "Languages"
+msgstr "Idiomas"
+
+msgid "Only of the type(s)"
+msgstr "Solo del tipo(s)"
+
+msgid "Containing any of the words"
+msgstr "Contenga alguna de estas palabras"
+
+msgid "Containing the phrase"
+msgstr "Contenga la frase"
+
+msgid "Containing none of the words"
+msgstr "No contenga estas palabras"
+
+msgid "Read More"
+msgstr "Leer Más"
+

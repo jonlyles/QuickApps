@@ -1,0 +1,73 @@
+<?php
+/**
+ * Node View Hooks
+ *
+ * PHP version 5
+ *
+ * @category Node.View/Helper
+ * @package  QuickApps
+ * @version  1.0
+ * @author   Christopher Castro <chris@quickapps.es>
+ * @link     http://cms.quickapps.es
+ */
+class NodeHookHelper extends AppHelper {
+
+    function beforeLayout($layoutFile){
+        if( !isset($this->request->params['admin']) ) return true;
+        # content list toolbar:
+        $show_on = (
+            isset($this->request->params['admin']) && 
+            $this->request->params['plugin'] == 'node' &&
+            $this->request->params['controller'] == 'contents' && 
+            $this->request->params['action'] == 'admin_index' 
+        );
+        $this->_View->Layout->blockPush( array('body' => $this->_View->element('toolbar') . '<!-- NodeHookHelper -->' ), 'toolbar', $show_on);
+
+       # content types toolbar:
+        $show_on = (
+            isset($this->request->params['admin']) && 
+            $this->request->params['plugin'] == 'node' &&
+            $this->request->params['controller'] == 'types' && 
+            $this->request->params['action'] == 'admin_index' 
+        );        
+        $this->_View->Layout->blockPush( array('body' => $this->_View->element('types-toolbar') . '<!-- NodeHookHelper -->' ), 'toolbar', $show_on);
+    
+        # display toolbar:
+        $show_on = (
+            isset($this->request->params['admin']) && 
+            $this->request->params['plugin'] == 'node' &&
+            $this->request->params['controller'] == 'types' && 
+            $this->request->params['action'] == 'admin_display' 
+        );        
+        $this->_View->Layout->blockPush( array('body' => $this->_View->element('display-toolbar') . '<!-- NodeHookHelper -->' ), 'toolbar', $show_on);
+        return true;
+    }
+    
+    # search block
+    function node_search($data){
+		return array(
+            'title' => __d('node', 'Search'),
+			'body' => $this->_View->element('node_search_block', array('data' => $data), array('plugin' => 'Node') )
+		);
+    }
+
+    # edit/add form (node type: Basic Page)
+    function node_content_form($data){
+        return $this->_View->element('node_content_form', array('data' => $data), array('plugin' => 'Node') );
+    }
+
+    # rendering (node type: Basic Page)
+    function node_content_page($node){
+        return $this->_View->element('node_content_page', array('node' => $node), array('plugin' => 'Node') );
+    }
+
+    # edit/add form (node type: Custom types)
+    function node_form($data){
+        return $this->_View->element('node_content_form', array('data' => $data), array('plugin' => 'Node') );
+    }
+
+    # rendering (node type: Custom types) /node/details/
+    function node_render($node){
+        return $this->_View->element('node_content_page', array('node' => $node), array('plugin' => 'Node') );
+    }
+}
