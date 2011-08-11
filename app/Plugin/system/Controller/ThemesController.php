@@ -11,7 +11,6 @@
  * @link     http://cms.quickapps.es
  */
 class ThemesController extends SystemAppController {
-
 	var $name = 'Themes';
 	var $uses = array('Block.Block');
 	var $components = array('Installer');
@@ -81,15 +80,16 @@ class ThemesController extends SystemAppController {
    
 	# render thumbnail of any theme in themed folder
 	function admin_theme_tn($theme_name){
-		$this->viewClass = 'Media';
-		$params = array(
-			'id' => 'thumbnail.png',
-			'name' => 'thumbnail',
-			'download' => false,
-			'extension' => 'png',
-			'path' => APP . 'View' . DS . 'Themed' . DS . $theme_name . DS
-		);
-		$this->set($params);
+        /* Manual rendering */
+        /* For some unknown reason, cakephp MediaView rendering fails */
+        $filename = APP . 'View' . DS . 'Themed' . DS . $theme_name . DS . 'thumbnail.png';
+        $specs = getimagesize($filename);
+        header('Content-type: ' . $specs['mime']);
+        header('Content-length: ' . filesize($filename));
+        header('Cache-Control: public');
+        header('Expires: ' . gmdate('D, d M Y H:i:s', strtotime('+1 year')));
+        header('Last-Modified: ' . gmdate('D, d M Y H:i:s', filemtime($filename)));
+        die(file_get_contents($filename));    
 	}
     
 	/*
