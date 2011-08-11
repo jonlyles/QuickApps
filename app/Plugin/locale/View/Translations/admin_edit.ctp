@@ -10,7 +10,7 @@
         <p>
             <?php 
                 $i = 0;
-                foreach(Configure::read('Variable.languages') as $lang):
+                foreach (Configure::read('Variable.languages') as $lang):
                     $t = Set::extract("/I18n[locale={$lang['Language']['code']}]", $this->data);
                     $t = Set::merge(array('I18n' => array('content' => '', 'id' => null) ), @$t[0]);
                     echo $this->Form->input("I18n.{$i}.content", 

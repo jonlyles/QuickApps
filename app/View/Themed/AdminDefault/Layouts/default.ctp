@@ -1,4 +1,4 @@
-<?php if ( $this->params['plugin'] == 'user' && $this->params['controller'] == 'user'): ?>
+<?php if ($this->params['plugin'] == 'user' && $this->params['controller'] == 'user'): ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
 	<head>
@@ -25,7 +25,7 @@
         <?php echo $this->Layout->header();?>
 	</head>
 	<body>
-        <?php if ( $sessionFlash = $this->Layout->sessionFlash() ): ?>
+        <?php if ($sessionFlash = $this->Layout->sessionFlash() ): ?>
         <div id="sessionFlash">
             <?php echo $sessionFlash; ?>
         </div>
@@ -77,7 +77,7 @@
                 </div>
                 <?php endif; ?>
 
-                <?php if ( $sessionFlash = $this->Layout->sessionFlash() ): ?>
+                <?php if ($sessionFlash = $this->Layout->sessionFlash() ): ?>
                 <div id="sessionFlash">
                     <?php echo $sessionFlash; ?>
                 </div>

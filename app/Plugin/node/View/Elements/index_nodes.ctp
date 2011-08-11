@@ -1,4 +1,4 @@
-<?php if ( isset($results) ): # render nodes ?>
+<?php if (isset($results) ): # render nodes ?>
     <?php foreach ($results as $node): ?>
         <?php echo $this->element('node_list_block', array('node' => $node) ); ?>
 

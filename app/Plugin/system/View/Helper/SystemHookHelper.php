@@ -11,23 +11,22 @@
  * @link     http://cms.quickapps.es
  */
 class SystemHookHelper extends AppHelper {
-	
     /* Block */
-	function system_powered_by(){
+	public function system_powered_by() {
 		return array(
 			'body' => __t('Powered by &copy; QuickApps v%s', Configure::read('Variable.qa_version'))
 		);
 	}
 	
     /* Block */
-	function system_language_selector($block = array()){
+	public function system_language_selector($block = array()) {
 		return array(
 			'body' => $this->_View->element('system_language_selector', array('block' => $block) )
 		);
 	}
 	
     /* Block */
-	function system_recent_content($block = array()) {
+	public function system_recent_content($block = array()) {
 		$Node = ClassRegistry::init('Node.Node');
 
 		$Block = array(

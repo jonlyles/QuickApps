@@ -11,26 +11,26 @@
  * @link     http://cms.quickapps.es
  */
 class Block extends BlockAppModel {
-
-    var $name       = 'Block';
-    var $useTable   = 'blocks';
-	var $primaryKey = 'id';
+    public $name = 'Block';
+    public $useTable = 'blocks';
+	public $primaryKey = 'id';
+    public $actsAs = array('Serialized' => array('locale', 'settings'));
 	
-	var $hasOne = array(
+	public $hasOne = array(
 		'BlockCustom' => array(
 			'className' => 'Block.BlockCustom',
 			'dependent' => true
 		)
 	);
 
-	var $hasMany = array(
+	public $hasMany = array(
 		'BlockRegion' => array(
 			'className' => 'Block.BlockRegion',
 			'dependent' => true
 		)
 	);
 
-	var $belongsTo = array(
+	public $belongsTo = array(
 		'Menu' => array(
 			'className' => 'Menu.Menu',
 			'foreignKey' => 'delta',
@@ -39,7 +39,7 @@ class Block extends BlockAppModel {
 		)	
 	);
     
-    var $hasAndBelongsToMany = array(
+    public $hasAndBelongsToMany = array(
         'Role' => array(
             'joinTable' => 'block_roles',
             'className' => 'User.Role',
@@ -49,14 +49,13 @@ class Block extends BlockAppModel {
             'dependent' => false
         )
     );
-    
-    var $actsAs = array('Serialized' => array('locale', 'settings') );
-    
-    function beforeSave(){
+
+    public function beforeSave() {
         /* get New delta */
-        if ( !isset($this->data['Block']['id']) ){ # new record
-            if ( $this->data['Block']['module'] == 'menu' || isset($this->data['Block']['delta']) )
+        if (!isset($this->data['Block']['id'])) { # new record
+            if ($this->data['Block']['module'] == 'menu' || isset($this->data['Block']['delta'])) {
                 return true;
+            }
             $max_delta = $this->find('first', array('conditions' => array('Block.module' => 'block'), 'fields' => array('delta'), 'order' => array('delta' => 'DESC')  ) );
             $max_delta = !empty($max_delta) ? $max_delta['Block']['delta'] + 1 : 1;
             $this->data['Block']['delta'] = $max_delta;

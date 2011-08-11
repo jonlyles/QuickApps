@@ -40,13 +40,13 @@
     <?php 
         $modules = Configure::read('Modules');
         $moduleSettingsLinks = array();
-        foreach($modules as $name => $data)
-            if ( file_exists($data['path'] . 'View' . DS . 'Elements' . DS . 'settings.ctp' ) )
+        foreach ($modules as $name => $data)
+            if (file_exists($data['path'] . 'View' . DS . 'Elements' . DS . 'settings.ctp' ) )
                 $moduleSettingsLinks[] = "<li>" . 
                     $this->Html->link($data['yaml']['name'], '/admin/system/modules/settings/' . $name) .
                     "<p><em>" . __t($data['yaml']['description']) . "</em></p>" . 
                     "</li>";
-        if ( !empty($moduleSettingsLinks) ):
+        if (!empty($moduleSettingsLinks) ):
     ?>
         <?php echo $this->Html->useTag('fieldsetstart', __t('Other module settings')); ?>
             <ul>

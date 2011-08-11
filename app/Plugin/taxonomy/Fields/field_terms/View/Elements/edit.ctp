@@ -3,7 +3,7 @@
     $data['FieldData'] = !isset($data['FieldData']) ? array() : $data['FieldData'];
     $data['FieldData'] = array_merge(array('id' => null, 'field_id' => null, 'foreignKey' => null, 'belongsTo' => null, 'data' => ''), $data['FieldData']); 
     $options = array();
-    if ( isset($data['settings']['vocabulary']) && $data['settings']['vocabulary'] > 0 )
+    if (isset($data['settings']['vocabulary']) && $data['settings']['vocabulary'] > 0 )
         $options = ClassRegistry::init('Taxonomy.Term')->generateTreeList(
             array(
                 'Term.vocabulary_id' => $data['settings']['vocabulary']

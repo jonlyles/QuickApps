@@ -11,26 +11,21 @@
  * @link     http://cms.quickapps.es
  */
 class BlockHookComponent extends Component {
-	
-	var $Controller = null;
-	var $components = array('Hook');
+	public $Controller = null;
+	public $components = array('Hook');
 
-	function initialize(&$Controller){
+	public function initialize(&$Controller) {
 		$this->Controller = $Controller;
 	}
 	
-	function blocks_list($params = array()){
+	public function blocks_list($params = array()) {
         $params = array_merge($params, array( 'recursive' => 2 ) );
-        $Block = (  isset($this->Controller->Block) &&
-                    is_object($this->Controller->Block) ) ? 
-                    $this->Controller->Block : ClassRegistry::init('Block.Block');
-
+        $Block = (isset($this->Controller->Block) &&  is_object($this->Controller->Block)) ? $this->Controller->Block : ClassRegistry::init('Block.Block');
         $Block->Menu->unbindModel(
-            array( 'hasMany' => array('Block') )
+            array('hasMany' => array('Block'))
         );
         
         $blocks = $Block->find('all', $params);
         return $blocks;
 	}
-	
 }

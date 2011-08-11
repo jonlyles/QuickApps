@@ -11,15 +11,14 @@
  * @link     http://cms.quickapps.es
  */
 class BlockRegion extends BlockAppModel {
-
-    var $name       = 'BlockRegion';
-    var $useTable   = 'block_regions';
-	var $order	    = array('BlockRegion.ordering' => 'ASC');
-	var $primaryKey = 'id';
+    public $name = 'BlockRegion';
+    public $useTable = 'block_regions';
+	public $order = array('BlockRegion.ordering' => 'ASC');
+	public $primaryKey = 'id';
     
-    function beforeSave(){
+    public function beforeSave() {
         // add last if its a new assignment
-        if  ( !isset($this->data['BlockRegion']['id']) ){
+        if (!isset($this->data['BlockRegion']['id'])) {
             $r = $this->data['BlockRegion']['region'];
             $t = $this->data['BlockRegion']['theme'];
             $c = $this->find('count', array('conditions' => array('BlockRegion.theme' => $t, 'BlockRegion.region' => $r) ) );
@@ -28,9 +27,10 @@ class BlockRegion extends BlockAppModel {
         return true;
     }
     
-    function move($id, $dir = 'up'){
-        if ( !$record = $this->findById($id) )
+    public function move($id, $dir = 'up') {
+        if (!$record = $this->findById($id)) {
             return false;
+        }
         
         $nodes = $this->find('all',
             array(
@@ -45,10 +45,12 @@ class BlockRegion extends BlockAppModel {
         );
             
         $ids = Set::extract('/BlockRegion/id', $nodes);
-        if (    ($dir == 'down' && $ids[count($ids)-1] == $record['BlockRegion']['id']) || 
-                ($dir == 'up' && $ids[0] == $record['BlockRegion']['id'])
-        ) #edge -> cant go down/up
-            return false;            
+        
+        if (($dir == 'down' && $ids[count($ids)-1] == $record['BlockRegion']['id']) || 
+            ($dir == 'up' && $ids[0] == $record['BlockRegion']['id'])
+        ) { #edge -> cant go down/up
+            return false;
+        }
         
         $position = array_search($record['BlockRegion']['id'], $ids);
         $key = $dir == 'up' ? $position-1 : $position+1;
@@ -57,7 +59,7 @@ class BlockRegion extends BlockAppModel {
         $ids[$position] = $tmp;
         
         $i = 1;
-        foreach($ids as $id){
+        foreach ($ids as $id) {
             $this->id = $id;
             $this->saveField('ordering', $i, false);
             $i++;

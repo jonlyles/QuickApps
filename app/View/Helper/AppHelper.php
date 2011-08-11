@@ -1,13 +1,12 @@
 <?php 
 App::uses('Helper', 'View');
 class AppHelper extends Helper {
+    public $hooks = array();
+    public $events = array();
+    public $listeners = array();
+    public $eventMap = array(); # function_name => Helper, useful for hookTags() searching
 
-    var $hooks = array();
-    var $events = array();
-    var $listeners = array();
-    var $eventMap = array(); # function_name => Helper, useful for hookTags() searching
-
-	var $helpers = array(
+	public $helpers = array(
 		'Layout',	
 		'Menu',		# menu helper
         'Form' => array('className' => 'QaForm'),
@@ -16,46 +15,50 @@ class AppHelper extends Helper {
 		'Js'
     );
 	
-   function __construct(View $View, $settings = array()) {
+   public function __construct(View $View, $settings = array()) {
         $this->__loadHooks();
         parent::__construct($View, $settings = array());
     }
 
-	function beforeRender(){
+	public function beforeRender() {
 		$this->__loadHookEvents();
 		return true;
 	}
     
-    function attachModuleHooks($plugin){
+    public function attachModuleHooks($plugin) {
         $Plugin = Inflector::camelize($plugin);
-        if ( isset($this->listeners[$Plugin . 'Hook']) )
+        if (isset($this->listeners[$Plugin . 'Hook'])) {
             return;
+        }
         $folder = new Folder;
         $folder->path = CakePlugin::path($Plugin) . 'View' . DS . 'Helper' . DS;
         $files = $folder->find('(.*)Hook(Helper)\.php');
-        foreach ( $files as $helper){
+        foreach ($files as $helper) {
             $helper = str_replace('Helper.php', '', $helper);
             $this->hooks[] = "{$Plugin}.{$helper}";
             $this->$helper = $this->_View->loadHelper("{$Plugin}.{$helper}" , array('plugin' => $plugin) );
-            if ( !is_object($this->{$helper}) )
+            if (!is_object($this->{$helper})) {
                 continue;
+            }
             $methods = array();
             $_methods = get_this_class_methods($this->{$helper});
-            foreach ($_methods as $method)
+            foreach ($_methods as $method) {
                 $methods[] = $method;
+            }
             $this->listeners[$helper] = $methods;
             $this->events = array_merge($this->events, $methods);
         }
     }
 	
-    function deattachModuleHooks($plugin){
+    public function deattachModuleHooks($plugin) {
         $Plugin = Inflector::camelize($plugin);
         
-        foreach ( $this->hooks as $hk => $hook){
-            if ( strpos($hook, "{$Plugin}.") === false )
+        foreach ($this->hooks as $hk => $hook) {
+            if (strpos($hook, "{$Plugin}.") === false) {
                 continue;
+            }
             $Hook = str_replace("{$Plugin}.", '', $hook);
-            foreach ( $this->listeners[$Hook] as $event ){
+            foreach ($this->listeners[$Hook] as $event) {
                 unset($this->events[array_search($event, $this->events)]);
             }
             unset($this->hooks[$hk]);
@@ -71,11 +74,11 @@ class AppHelper extends Helper {
  * 
  * @return boolean
  */
-	function hook_defined($hook){
+	public function hook_defined($hook) {
 		return ( in_array($hook, $this->events) == true );
 	}
 	
-	function hook($event, &$data = array(), $options = array()) {
+	public function hook($event, &$data = array(), $options = array()) {
 		$result = $this->__dispatchEvent($event, $data, $options);
 		return $result;
 	}
@@ -89,7 +92,7 @@ class AppHelper extends Helper {
  * 
  * @return mixed result array if collectReturn is set to true or NULL in case of no response
  */
-    function __dispatchEvent($event, &$data = array(), $options = array()) {
+    private function __dispatchEvent($event, &$data = array(), $options = array()) {
 		$options = array_merge(
 			array(
 				'break' => false,
@@ -101,22 +104,28 @@ class AppHelper extends Helper {
 		);
         
         # protect original varriable
-        if (!$options['alter']) $_data = $data;
+        if (!$options['alter']) {
+            $_data = $data;
+        }
         
 		$collected = array();
-		if ( !$this->hook_defined($event) ) return null;
+		if (!$this->hook_defined($event) ) {
+            return null;
+        }
         
 		foreach ($this->listeners as $object => $methods) {
-			foreach ( $methods as $method){
-				if ( $method == $event && is_callable(array($this->{$object}, $method)) ) {
-                    if (!$options['alter']){
+			foreach ($methods as $method) {
+				if ($method == $event && is_callable(array($this->{$object}, $method))) {
+                    if (!$options['alter']) {
                         $result = call_user_func(array($this->{$object}, $event), $_data);
                     } else {
                         $result = call_user_func(array($this->{$object}, $event), &$data);
                     }
+                    
                     if ($options['collectReturn'] === true) {
                         $collected[] = $result;
                     }
+                    
                     if (
                         $options['break'] && ($result === $options['breakOn'] ||
                         (is_array($options['breakOn']) && in_array($result, $options['breakOn'], true)))
@@ -126,24 +135,30 @@ class AppHelper extends Helper {
 				}
 			}
 		}
-        if(empty($collected) && empty($result)) return null;
+        
+        if (empty($collected) && empty($result)) {
+            return null;
+        }
         return $options['collectReturn'] ? $collected : $result;    
 	}	
 	
-	function __loadHookEvents(){
+	private function __loadHookEvents() {
         $eventMap = array();
         
-		foreach ($this->helpers as $helper ){
-			if ( is_array($helper) )
+		foreach ($this->helpers as $helper) {
+			if (is_array($helper)) {
 				continue;
+            }
 				
 			$helper = strpos($helper, '.') !== false ? substr($helper, strpos($helper, '.')+1) : $helper;
-			if ( strpos($helper, 'Hook') !== false ){
-				if ( !is_object($this->{$helper}) )
+			if (strpos($helper, 'Hook') !== false) {
+				if (!is_object($this->{$helper})) {
 					continue;
+                }
+                
 				$methods = array();
 				$_methods = get_this_class_methods($this->{$helper});
-				foreach ($_methods as $method){
+				foreach ($_methods as $method) {
 					$methods[] = $method;
                     $eventMap[$method] = (string)$helper;
                 }
@@ -154,10 +169,10 @@ class AppHelper extends Helper {
 		}	
 	}	
 
-    function __loadHooks() {
-        if (  $hooks = Configure::read('Hook.helpers') ) {
+    private function __loadHooks() {
+        if ($hooks = Configure::read('Hook.helpers')) {
             foreach ($hooks as $hook) {
-                if ( strpos($hook, '.') !== false ) {
+                if (strpos($hook, '.') !== false) {
 					$hookE = explode('.', $hook);
 					$plugin = $hookE[0];
 					$hookHelper = $hookE[1];
@@ -174,5 +189,4 @@ class AppHelper extends Helper {
         }
 		$this->helpers = array_unique($this->helpers);
     }
- 
 }

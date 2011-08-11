@@ -11,17 +11,22 @@
  * @link     http://cms.quickapps.es
  */
 class ListController extends UserAppController {
-	var $name = 'List';
-	var $uses = array('User.User');
+	public $name = 'List';
+	public $uses = array('User.User');
 	
-	function admin_index(){
-        if ( isset($this->data['User']['update']) ){
-            if ( isset($this->data['Items']['id']) ){
+	public function admin_index() {
+        if (isset($this->data['User']['update'])) {
+            if (isset($this->data['Items']['id'])) {
                 $update = ($this->data['User']['update'] != 'delete');
-                foreach( $this->data['Items']['id'] as $key => $id ){
-                    if ( $id === 1 ) continue; # admin protected
-                    if ( $update ) { # update User
-                        switch ($this->data['User']['update']){
+                
+                foreach ($this->data['Items']['id'] as $key => $id) {
+                
+                    if ($id === 1) {
+                        continue; # admin protected
+                    }
+                    
+                    if ($update) { # update User
+                        switch ($this->data['User']['update']) {
                             case 'block': 
                                 $this->requestAction('/admin/user/list/block/' . $id);
                             break;
@@ -35,40 +40,46 @@ class ListController extends UserAppController {
                     }
                 }
             }
+            
             $this->redirect($this->referer());
         }
         
         $paginationScope = array();
-        if ( isset($this->data['User']['filter']) || $this->Session->check('User.filter') ){
-            if ( isset($this->data['User']['filter']) && empty($this->data['User']['filter']) ){
+        if (isset($this->data['User']['filter']) || $this->Session->check('User.filter')) {
+            if (isset($this->data['User']['filter']) && empty($this->data['User']['filter'])) {
                 $this->Session->delete('User.filter');
             } else {
                 $filter = isset($this->data['User']['filter']) ? $this->data['User']['filter'] : $this->Session->read('User.filter');
-                foreach ( $filter as $field => $value ){
-                    if ( $value !== '' )
+                
+                foreach ($filter as $field => $value) {
+                    if ($value !== '') {
                         $paginationScope[str_replace('|', '.', $field)] = strpos($field, 'LIKE') !== false ? "%{$value}%" : $value;
+                    }
                 }
+                
                 $this->Session->write('User.filter', $filter);            
             }
         }
         
 		$results = $this->paginate('User', $paginationScope);
+        
 		$this->set('results', $results);
 		$this->setCrumb('/admin/user/');
-		$this->title( __t('Users') );
+		$this->title(__t('Users'));
 	}
     
-    function admin_delete($id){
-        if($id != 1){
+    public function admin_delete($id) {
+        if ($id != 1) {
             $user = $this->User->findById($id) or $this->redirect($this->referer());
-            if($this->User->delete($id)){
+            if ($this->User->delete($id)) {
                 $this->Mailer->send($user, 'canceled');
             }
         }
+        
         $this->redirect($this->referer());
     }
     
-    function admin_block($id){
+    public function admin_block($id) {
         $data = array();
         $data = array(
             'User' => array(
@@ -76,10 +87,11 @@ class ListController extends UserAppController {
                 'id' => $id
             )
         );
+        
         return $this->User->save($data, false);
     }
     
-    function admin_activate($id){
+    public function admin_activate($id) {
         $data = array();
         $data = array(
             'User' => array(
@@ -87,13 +99,14 @@ class ListController extends UserAppController {
                 'id' => $id
             )
         );
+        
         return $this->User->save($data, false);    
     }
     
-    function admin_add(){
+    public function admin_add() {
         $this->__setLangs();
-        if (isset($this->data['User'])){
-            if ( $this->User->save($this->data) ){
+        if (isset($this->data['User'])) {
+            if ($this->User->save($this->data)) {
                 $this->Mailer->send($this->User->id, 'welcome');
                 $this->flashMsg(__t('User has been saved'), 'success');
                 $this->redirect('/admin/user/list');
@@ -101,6 +114,7 @@ class ListController extends UserAppController {
                 $this->flashMsg(__t('User could not be saved. Please, try again.'), 'error');
             }
         }
+        
         $this->set('fields', $this->User->prepareFields());
         $this->set('roles', 
             $this->User->Role->find('list', 
@@ -111,32 +125,33 @@ class ListController extends UserAppController {
                 )
             )
         );
-        
         $this->title(__t('Add User'));
         $this->setCrumb('/admin/user/');
         $this->setCrumb( array(__t('Add new user')) );
     }
     
-    function admin_edit($id){
+    public function admin_edit($id) {
         $user = $this->User->findById($id) or $this->reirect('/admin/user/list');
-        if (isset($this->data['User']['id']) && $this->data['User']['id'] == $id){
-            if ( $this->User->save($this->data) ){
+        if (isset($this->data['User']['id']) && $this->data['User']['id'] == $id) {
+            if ($this->User->save($this->data)) {
                 
                 /*****************/
                 /* Email sending */
                 /*****************/
                 # Send "activated" mail
-                if($user['User']['status'] == 0 && $this->data['User']['status'] == 1){
+                if ($user['User']['status'] == 0 && $this->data['User']['status'] == 1) {
                     $notify = $this->Variable->findByName('user_mail_activation_notify');
-                    if($notify['Variable']['value']){
+                    
+                    if ($notify['Variable']['value']) {
                         $this->Mailer->send($id, 'activation');
                     }
                 }
                 
                 # Send "blocked" mail
-                if($user['User']['status'] == 1 && $this->data['User']['status'] == 0){
+                if ($user['User']['status'] == 1 && $this->data['User']['status'] == 0) {
                     $notify = $this->Variable->findByName('user_mail_blocked_notify_notify');
-                    if($notify['Variable']['value']){
+                    
+                    if ($notify['Variable']['value']) {
                         $this->Mailer->send($id, 'blocked');
                     }
                 }// -->
@@ -150,6 +165,7 @@ class ListController extends UserAppController {
         unset($user['User']['password']);
         $this->__setLangs();
         $this->data = $user;
+        
         $this->set('roles', 
             $this->User->Role->find('list', 
                 array(
@@ -164,10 +180,13 @@ class ListController extends UserAppController {
         $this->setCrumb( array(__t('Editing user')) );
     }
     
-    function __setLangs(){
+    private function __setLangs() {
         $languages = array();
-        foreach ( Configure::read('Variable.languages') as $l )
+        
+        foreach (Configure::read('Variable.languages') as $l) {
             $languages[$l['Language']['code']] = $l['Language']['native'];
+        }
+        
         $this->set('languages', $languages);
     }
 }

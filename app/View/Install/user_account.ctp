@@ -2,7 +2,7 @@
 <p>
     <p><?php echo __t('Please enter the administrative username and password to use when signing into this installation.'); ?></p>
     <form id="theForm" action="" method="post">
-        <?php if( $error = $this->Layout->sessionFlash()): ?>
+        <?php if ($error = $this->Layout->sessionFlash()): ?>
         <div class="content-box content-box-error">
             <?php echo $error; ?>
         </div>

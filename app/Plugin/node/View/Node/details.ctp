@@ -1,14 +1,49 @@
-<?php $this->Layout->hook('beforeRenderNode', $this); ?>
-    <?php echo $this->Layout->renderNode(); ?>
-<?php $this->Layout->hook('afterRenderNode', $this); ?>
+<?php 
+    // node
+    $collect = $this->Layout->hook('beforeRenderNode', $this,
+        array(
+            'alter' => true, 
+            'collectReturn' => true
+        )
+    );
+    echo implode(' ', (array)$collect);
 
-<?php if ($Layout['node']['Node']['comment'] > 0): ?>
-    <?php $this->Layout->hook('beforeRenderNodeComments', $this, array('alter' => true, 'collectReturn' => false)); ?>
-    <?php
+    echo $this->Layout->renderNode(); 
+
+    $collect = $this->Layout->hook('afterRenderNode', $this,
+        array(
+            'alter' => true, 
+            'collectReturn' => true
+        )
+    );
+    echo implode(' ', (array)$collect);
+    // end node
+    
+    // comments
+    if ($Layout['node']['Node']['comment'] > 0) {
+        $collect = $this->Layout->hook('beforeRenderNodeComments', $this, 
+            array(
+                'alter' => true, 
+                'collectReturn' => true
+            )
+        );
+        
+        echo implode(' ', (array)$collect);
+
         $comments = $this->element('node_details_comments');
-        if ( $Layout['node']['Node']['comment'] == 2 )
+        
+        if ($Layout['node']['Node']['comment'] == 2) {
             $comments .= $this->element('node_details_comments_form');
-    ?>    
-    <?php echo $this->Html->tag('div', $comments, array('id' => 'comments', 'class' => 'node-comments') ); ?>
-    <?php $this->Layout->hook('afterRenderNodeComments', $this, array('alter' => true, 'collectReturn' => false)); ?>
-<?php endif; ?>
+        }
+ 
+        echo $this->Html->tag('div', $comments, array('id' => 'comments', 'class' => 'node-comments') ); 
+        
+        $collect = $this->Layout->hook('afterRenderNodeComments', $this, 
+            array(
+                'alter' => true, 
+                'collectReturn' => true
+            )
+        );
+        echo implode(' ', (array)$collect);
+    }
+    // end comments

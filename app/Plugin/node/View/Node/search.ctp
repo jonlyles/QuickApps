@@ -22,7 +22,7 @@
 </div>
 
 <?php 
-    foreach($Layout['node'] as $node)
+    foreach ($Layout['node'] as $node)
         echo $this->Layout->renderNode($node);
     
     if (count($Layout['node'])):

@@ -11,11 +11,16 @@
  * @link     http://cms.quickapps.es
  */
 class NodeType extends NodeAppModel {
-    var $name       = 'NodeType';
-    var $useTable   = "node_types";
-	var $primaryKey = 'id';
+    public $name = 'NodeType';
+    public $useTable = "node_types";
+	public $primaryKey = 'id';
+    public $actsAs = array('Sluggable' => array('overwrite' => false, 'slug' => 'id', 'label' => 'name', 'separator' => '_'));
+    public $validate = array(
+        'name' => array('required' => true, 'allowEmpty' => false, 'rule' => 'notEmpty', 'message' => 'Type name can not be empty'),
+        'title_label' => array('required' => true, 'allowEmpty' => false, 'rule' => 'notEmpty', 'message' => 'Title field label can not be empty')
+    );
 
-    var $hasAndBelongsToMany = array(
+    public $hasAndBelongsToMany = array(
         'Vocabulary' => array(
             'joinTable' => 'types_vocabularies',
             'className' => 'Taxonomy.Vocabulary',
@@ -25,11 +30,4 @@ class NodeType extends NodeAppModel {
             'dependent' => false
         )
     );
-    
-    var $validate = array(
-        'name' => array( 'required' => true, 'allowEmpty' => false, 'rule' => 'notEmpty', 'message' => 'Type name can not be empty'),
-        'title_label' => array( 'required' => true, 'allowEmpty' => false, 'rule' => 'notEmpty', 'message' => 'Title field label can not be empty')
-    );
-
-    var $actsAs = array( 'Sluggable' => array('overwrite' => false, 'slug' => 'id', 'label' => 'name', 'separator' => '_') );
 }

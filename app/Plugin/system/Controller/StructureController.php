@@ -11,11 +11,10 @@
  * @link     http://cms.quickapps.es
  */
 class StructureController extends SystemAppController {
-
-	var $name = 'Structure';
-	var $uses = array();
+	public $name = 'Structure';
+	public $uses = array();
 	
-	function admin_index(){
+	public function admin_index() {
 		
 	}
 }

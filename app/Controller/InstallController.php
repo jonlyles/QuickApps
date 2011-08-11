@@ -12,11 +12,11 @@
  */
 App::uses('AppController', 'Controller');
 class InstallController extends Controller {
-    var $name = 'Install';
-    var $uses = array();
-    var $components = array('Session');
-    var $helpers = array('Layout', 'Html', 'Form');
-    var $defaultDbConfig = array(
+    public $name = 'Install';
+    public $uses = array();
+    public $components = array('Session');
+    public $helpers = array('Layout', 'Html', 'Form');
+    private $__defaultDbConfig = array(
         'name' => 'default',
         'datasource'=> 'Database/Mysql',
         'persistent'=> false,
@@ -30,34 +30,34 @@ class InstallController extends Controller {
         'port' => '3306'
     );    
     
-    function beforeFilter(){
+    public function beforeFilter() {
         $this->viewClass = 'View';
         $this->layout    = 'install';
 
         # already installed ?
-        if ( file_exists(APP . DS . 'Config' . DS . 'database.php') &&  
+        if (file_exists(APP . DS . 'Config' . DS . 'database.php') &&  
              file_exists(APP . DS . 'Config' . DS . 'install') )
             $this->redirect('/');
     }
     
-    function index(){
+    public function index() {
        $this->redirect('/install/license');
     }
     
     /* Step 1: License agreement */
-    function license(){
-        if ( isset($this->data['License']) ){
+    public function license() {
+        if (isset($this->data['License'])) {
             $this->__stepSuccess('license');
             $this->redirect('/install/server_test');
         }
     }
 
     /* Step 2: Server test */
-    function server_test(){
-        if ( !$this->__stepSuccess('license', true) )
+    public function server_test() {
+        if (!$this->__stepSuccess('license', true) )
             $this->redirect('/install/license');
             
-        if ( !empty($this->data['Test']) ){
+        if (!empty($this->data['Test'])) {
             $this->__stepSuccess('server_test');
             $this->redirect('/install/database');
         }
@@ -110,7 +110,7 @@ class InstallController extends Controller {
         );
         
         $results = array_unique(Set::extract('{s}.test', $tests));
-        if ( !(count($results) === 1 && $results[0] === true) ){
+        if (!(count($results) === 1 && $results[0] === true)) {
             $this->set('success', false);
             $this->set('tests', $tests);
         } else {
@@ -119,11 +119,11 @@ class InstallController extends Controller {
     }
 
     /* Step 3: Database  */
-    function database() {
-        if ( !$this->__stepSuccess(array('license', 'server_test'), true) )
+    public function database() {
+        if (!$this->__stepSuccess(array('license', 'server_test'), true) )
             $this->redirect('/install/license');
     
-        if ( !empty($this->data['Database']) ){
+        if (!empty($this->data['Database'])) {
             copy(APP . 'Config' . DS . 'database.php.install', APP . 'Config' . DS . 'database.php');
             App::import('Utility', 'File');
             $file = new File(APP . 'Config' . DS . 'database.php', true);
@@ -155,22 +155,22 @@ class InstallController extends Controller {
                 $dbSettings
             );
             
-            $this->defaultDbConfig = Set::merge($this->defaultDbConfig, $data['Database']);
-            if( $file->write($dbSettings) ){
+            $this->__defaultDbConfig = Set::merge($this->__defaultDbConfig, $data['Database']);
+            if ($file->write($dbSettings)) {
             
-                $MySQLConn = @mysql_connect($this->defaultDbConfig['host'] . ':' . $this->defaultDbConfig['port'], $this->defaultDbConfig['login'], $this->defaultDbConfig['password'], true);
-                if ( @mysql_select_db($this->defaultDbConfig['database'], $MySQLConn) ){
+                $MySQLConn = @mysql_connect($this->__defaultDbConfig['host'] . ':' . $this->__defaultDbConfig['port'], $this->__defaultDbConfig['login'], $this->__defaultDbConfig['password'], true);
+                if (@mysql_select_db($this->__defaultDbConfig['database'], $MySQLConn)) {
                     @App::import('Model', 'ConnectionManager');
                     @ConnectionManager::create('default');
-                    $db = ConnectionManager::getDataSource('default', $this->defaultDbConfig);
+                    $db = ConnectionManager::getDataSource('default', $this->__defaultDbConfig);
                 
                     $file =& new File(APP . 'Config' . DS . 'Schema' . DS . 'quickapps.sql');
                     $sql = $file->read();
                     $queries = $this->__splitSql($sql);
                     
                     # dump DB
-                    foreach($queries as $query)
-                        if( !empty($query) && $query != "--")
+                    foreach ($queries as $query)
+                        if (!empty($query) && $query != "--")
                             $db->execute(str_replace('#__', $data['Database']['prefix'], $query));
                     
                     # random keys values
@@ -199,11 +199,11 @@ class InstallController extends Controller {
     }
 
     /* Step 4: User account */
-    function user_account(){
-        if ( 
+    public function user_account() {
+        if (
             Cache::read('QaInstallDatabase') == 'success' || 
             $this->__stepSuccess(array('license', 'server_test', 'database'), true)
-        ){
+       ) {
             $this->__stepSuccess('license');
             $this->__stepSuccess('server_test');
             $this->__stepSuccess('database');
@@ -212,17 +212,17 @@ class InstallController extends Controller {
             $this->redirect('/install/license');
         }
         
-        if ( isset($this->data['User']) ){
+        if (isset($this->data['User'])) {
             $this->loadModel('User.User');
             $data = $this->data;
             $data['User']['status'] = 1;
             $data['Role']['Role'] = array(1);
-            if ( $this->User->save($data) ){
+            if ($this->User->save($data)) {
                 $this->__stepSuccess('user_account');
                 $this->redirect('/install/finish');
             } else {
                 $errors = '';
-                foreach ( $this->User->invalidFields() as $field => $error)
+                foreach ($this->User->invalidFields() as $field => $error)
                     $errors .= "<b>{$field}:</b> {$error}<br/>";
                 $this->Session->setFlash(
                     '<b>' . __t('Could not create new user, please try again.') . "</b><br/>" . 
@@ -233,13 +233,13 @@ class InstallController extends Controller {
     }
     
     /* Step 5: Finish */
-    function finish(){
-        if ( !$this->__stepSuccess(array('license', 'server_test', 'database', 'user_account'), true) )
+    public function finish() {
+        if (!$this->__stepSuccess(array('license', 'server_test', 'database', 'user_account'), true) )
             $this->redirect('/install/license');
             
         App::import('Utility', 'File');
         $file = new File(APP . 'Config' . DS . 'install', true);
-        if ( $file->write(time()) ){
+        if ($file->write(time())) {
             $this->__stepSuccess('finish');
             $this->Session->delete('QaInstall');
             $this->redirect('/admin');
@@ -248,12 +248,12 @@ class InstallController extends Controller {
         }
     }
     
-    function __stepSuccess($step, $check = false){
-        if ( !$check )
+    private function __stepSuccess($step, $check = false) {
+        if (!$check )
             return $this->Session->write("QaInstall.{$step}", 'success');
-        if ( is_array($step) ){
+        if (is_array($step)) {
             foreach ($step as $s )
-                if ( !$this->Session->check("QaInstall.{$s}") )
+                if (!$this->Session->check("QaInstall.{$s}") )
                     return false;
             return true;
         } else {
@@ -262,7 +262,7 @@ class InstallController extends Controller {
         return false;
     }
     
-    function __splitSql($sql) {
+    private function __splitSql($sql) {
         $sql = trim($sql);
         $sql = ereg_replace("\n#[^\n]*\n", "\n", $sql);
 
@@ -271,24 +271,24 @@ class InstallController extends Controller {
         $in_string = false;
 
         for($i=0; $i<strlen($sql)-1; $i++) {
-            if($sql[$i] == ";" && !$in_string) {
+            if ($sql[$i] == ";" && !$in_string) {
                 $ret[] = substr($sql, 0, $i);
                 $sql = substr($sql, $i + 1);
                 $i = 0;
             }
 
-            if($in_string && ($sql[$i] == $in_string) && $buffer[1] != "\\") {
+            if ($in_string && ($sql[$i] == $in_string) && $buffer[1] != "\\") {
                 $in_string = false;
             }
-            elseif(!$in_string && ($sql[$i] == '"' || $sql[$i] == "'") && (!isset($buffer[0]) || $buffer[0] != "\\")) {
+            elseif (!$in_string && ($sql[$i] == '"' || $sql[$i] == "'") && (!isset($buffer[0]) || $buffer[0] != "\\")) {
                 $in_string = $sql[$i];
             }
-            if(isset($buffer[1]))
+            if (isset($buffer[1]))
                 $buffer[0] = $buffer[1];
             $buffer[1] = $sql[$i];
         }
 
-        if(!empty($sql))
+        if (!empty($sql))
             $ret[] = $sql;
         return($ret);
     }    

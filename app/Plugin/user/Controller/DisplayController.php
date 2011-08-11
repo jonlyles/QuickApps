@@ -11,26 +11,21 @@
  * @link     http://cms.quickapps.es
  */
 class DisplayController extends UserAppController {
-	var $name = 'Display';
-	var $uses = array('Field.Field');
+	public $name = 'Display';
+	public $uses = array('Field.Field');
 	
     //node type display settings
-    function admin_index($view_mode = false){
-        if ( !$view_mode && !isset($this->data['User']['viewModes']) )
+    public function admin_index($view_mode = false) {
+        if (!$view_mode && !isset($this->data['User']['viewModes'])) {
             $this->redirect("/admin/user/display/index/default");
+        }
         
-        if ( isset($this->data['User']['viewModes']) ){ # set available view modes
+        if (isset($this->data['User']['viewModes'])) { # set available view modes
             $this->Field->setViewModes( $this->data['User']['viewModes'], array('Field.belongsTo' => 'User') );
             $this->redirect($this->referer());
         }
         
-        $fields = $this->Field->find('all', 
-            array(
-                'conditions' => array(
-                    'Field.belongsTo' => 'User'
-                )
-            )
-        );
+        $fields = $this->Field->find('all',  array('conditions' => array('Field.belongsTo' => 'User')));
         
         $fields = Set::sort($fields, '{n}.Field.settings.display.' . $view_mode . '.ordering', 'asc');
         $data['User']['viewModes'] = isset($fields[0]['Field']['settings']['display']) ? array_keys($fields[0]['Field']['settings']['display']) : array();
@@ -43,16 +38,18 @@ class DisplayController extends UserAppController {
         $this->title(__t('User Display Settings'));
     }
     
-    function admin_field_formatter($id, $view_mode = 'default'){
+    public function admin_field_formatter($id, $view_mode = 'default') {
         $field = $this->Field->findById($id) or $this->redirect($this->referer());
-        if ( isset($this->data['Field']) ){
-            if ( $this->Field->save($this->data) ){
+        if (isset($this->data['Field'])) {
+            if ($this->Field->save($this->data)) {
                 $this->redirect($this->referer());
             } else {
                 $this->flashMsg(__t('Field could not be saved. Please, try again.'), 'error');
             }
         }
+        
         $this->data = $field;
+        
         $this->set('view_mode', $view_mode);
         $this->setCrumb('/admin/user/');
         $this->setCrumb( array(__t('User Display Settings'), '') );

@@ -3315,7 +3315,7 @@ class Upload {
                 $this->log .= '<b>process file and return the content</b><br />';
                 $return_mode = true;
             } else {
-                if(strtolower(substr(PHP_OS, 0, 3)) === 'win') {
+                if (strtolower(substr(PHP_OS, 0, 3)) === 'win') {
                     if (substr($server_path, -1, 1) != '\\') $server_path = $server_path . '\\';
                 } else {
                     if (substr($server_path, -1, 1) != '/') $server_path = $server_path . '/';
@@ -3367,7 +3367,7 @@ class Upload {
                 $allowed = false;
                 // check wether the mime type is allowed
                 if (!is_array($this->allowed)) $this->allowed = array($this->allowed);
-                foreach($this->allowed as $k => $v) {
+                foreach ($this->allowed as $k => $v) {
                     list($v1, $v2) = explode('/', $v);
                     if (($v1 == '*' && $v2 == '*') || ($v1 == $m1 && ($v2 == $m2 || $v2 == '*'))) {
                         $allowed = true;
@@ -3376,7 +3376,7 @@ class Upload {
                 }
                 // check wether the mime type is forbidden
                 if (!is_array($this->forbidden)) $this->forbidden = array($this->forbidden);
-                foreach($this->forbidden as $k => $v) {
+                foreach ($this->forbidden as $k => $v) {
                     list($v1, $v2) = explode('/', $v);
                     if (($v1 == '*' && $v2 == '*') || ($v1 == $m1 && ($v2 == $m2 || $v2 == '*'))) {
                         $allowed = false;
@@ -3702,7 +3702,7 @@ class Upload {
                                 $this->processed = false;
                                 $this->error = $this->translate('no_create_support', array('GIF'));
                             } else {
-                                $image_src = @imagecreatefromgif($this->file_src_pathname);
+                                $image_src = @imagecreatefromgif ($this->file_src_pathname);
                                 if (!$image_src) {
                                     $this->processed = false;
                                     $this->error = $this->translate('create_error', array('GIF'));
@@ -3802,7 +3802,7 @@ class Upload {
                         imagecopy($tmp, $image_dst, 0, 0, $cl, $ct, $this->image_src_x, $this->image_src_y);
 
                         // if we crop with negative margins, we have to make sure the extra bits are the right color, or transparent
-                        if ($ct < 0 || $cr < 0 || $cb < 0 || $cl < 0 ) {
+                        if ($ct < 0 || $cr < 0 || $cb < 0 || $cl < 0) {
                             // use the background color if present
                             if (!empty($this->image_background_color)) {
                                 list($red, $green, $blue) = $this->getcolors($this->image_background_color);
@@ -3984,7 +3984,7 @@ class Upload {
                         imagecopy($tmp, $image_dst, 0, 0, $cl, $ct, $this->image_dst_x, $this->image_dst_y);
 
                         // if we crop with negative margins, we have to make sure the extra bits are the right color, or transparent
-                        if ($ct < 0 || $cr < 0 || $cb < 0 || $cl < 0 ) {
+                        if ($ct < 0 || $cr < 0 || $cb < 0 || $cl < 0) {
                             // use the background color if present
                             if (!empty($this->image_background_color)) {
                                 list($red, $green, $blue) = $this->getcolors($this->image_background_color);
@@ -4009,7 +4009,7 @@ class Upload {
                         $this->log .= '- flip image : ' . $this->image_flip . '<br />';
                         $tmp = $this->imagecreatenew($this->image_dst_x, $this->image_dst_y);
                         for ($x = 0; $x < $this->image_dst_x; $x++) {
-                            for ($y = 0; $y < $this->image_dst_y; $y++){
+                            for ($y = 0; $y < $this->image_dst_y; $y++) {
                                 if (strpos($this->image_flip, 'v') !== false) {
                                     imagecopy($tmp, $image_dst, $this->image_dst_x - $x - 1, $y, $x, $y, 1, 1);
                                 } else {
@@ -4032,7 +4032,7 @@ class Upload {
                             }
                             $this->log .= '- rotate image : ' . $this->image_rotate . '<br />';
                             for ($x = 0; $x < $this->image_dst_x; $x++) {
-                                for ($y = 0; $y < $this->image_dst_y; $y++){
+                                for ($y = 0; $y < $this->image_dst_y; $y++) {
                                     if ($this->image_rotate == 90) {
                                         imagecopy($tmp, $image_dst, $y, $x, $x, $this->image_dst_y - $y - 1, 1, 1);
                                     } else if ($this->image_rotate == 180) {
@@ -4085,7 +4085,7 @@ class Upload {
                                 } 
                             } 
                             $p_new = array();
-                            if($this->image_unsharp_threshold>0) { 
+                            if ($this->image_unsharp_threshold>0) { 
                                 for ($x = 0; $x < $this->image_dst_x-1; $x++) { 
                                     for ($y = 0; $y < $this->image_dst_y; $y++) {
                                         $p_orig = imagecolorsforindex($image_dst, imagecolorat($image_dst, $x, $y));
@@ -4354,7 +4354,7 @@ class Upload {
                             if (!function_exists('imagecreatefromgif')) {
                                 $this->error = $this->translate('watermark_no_create_support', array('GIF'));
                             } else {
-                                $filter = @imagecreatefromgif($this->image_watermark);
+                                $filter = @imagecreatefromgif ($this->image_watermark);
                                 if (!$filter) {
                                     $this->error = $this->translate('watermark_create_error', array('GIF'));
                                 } else {
@@ -4802,7 +4802,7 @@ class Upload {
                                 // first, we merge the image with the background color, so we know which colors we will have
                                 for ($x = 0; $x < $this->image_dst_x; $x++) {
                                     for ($y = 0; $y < $this->image_dst_y; $y++) {
-                                        if ($mask[$x][$y] > 0){
+                                        if ($mask[$x][$y] > 0) {
                                             // we have some transparency. we combine the color with the default color
                                             $pixel = imagecolorsforindex($image_dst, imagecolorat($image_dst, $x, $y));
                                             $alpha = ($mask[$x][$y] / 127);
@@ -4909,10 +4909,10 @@ class Upload {
                             break;
                         case 'gif':
                             if (!$return_mode) {
-                                $result = @imagegif($image_dst, $this->file_dst_pathname);
+                                $result = @imagegif ($image_dst, $this->file_dst_pathname);
                             } else {
                                 ob_start();
-                                $result = @imagegif($image_dst);
+                                $result = @imagegif ($image_dst);
                                 $return_content = ob_get_contents();
                                 ob_end_clean();
                             }
@@ -5122,7 +5122,7 @@ class Upload {
                 $result .= pack ('C', 0);
         }
 
-        if($filename==""){
+        if ($filename=="") {
             echo $result;
         } else {
             $file = fopen($filename, "wb");

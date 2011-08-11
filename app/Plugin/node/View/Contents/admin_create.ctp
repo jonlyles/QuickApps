@@ -1,7 +1,7 @@
 <?php
-    if ( !empty($types) ): 
+    if (!empty($types) ): 
         $links = array();
-        foreach ($types as $type){
+        foreach ($types as $type) {
             $links[] = array(
                 'router_path' => '/admin/node/contents/add/' . $type['NodeType']['id'],
                 'link_title' => __t($type['NodeType']['name']),

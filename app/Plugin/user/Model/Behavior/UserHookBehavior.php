@@ -12,9 +12,8 @@
  */
 class UserHookBehavior extends ModelBehavior {
     # prevent unnecessary variables to load on startup by _loadVariables()
-    function beforeFind($model, $query){
-        # empty conditions = select *
-        if ($model->name == 'Variable' && empty($query['conditions']) )
+    public function beforeFind($model, $query) {
+        if ($model->name == 'Variable' && empty($query['conditions'])) { # empty conditions = select *
             $query['conditions'] = Set::merge($query['conditions'], 
                 array(
                     'NOT' => array(
@@ -22,6 +21,8 @@ class UserHookBehavior extends ModelBehavior {
                     )
                 )
             );
+        }
+        
         return $query;
     }
 }

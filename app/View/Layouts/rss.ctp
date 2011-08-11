@@ -10,7 +10,7 @@
         <description><?php echo is_string(Configure::read('Variable.site_description')) ? Configure::read('Variable.site_description') : ''; ?></description>
         <generator>QuickApps v<?php echo Configure::read('Variable.qa_version'); ?></generator>
 <?php 
-    foreach($Layout['node'] as $node):
+    foreach ($Layout['node'] as $node):
         $nodeTime = $node['Node']['created'];
         $nodeLink = "/d/{$node['Node']['slug']}";
 

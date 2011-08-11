@@ -11,11 +11,15 @@
  * @link     http://cms.quickapps.es
  */
 class Menu extends MenuAppModel {
-    var $name = 'Menu';
-    var $useTable = "menus";
-	var $primaryKey = 'id';
+    public $name = 'Menu';
+    public $useTable = "menus";
+	public $primaryKey = 'id';
+    public $validate = array(
+        'title' => array('required' => true, 'allowEmpty' => false, 'rule' => 'notEmpty', 'message' => 'Menu title can not be empty'),
+    );
+    public $actsAs = array('Serialized' => array('locale'));
 	
-	var $hasMany = array(
+	public $hasMany = array(
 		'MenuLink' => array(
 			'className' => 'Menu.MenuLink',
 			'foreignKey' => 'menu_id',
@@ -25,7 +29,7 @@ class Menu extends MenuAppModel {
 		)
 	);
     
-    var $belongsTo = array(
+    public $belongsTo = array(
 		'Block' => array(
 			'className' => 'Blocks.Block',
 			'foreignKey' => 'id',
@@ -34,13 +38,7 @@ class Menu extends MenuAppModel {
 		)    
     );
     
-    var $validate = array(
-        'title' => array( 'required' => true, 'allowEmpty' => false, 'rule' => 'notEmpty', 'message' => 'Menu title can not be empty'),
-    );
-    
-    var $actsAs = array('Serialized' => array('locale') );
-    
-    function beforeDelete($cascade){
+    public function beforeDelete($cascade) {
         // delete block
         $this->Block->deleteAll(
             array(
@@ -59,26 +57,30 @@ class Menu extends MenuAppModel {
                 'scope'  => "MenuLink.menu_id = {$this->id}"
             )
         );
+        
         $this->MenuLink->deleteAll(
             array(
                 'MenuLink.menu_id' => $this->id
             )
-        );   
+        ); 
+
         return true;
     }
     
-    function beforeSave(){
-        if ( !isset($this->data['Menu']['id']) ){
+    public function beforeSave() {
+        if (!isset($this->data['Menu']['id'])) {
             /* menu slug */
             $id = Inflector::slug($this->data['Menu']['title'], '-');
             $i = 1;
             $_id = $id;
             $c = '';
-            while ( $this->find('count', array('conditions' => array('Menu.id' => $_id) ) ) > 0 ){
+            
+            while ( $this->find('count', array('conditions' => array('Menu.id' => $_id) ) ) > 0) {
                 $c = '-' . $i;
                 $_id = $id . $c;
                 $i++;
             }
+            
             $this->data['Menu']['id'] = strtolower($id . $c);
             /* end menu slug */
             
@@ -96,8 +98,7 @@ class Menu extends MenuAppModel {
             );
             $this->Block->save($bdata, false);
         }
-        
+    
         return true;
     }
-    
 }

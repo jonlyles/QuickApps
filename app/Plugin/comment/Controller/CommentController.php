@@ -11,10 +11,10 @@
  * @link     http://cms.quickapps.es
  */
 class CommentController extends CommentAppController {
-	var $name = 'Comment';
-	var $uses = array();
+	public $name = 'Comment';
+	public $uses = array();
     
-    function admin_index(){
+    public function admin_index() {
         $this->redirect('/admin/comment/published');
     }	
 }

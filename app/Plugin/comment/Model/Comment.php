@@ -11,13 +11,13 @@
  * @link     http://cms.quickapps.es
  */
 class Comment extends CommentAppModel {
-    var $name       = 'Comment';
-    var $useTable   = "comments";
-	var $primaryKey = 'id';
+    public $name = 'Comment';
+    public $useTable = "comments";
+	public $primaryKey = 'id';
     private $nodeData = null; # tmp holder
-    var $actsAs     = array('Comment.BBCode' => array('fields' => array('body') ) );
+    public $actsAs = array('Comment.BBCode' => array('fields' => array('body')));
     
-    var $belongsTo  = array(
+    public $belongsTo  = array(
         'Node' => array(
             'className' => 'Node.Node',
             'fields' => array('id', 'slug', 'title'),
@@ -30,7 +30,7 @@ class Comment extends CommentAppModel {
         )
     );
     
-    var $validate = array(
+    public $validate = array(
         'name' => array(
             'required' => true,
             'allowEmpty' => false,
@@ -57,20 +57,20 @@ class Comment extends CommentAppModel {
         )
     );
     
-    function beforeValidate(){
-        if ( !isset($this->data['Comment']['node_id']) ) return false;
+    public function beforeValidate() {
+        if (!isset($this->data['Comment']['node_id']) ) return false;
         $this->Node->recursive = 1;
         $this->nodeData = $this->Node->findById($this->data['Comment']['node_id']);
-        if ( !$this->nodeData ) return false;
+        if (!$this->nodeData ) return false;
         
         App::uses('CakeSession', 'Model/Datasource');
         $userId = CakeSession::read('Auth.User.id');
-        if ( !$userId ){ # anonymous
-            switch ( $this->nodeData['NodeType']['comments_anonymous'] ) {
+        if (!$userId) { # anonymous
+            switch ( $this->nodeData['NodeType']['comments_anonymous']) {
                 #name
                 case 0: #mail not sended, not requierd | name sended but not required
                     unset($this->validate['name'], $this->validate['email']);
-                    if ( empty($this->data['Comment']['name']) ) 
+                    if (empty($this->data['Comment']['name']) ) 
                         $this->data['Comment']['name'] = __t('Anonymous');
                 break;
                 
@@ -79,7 +79,7 @@ class Comment extends CommentAppModel {
                 #host
                 case 1: #mail optional, can be empty, if it is not -> must be validated | name optional
                    $this->validate['email']['allowEmpty'] = true;
-                    if ( empty($this->data['Comment']['name']) ) 
+                    if (empty($this->data['Comment']['name']) ) 
                         $this->data['Comment']['name'] = __t('Anonymous');
                 break;
                 
@@ -104,8 +104,8 @@ class Comment extends CommentAppModel {
         return ($r === null ? true : $r);
     }
     
-    function beforeSave(){
-        if ( isset($this->data['Comment']['node_id']) ){
+    public function beforeSave() {
+        if (isset($this->data['Comment']['node_id'])) {
             /* clear related node cache */
             $this->Node->id = $this->data['Comment']['node_id'];
             $nSlug = $this->Node->field('slug');
@@ -113,13 +113,14 @@ class Comment extends CommentAppModel {
         }
         
         /* new comment */
-        if ( !isset($this->data['Comment']['id']) ){
+        if (!isset($this->data['Comment']['id'])) {
             #prepare body
             $this->data['Comment']['body'] = html_entity_decode(strip_tags($this->data['Comment']['body'])); #filter
             
             # prepare subject
-            if ( !isset($this->data['Comment']['subject']) || empty($this->data['Comment']['subject']) )
+            if (!isset($this->data['Comment']['subject']) || empty($this->data['Comment']['subject'])) {
                 $this->data['Comment']['subject'] = $this->__defaultSubject($this->data['Comment']['body']);
+            }
             
             # prepare hostname
             $this->data['Comment']['hostname'] = env('REMOTE_ADDR');
@@ -130,23 +131,27 @@ class Comment extends CommentAppModel {
         return ($r === null ? true : $r);
     }
     
-    function __defaultSubject($string, $len = 30) {
+    private function __defaultSubject($string, $len = 30) {
         # ignore quotes
         $string = preg_replace('#\[quote(.*?)\](.*)\[/quote\]#U', '', $string);
         $string = $this->Behaviors->BBCode->bb_parse($string);
         $string = html_entity_decode(strip_tags($string));
         
-        if (strlen($string) <= $len){
+        if (strlen($string) <= $len) {
             $string = trim($string);
             return $string;
         }
+        
         $string = substr($string, 0, $len + 1);
+        
         if ($last_space = strrpos($string, ' ')) {
             $string = substr($string, 0, $last_space);
         } else {
             $string = substr($string, 0, $len);
         }
+        
         $string = trim($string);
+        
         return $string;
     }
 }

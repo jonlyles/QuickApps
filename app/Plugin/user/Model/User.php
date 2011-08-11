@@ -11,20 +11,10 @@
  * @link     http://cms.quickapps.es
  */
 class User extends UserAppModel {
-    var $name = 'User';
-    var $useTable = "users";
-    var $actsAs = array('Field.Fieldable');
-	
-    var $hasAndBelongsToMany = array(
-        'Role' => array(
-			'className' => 'User.Role',
-			'joinTable' => 'users_roles',
-			'foreignKey' => 'user_id',
-			'associationForeignKey' => 'role_id'
-        )
-    );
-    
-    var $validate = array(
+    public $name = 'User';
+    public $useTable = "users";
+    public $actsAs = array('Field.Fieldable');
+    public $validate = array(
         'username' => array(
             'alphanumeric' => array(
                 'rule' => 'alphaNumeric',  
@@ -71,14 +61,25 @@ class User extends UserAppModel {
 			'message' => 'Password mismatch or less than 6 characters'
 		)
     );
+
+    public $hasAndBelongsToMany = array(
+        'Role' => array(
+			'className' => 'User.Role',
+			'joinTable' => 'users_roles',
+			'foreignKey' => 'user_id',
+			'associationForeignKey' => 'role_id'
+        )
+    );
     
-    function beforeValidate(){
-        if ( isset($this->data['User']['id']) )
+    public function beforeValidate() {
+        if (isset($this->data['User']['id'])) {
             $this->validate['password']['allowEmpty'] = true;
+        }
+        
         return true;
     }
 
-    function beforeSave(){
+    public function beforeSave() {
         App::uses('Security', 'Utility');
         App::uses('String', 'Utility');
             
@@ -89,22 +90,27 @@ class User extends UserAppModel {
         }
         
         $this->data['User']['key'] = String::uuid();
+        
         return true;
     }
 	
-	function comparePwd($check){
+	public function comparePwd($check) {
         $check['password'] = trim($check['password']);
-        if ( !isset($this->data['User']['id']) && strlen($check['password']) < 6 )
-            return false;
-        if ( isset($this->data['User']['id']) && empty($check['password']) )
-            return true;
-        $r = (
-            $check['password'] == $this->data['User']['password2'] && 
-            strlen($check['password']) >= 6
-        );
         
-		if(!$r)
+        if (!isset($this->data['User']['id']) && strlen($check['password']) < 6) {
+            return false;
+        }
+        
+        if (isset($this->data['User']['id']) && empty($check['password'])) {
+            return true;
+        }
+        
+        $r = ($check['password'] == $this->data['User']['password2'] && strlen($check['password']) >= 6);
+        
+		if (!$r) {
             $this->invalidate('password2', __d('user', 'Password missmatch') );
+        }
+        
         return $r;
 	}
 }

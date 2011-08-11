@@ -11,11 +11,10 @@
  * @link     http://cms.quickapps.es
  */
 class DashboardController extends AppController {
-
-    var $name = 'Dashboard';
-	var $uses = array();
+    public $name = 'Dashboard';
+	public $uses = array();
 	
-	function admin_index(){
-        
+	public function admin_index() {
+
 	}
 }

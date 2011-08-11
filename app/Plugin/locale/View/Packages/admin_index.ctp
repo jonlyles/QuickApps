@@ -36,13 +36,13 @@
 <?php echo $this->Form->end(); ?>
 
 <table width="100%">
-    <?php foreach($packages as $plugin => $langs): ?>
+    <?php foreach ($packages as $plugin => $langs): ?>
     <?php $Name = (strpos($plugin, 'Theme') !== false) ? __t('Theme: %s', Configure::read('Modules.' . Inflector::underscore($plugin) . '.yaml.info.name')) : __t('Module: %s', Configure::read('Modules.' . Inflector::underscore($plugin) . '.yaml.name')); ?>
     <tr>
         <td>
             <?php echo $plugin == 'Core' ? '<b>' . __t('Core') . '</b>' : $Name; ?><br/>
             <ul>
-            <?php foreach($langs as $code => $po): ?>
+            <?php foreach ($langs as $code => $po): ?>
                 <li>
                     <?php echo $languages[$code]; ?> 
                     <a href="<?php echo $this->Html->url("/admin/locale/packages/download_package/{$plugin}/{$code}"); ?>" target="_blank"><?php echo __t('download'); ?></a> 
@@ -57,9 +57,9 @@
 </table>
 
 <script>
-    function checkPackage(){
+    function checkPackage() {
         var ext = $('#PackageData').val().substr( ($('#PackageData').val().lastIndexOf('.') +1) );
-        if ( ext != 'po' ){
+        if (ext != 'po') {
             alert('<?php echo __t('Invalid package'); ?>');
             return false;
         }

@@ -45,7 +45,7 @@
 <span id="saveStatus">&nbsp;</span>
 
 <script>
-    $(document).ready(function(){
+    $(document).ready(function() {
         $('ul.sortable').nestedSortable({
             listType: 'ul',
             disableNesting: 'no-nest',
@@ -61,14 +61,14 @@
             toleranceElement: '> div'
         });
         
-        $('#saveChanges').click(function(e){
+        $('#saveChanges').click(function(e) {
             $('#saveStatus').text('<?php echo __t('Saving...'); ?>');
             arraied = $('ul.sortable').nestedSortable('toArray', {startDepthCount: 0});
             $.ajax({
                 type: 'POST', 
                 url: QuickApps.settings.url,
                 data: 'data[MenuLink]=' + $.toJSON(arraied),
-                success: function(){
+                success: function() {
                     $('#saveStatus').text('<?php echo __t('Saved!'); ?>');
                 }
             });

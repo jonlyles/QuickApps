@@ -11,30 +11,43 @@
  * @link     http://cms.quickapps.es
  */
 class ManageController extends MenuAppController {
-
-	var $name = 'Manage';
-	var $uses = array('Menu.Menu');
-    var $helpers = array('Menu.Tree');
+	public $name = 'Manage';
+	public $uses = array('Menu.Menu');
+    public $helpers = array('Menu.Tree');
 	
-	function admin_index(){
+	public function admin_index() {
+        $this->Menu->recursive = -1;
+        
+		$this->set('results', $this->paginate('Menu'));
 		$this->setCrumb('/admin/system/structure');
 		$this->setCrumb(array(__t('Menu'), ''));
-		$this->title( __t('Menus') );
-    
-        $this->Menu->recursive = -1;
-		$this->set('results', $this->paginate('Menu'));
+		$this->title(__t('Menus'));        
 	}
     
     // delete menu
-    function admin_delete($menu_id){
-        if ( in_array($menu_id, array('main-menu', 'management', 'navigation', 'user-menu') ) )
+    public function admin_delete($menu_id) {
+        if (in_array($menu_id, array('main-menu', 'management', 'navigation', 'user-menu'))) {
             $this->redirect('/admin/menu/manage/');
+        }
+        
         $this->Menu->delete($menu_id);
         $this->redirect($this->referer());
     }
     
     // add menu 
-    function admin_add(){
+    public function admin_add() {
+        if (isset($this->data['Menu'])) {
+            $data['Menu']['locale'] = !empty($data['Menu']['locale']) ? array_values($data['Menu']['locale']) : array();
+            $data = $this->data;
+            $data['Menu']['module'] = 'menu';
+            if ($this->Menu->save($data)) {
+                $this->flashMsg(__t('Menu has been saved'), 'success');
+                $this->redirect('/admin/menu/manage/add_link/' . $this->Menu->id );
+            } else {
+                $this->flashMsg(__t('Menu could not be saved. Please, try again.'), 'error');
+            }
+        }
+        
 		$this->setCrumb('/admin/system/structure');
 		$this->setCrumb(
             array(
@@ -42,28 +55,15 @@ class ManageController extends MenuAppController {
                 array(__t('Add menu'), '')
             )
         );
-		$this->title( __t('Menus') );
-        
-        if ( isset($this->data['Menu']) ){
-            $data['Menu']['locale'] = !empty($data['Menu']['locale']) ? array_values($data['Menu']['locale']) : array();
-            $data = $this->data;
-            $data['Menu']['module'] = 'menu';
-            if ( $this->Menu->save($data) ){
-                $this->flashMsg(__t('Menu has been saved'), 'success');
-                $this->redirect('/admin/menu/manage/add_link/' . $this->Menu->id );
-            } else {
-                $this->flashMsg(__t('Menu could not be saved. Please, try again.'), 'error');
-            }
-        }
+		$this->title(__t('Menus'));        
     }
     
     // edit menu info
-    function admin_edit($menu_id){
-
-        if ( isset($this->data['Menu']) ){
+    public function admin_edit($menu_id) {
+        if (isset($this->data['Menu'])) {
             $d = $this->data;
             $d['Menu']['id'] = $menu_id;
-            if ( $this->Menu->save($d) ){
+            if ($this->Menu->save($d)) {
                 $this->flashMsg(__t('Menu has been saved'), 'success');
             } else {
                 $this->flashMsg(__t('Menu could not be saved. Please, try again.'), 'error');
@@ -79,35 +79,51 @@ class ManageController extends MenuAppController {
         
 		$this->setCrumb('/admin/system/structure');
 		$this->setCrumb( array(array(__t('Menu'), '/admin/menu/manage'), array(__t('Editing menu'), '')) );
-        $this->title( __t('Editing Menu') );
+        $this->title(__t('Editing Menu'));
     }
     
-    function admin_delete_link($link_id){
+    public function admin_delete_link($link_id) {
         $link = $this->MenuLink->findById($link_id);
-        if ( !$link || $link['MenuLink']['module'] != 'menu' )
+        
+        if (!$link || $link['MenuLink']['module'] != 'menu') {
             $this->redirect('/admin/menu');
+        }
         
         $this->MenuLink->Behaviors->detach('Tree');
-        $this->MenuLink->Behaviors->attach('Tree', array('parent' => 'parent_id', 'left' => 'lft', 'right' => 'rght', 
-        'scope' => "MenuLink.menu_id = '{$link['MenuLink']['menu_id']}'" ));
+        $this->MenuLink->Behaviors->attach('Tree', 
+            array(
+                'parent' => 'parent_id', 
+                'left' => 'lft', 
+                'right' => 'rght', 
+                'scope' => "MenuLink.menu_id = '{$link['MenuLink']['menu_id']}'"
+            )
+        );
         $this->MenuLink->removeFromTree($link_id, true);
         $this->redirect($this->referer());
     }
     
     // add link to menu
-    function admin_add_link($menu_id){
+    public function admin_add_link($menu_id) {
         $this->Menu->recursive = 1;
         $this->Menu->unbindModel( array('belongsTo' => array('Block') ) );
         $menu = $this->Menu->findById($menu_id) or $this->redirect('/admin/menu');
-        if ( isset($this->data['MenuLink']) ){
+        
+        if (isset($this->data['MenuLink'])) {
             $data = $this->data;
             $data['MenuLink']['module'] = 'menu';
             $data['MenuLink']['parent_id'] = empty($data['MenuLink']['parent_id']) ? 0 : $data['MenuLink']['parent_id'];
             
             $this->MenuLink->Behaviors->detach('Tree');
-            $this->MenuLink->Behaviors->attach('Tree', array('parent' => 'parent_id', 'left' => 'lft', 'right' => 'rght', 'scope' => "MenuLink.menu_id = '{$menu_id}'" ));
+            $this->MenuLink->Behaviors->attach('Tree', 
+                array(
+                    'parent' => 'parent_id', 
+                    'left' => 'lft', 
+                    'right' => 'rght', 
+                    'scope' => "MenuLink.menu_id = '{$menu_id}'"
+                )
+            );
             
-            if ( $this->MenuLink->save($data) ){
+            if ($this->MenuLink->save($data)) {
                 $this->flashMsg(__t('Menu link has been saved'), 'success');
                 $this->redirect('/admin/menu/manage/add_link/' . $menu_id);
             } else {
@@ -123,18 +139,18 @@ class ManageController extends MenuAppController {
                 array( __t('Add menu link') )
             )
         );
-        $this->title( __t('Add menu link') );
+        $this->title(__t('Add menu link'));
         $links = $this->MenuLink->generateTreeList("MenuLink.menu_id = '{$menu_id}'", null, null, '&nbsp;&nbsp;|- ');
         $this->set(compact('menu_id', 'links'));
 
     }
     
     // edit single menu link
-    function admin_edit_link($id){
-        if ( isset($this->data['MenuLink']) ){
+    public function admin_edit_link($id) {
+        if (isset($this->data['MenuLink'])) {
             $data = $this->data;
             $data['MenuLink']['id'] = $id;
-            if ( $this->Menu->MenuLink->save($data) ){
+            if ($this->Menu->MenuLink->save($data)) {
                 $this->flashMsg(__t('Menu link has been saved'), 'success');
                 $this->redirect('/admin/menu/manage/edit_link/' . $this->Menu->MenuLink->id);
             } else {
@@ -147,9 +163,8 @@ class ManageController extends MenuAppController {
                 'conditions' => array('MenuLink.id' => $id),
                 'recursive' => -1
             )
-        );
+        ) or $this->redirect('/admin/menu');
         
-        if ( empty($data) ) $this->redirect('/admin/menu');
         $data['MenuLink']['router_path'] = !empty($data['MenuLink']['link_path']) ? $data['MenuLink']['link_path'] : $data['MenuLink']['router_path'];
         $this->data = $data;
         
@@ -171,16 +186,17 @@ class ManageController extends MenuAppController {
     }
     
     // edit order menu links list
-	function admin_links($menu_id){
+	public function admin_links($menu_id) {
         $this->Menu->recursive = -1;
         $this->Menu->unbindModel( array('belongsTo' => array('Block') ) );
         $menu = $this->Menu->findById($menu_id) or $this->redirect('/admin/menu/manage');
             
-        if ( isset($this->data['MenuLink']) ) {
+        if (isset($this->data['MenuLink'])) {
             $this->Menu->MenuLink->Behaviors->detach('Tree');
             $items = json_decode($this->data['MenuLink']);
             unset($items[0]);
-            foreach ( $items as $key => &$item){
+            
+            foreach ($items as $key => &$item) {
                 $item->parent_id = $item->parent_id == 'root' ? 0 : (int) $item->parent_id;
                 $item->left--;
                 $item->right--;
@@ -192,6 +208,7 @@ class ManageController extends MenuAppController {
                 );
                 $this->Menu->MenuLink->save($data, false);
             }
+            
             die('ok');
         }
 
@@ -203,7 +220,7 @@ class ManageController extends MenuAppController {
                 array(__t('Editing menu links'), '')
             )
         );
-        $this->title( __t('Editing Menu Links') );
+        $this->title(__t('Editing Menu Links'));
 
         $links = $this->Menu->MenuLink->find('all', 
             array(
@@ -213,8 +230,9 @@ class ManageController extends MenuAppController {
         );
 
 		$this->set('links', $links);
-        if ( empty($links) )
+        
+        if (empty($links)) {
             $this->flashMsg(__t('There are no menu links yet. <a href="%s">Add link.</a>', Router::url("/admin/menu/manage/add_link/{$menu_id}") ), 'error');
+        }
 	}
-
 }

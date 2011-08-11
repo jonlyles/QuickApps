@@ -45,7 +45,7 @@
 	}
 </style>
 
-<?php if ( !empty($results) ): ?>
+<?php if (!empty($results) ): ?>
     <?php //echo $this->Html->script('nestedSortable/jquery-1.5.2.min.js'); ?>
     <?php echo $this->Html->script('/menu/js/nestedSortable/jquery-ui-1.8.11.custom.min.js'); ?>
     <?php echo $this->Html->script('/menu/js/nestedSortable/jquery.ui.nestedSortable'); ?>
@@ -59,7 +59,7 @@
     <span id="saveStatus">&nbsp;</span>
 
     <script>
-        $(document).ready(function(){
+        $(document).ready(function() {
             $('ul.sortable').nestedSortable({
                 listType: 'ul',
                 disableNesting: 'no-nest',
@@ -75,14 +75,14 @@
                 toleranceElement: '> div'
             });
             
-            $('#saveChanges').click(function(e){
+            $('#saveChanges').click(function(e) {
                 $('#saveStatus').text('<?php echo __t('Saving...'); ?>');
                 arraied = $('ul.sortable').nestedSortable('toArray', {startDepthCount: 0});
                 $.ajax({
                     type: 'POST', 
                     url: QuickApps.settings.url,
                     data: 'data[Term][sorting]=' + $.toJSON(arraied),
-                    success: function(){
+                    success: function() {
                         $('#saveStatus').text('<?php echo __t('Saved!'); ?>');
                     }
                 });

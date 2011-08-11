@@ -11,10 +11,10 @@
  * @link     http://cms.quickapps.es
  */
 class LocaleController extends LocaleAppController {
-	var $name = 'Locale';
-	var $uses = array();
+	public $name = 'Locale';
+	public $uses = array();
     
-    function admin_index(){
+    public function admin_index() {
         $this->redirect('/admin/locale/languages');
     }
 }

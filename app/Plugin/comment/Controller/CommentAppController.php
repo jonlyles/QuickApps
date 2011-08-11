@@ -11,9 +11,9 @@
  * @link     http://cms.quickapps.es
  */
 class CommentAppController extends AppController {
-    var $uses = array('Comment.Comment');
+    public $uses = array('Comment.Comment');
     
-    function countUnpublished(){
+    public function countUnpublished() {
         $count = $this->Comment->find('count',
             array(
                 'conditions' => array(
@@ -21,7 +21,9 @@ class CommentAppController extends AppController {
                 )
             )
         );
+        
         $this->set('countUnpublished', $count);
+        
         return $count;
     }
 }

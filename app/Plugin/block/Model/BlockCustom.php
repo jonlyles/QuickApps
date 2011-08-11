@@ -11,12 +11,11 @@
  * @link     http://cms.quickapps.es
  */
 class BlockCustom extends BlockAppModel {
-    var $name = 'BlockCustom';
-    var $useTable = "block_custom";
-    var $primaryKey = "block_id";
-    
-	var $validate = array(
-        'description' => array( 'required' => true, 'allowEmpty' => false, 'rule' => 'notEmpty', 'message' => 'Invalid description'),
-        'body' => array( 'required' => true, 'allowEmpty' => false, 'rule' => 'notEmpty', 'message' => 'Invalid block body'),
+    public $name = 'BlockCustom';
+    public $useTable = "block_custom";
+    public $primaryKey = "block_id";
+	public $validate = array(
+        'description' => array('required' => true, 'allowEmpty' => false, 'rule' => 'notEmpty', 'message' => 'Invalid description'),
+        'body' => array('required' => true, 'allowEmpty' => false, 'rule' => 'notEmpty', 'message' => 'Invalid block body'),
 	);
 }

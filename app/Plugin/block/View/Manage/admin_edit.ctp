@@ -6,17 +6,17 @@
         <?php echo $this->Form->input('title', array('required' => 'required', 'label' => 'Block title')); ?>
         <em><?php echo __t('The title of the block as shown to the user.'); ?></em>
         
-        <?php if ( $this->data['Block']['module'] === 'block'): # custom data only for custom blocks ?>
+        <?php if ($this->data['Block']['module'] === 'block'): # custom data only for custom blocks ?>
             <?php echo $this->Form->input('BlockCustom.description', array('required' => 'required', 'label' => __t('Block description *'))); ?>
             <em><?php echo __t('A brief description of your block. Used on the Blocks administration page.'); ?></em>
             <?php echo $this->Form->input('BlockCustom.body', array('required' => 'required', 'type' => 'textarea', 'class' => 'full-html', 'label' => __t('Block body *'), 'after' => '')); ?>
         <?php endif; ?>
     <?php echo $this->Html->useTag('fieldsetend'); ?>
     
-    <?php if ( $this->data['Block']['module'] !== 'block'): ?>
+    <?php if ($this->data['Block']['module'] !== 'block'): ?>
         <?php $this->Layout->attachModuleHooks($this->data['Block']['module']); ?>
         <?php $data = $this->data; ?>
-        <?php if ( $wg = $this->Layout->hook("{$this->data['Block']['module']}_{$this->data['Block']['delta']}_settings", $data, array('alter' => false, 'collectReturn' => false) ) ): # widget ?>
+        <?php if ($wg = $this->Layout->hook("{$this->data['Block']['module']}_{$this->data['Block']['delta']}_settings", $data, array('alter' => false, 'collectReturn' => false) ) ): # widget ?>
             <?php echo $this->Html->useTag('fieldsetstart', 'Widget settings'); ?>
                 <?php echo $wg; ?>
             <?php echo $this->Html->useTag('fieldsetend'); ?>
@@ -40,7 +40,7 @@
     <?php echo $this->Html->useTag('fieldsetstart', __t('Visibility settings')); ?>
         <?php echo $this->Html->useTag('fieldsetstart', __t('Theme Region')); ?>
             <em><?php echo __t('Specify in which themes and regions this block is displayed.'); ?></em><br/>
-            <?php $i = 0; foreach ( $regions as $theme => $_regions ): ?>
+            <?php $i = 0; foreach ($regions as $theme => $_regions ): ?>
                 <?php $theme = explode('@|@', $theme); // name, folder ?>
                 <label><?php echo $theme[0]; ?></label>
                 <?php
@@ -50,7 +50,7 @@
                 <?php echo $this->Form->select("BlockRegion.{$i}.region", $_regions, array('value' => $selected, 'empty' => __t('--None--')) ) . "\n"; ?>
                 <?php echo $this->Form->hidden("BlockRegion.{$i}.theme", array('value' => $theme[1]) ) . "\n"; ?>
                 <?php echo $this->Form->hidden("BlockRegion.{$i}.block_id", array('value' => $this->data['Block']['id']) ) . "\n"; ?>
-                <?php if ( $selected !== null ): ?>
+                <?php if ($selected !== null ): ?>
                     <?php $brId = Set::extract("/BlockRegion[theme={$theme[1]}]/id", $this->data); ?>
                     <?php echo $this->Form->hidden("BlockRegion.{$i}.id", array('value' => $brId[0]) )  . "\n"; ?>
                 <?php endif; ?>

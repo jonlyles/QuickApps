@@ -22,13 +22,13 @@
 <?php echo $this->Form->end(); ?>
 
 
-<?php foreach($categories as $category): ?>
+<?php foreach ($categories as $category): ?>
 <h2><?php echo __t($category); ?></h2>
 <p>
 <table width="100%">
-    <?php foreach($modules as $name => $data): ?>
+    <?php foreach ($modules as $name => $data): ?>
     <?php if (strpos($name, 'theme_') !== false) continue; ?>
-    <?php if ( empty($data['yaml']) || $data['yaml']['category'] !== $category) continue; ?>
+    <?php if (empty($data['yaml']) || $data['yaml']['category'] !== $category) continue; ?>
     <tr>
         <td width="80%" align="left">
             <b><?php echo $data['yaml']['name']; ?></b> <?php echo $data['yaml']['version']; ?><br/>
@@ -36,19 +36,19 @@
             <?php echo isset($data['yaml']['dependencies']) ? __t('dependencies:') . ' ' . implode(', ', $module['yaml']['dependencies']) : ''; ?>
         </td>
         <td align="right">
-            <?php if ( file_exists($data['path'] . 'View' . DS . 'Elements' . DS . 'help.ctp' ) ): ?>
+            <?php if (file_exists($data['path'] . 'View' . DS . 'Elements' . DS . 'help.ctp' ) ): ?>
             <a href="<?php echo $this->Html->url("/admin/system/help/module/" . $name); ?>"><?php echo __t('Help'); ?></a>
             <?php endif; ?>
             
-            <?php if ( file_exists($data['path'] . 'View' . DS . 'Elements' . DS . 'settings.ctp' ) ): ?>
+            <?php if (file_exists($data['path'] . 'View' . DS . 'Elements' . DS . 'settings.ctp' ) ): ?>
             <a href="<?php echo $this->Html->url('/admin/system/modules/settings/' . $name); ?>"><?php echo __t('Settings'); ?></a>
             <?php endif; ?>
             
-            <?php if ( !in_array(Inflector::camelize($name), Configure::read('coreModules') ) ) : ?>
+            <?php if (!in_array(Inflector::camelize($name), Configure::read('coreModules') ) ) : ?>
             <a href="<?php echo $this->Html->url('/admin/system/modules/toggle/' . $name); ?>"><?php echo $data['status'] == 1 ? __t('Disable') : __t('Enable'); ?></a>
             <?php endif; ?>
             
-            <?php if ( !in_array(Inflector::camelize($name), Configure::read('coreModules') ) ) : ?>
+            <?php if (!in_array(Inflector::camelize($name), Configure::read('coreModules') ) ) : ?>
             <a href="<?php echo $this->Html->url('/admin/system/modules/uninstall/' . $name); ?>" onclick="return confirm('<?php echo __t('Delete selected module ? This change cant be undone!'); ?>'); "><?php echo __t('Uninstall'); ?></a>
             <?php endif; ?>
         </td>
@@ -60,9 +60,9 @@
 <?php endforeach; ?>
 
 <script>
-    function checkPackage(){
+    function checkPackage() {
         var ext = $('#PackageData').val().substr( ($('#PackageData').val().lastIndexOf('.') +1) );
-        if ( ext != 'app' ){
+        if (ext != 'app') {
             alert('<?php echo __t('Invalid package'); ?>');
             return false;
         }

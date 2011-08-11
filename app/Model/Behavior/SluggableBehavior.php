@@ -82,7 +82,7 @@ class SluggableBehavior extends ModelBehavior
 
         // Make sure all label fields are available
 
-        foreach($this->__settings[$Model->alias]['label'] as $field)
+        foreach ($this->__settings[$Model->alias]['label'] as $field)
         {
             if (!$Model->hasField($field))
             {
@@ -96,7 +96,7 @@ class SluggableBehavior extends ModelBehavior
             // Build label out of data in label fields, if available, or using a default slug otherwise
             
             $label = '';
-            foreach($this->__settings[$Model->alias]['label'] as $field)
+            foreach ($this->__settings[$Model->alias]['label'] as $field)
             {
                 if (!empty($Model->data[$Model->alias][$field]))
                 {
@@ -185,7 +185,7 @@ class SluggableBehavior extends ModelBehavior
      * @return string Slug for given string
      * @access private
      */
-    function __slug($string, $settings){
+    function __slug($string, $settings) {
         $string = Inflector::slug($string, $settings['separator']);
         $string = strtolower($string);
         if (strlen($string) > $settings['length'])

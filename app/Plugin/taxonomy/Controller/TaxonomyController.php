@@ -11,11 +11,10 @@
  * @link     http://cms.quickapps.es
  */
 class TaxonomyController extends TaxonomyAppController {
-
-	var $name = 'Taxonomy';
-	var $uses = array();
+	public $name = 'Taxonomy';
+	public $uses = array();
 	
-	function admin_index(){
+	public function admin_index() {
 		$this->redirect('/admin/taxonomy/vocabularies');
 	}
 }

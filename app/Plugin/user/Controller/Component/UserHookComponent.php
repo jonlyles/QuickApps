@@ -11,8 +11,9 @@
  * @link     http://cms.quickapps.es
  */
 class UserHookComponent extends Component {
-	var $controller = null;
+	public $controller = null;
 
-	function initialize(&$controller){
+	public function initialize(&$controller) {
+
 	}
 }

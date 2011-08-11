@@ -11,11 +11,10 @@
  * @link     http://cms.quickapps.es
  */
 class BlockController extends BlockAppController {
-
-	var $name = 'Block';
-	var $uses = array('Block.Block');
+	public $name = 'Block';
+	public $uses = array('Block.Block');
 	
-	function admin_index(){
+	public function admin_index() {
         $this->redirect('/admin/block/manage');
 	}
 }

@@ -10,7 +10,7 @@
         'columns' => array(
             __t('Block') => array(
                 'value' => "{php}
-                    if ( '{Block.title}' == '' ){ 
+                    if ('{Block.title}' == '') { 
                         if ('{Menu.title}' != '') {
                             return '{Menu.title}';
                         }
@@ -45,20 +45,20 @@
         $regions = array_intersect($regions, array_keys($themes[$theme]['regions']));
         sort($regions);
 
-        foreach ($regions as $region){
-            if ( empty($region) ) continue; #unasisgned
+        foreach ($regions as $region) {
+            if (empty($region) ) continue; #unasisgned
             $blocks_in_region = Set::extract("/BlockRegion[region={$region}]/..", $blocks_in_theme);
-            if ( empty($blocks_in_region) ) continue;
+            if (empty($blocks_in_region) ) continue;
             $blocks_in_region = arrayUnique($blocks_in_region);
-            foreach($blocks_in_region as $bkey => $block){
-                foreach($block['BlockRegion'] as $rkey => $BlockRegion){
-                    if ( $BlockRegion['theme'] != $theme && $BlockRegion['region'] != $region )
+            foreach ($blocks_in_region as $bkey => $block) {
+                foreach ($block['BlockRegion'] as $rkey => $BlockRegion) {
+                    if ($BlockRegion['theme'] != $theme && $BlockRegion['region'] != $region )
                         unset($blocks_in_region[$bkey]['BlockRegion'][$rkey]);
                 }
             }
             $blocks_in_region = Set::sort($blocks_in_region, '{n}.BlockRegion.{n}.ordering', 'asc');
-            if ( empty($blocks_in_region) ) continue;
-            foreach( $blocks_in_region as $key => &$b){
+            if (empty($blocks_in_region) ) continue;
+            foreach ($blocks_in_region as $key => &$b) {
                 $brId = 0;
                 $i = 0;
                 while (
@@ -67,7 +67,7 @@
                     $i < count($b['BlockRegion'])-1
                 )
                     $i++;
-                if(isset($b['BlockRegion'][$i]['id']))
+                if (isset($b['BlockRegion'][$i]['id']))
                     $b['Block']['__block_region_id'] = $b['BlockRegion'][$i]['id'];
             } 
             
@@ -93,21 +93,21 @@
         $regions = array_intersect($regions, array_keys($themes[$theme]['regions']));
         sort($regions);
 
-        foreach ($regions as $region){
-            if ( empty($region) ) continue; #unasisgned
+        foreach ($regions as $region) {
+            if (empty($region) ) continue; #unasisgned
                 
             $blocks_in_region = Set::extract("/BlockRegion[region={$region}]/..", $blocks_in_theme);
-            if ( empty($blocks_in_region) ) continue;
+            if (empty($blocks_in_region) ) continue;
             $blocks_in_region = arrayUnique($blocks_in_region);
-            foreach($blocks_in_region as $bkey => $block){
-                foreach($block['BlockRegion'] as $rkey => $BlockRegion){
-                    if ( $BlockRegion['theme'] != $theme && $BlockRegion['region'] != $region )
+            foreach ($blocks_in_region as $bkey => $block) {
+                foreach ($block['BlockRegion'] as $rkey => $BlockRegion) {
+                    if ($BlockRegion['theme'] != $theme && $BlockRegion['region'] != $region )
                         unset($blocks_in_region[$bkey]['BlockRegion'][$rkey]);
                 }
             }
             $blocks_in_region = Set::sort($blocks_in_region, '{n}.BlockRegion.{n}.ordering', 'asc');
-            if ( empty($blocks_in_region) ) continue;
-            foreach( $blocks_in_region as $key => &$b){
+            if (empty($blocks_in_region) ) continue;
+            foreach ($blocks_in_region as $key => &$b) {
                 $brId = 0;
                 $i = 0;
                 while ( 
@@ -116,7 +116,7 @@
                     $i < count($b['BlockRegion'])-1
                 )
                     $i++;
-                if(isset($b['BlockRegion'][$i]['id']))
+                if (isset($b['BlockRegion'][$i]['id']))
                     $b['Block']['__block_region_id'] = $b['BlockRegion'][$i]['id'];
             } 
             
@@ -137,8 +137,8 @@
 <div id="unasigned_theme" style="display:none;">    
     <?php 
         $noRegion = array();
-        foreach ( $results as $key => $block )
-            if (    empty($block['BlockRegion']) || 
+        foreach ($results as $key => $block )
+            if (  empty($block['BlockRegion']) || 
                     (   strpos($block['Block']['themes_cache'], Configure::read('Variable.site_theme')) === false &&
                         strpos($block['Block']['themes_cache'], Configure::read('Variable.admin_theme')) === false
                     )

@@ -14,7 +14,7 @@
 class ThemeDefaultHookHelper extends AppHelper {
 
 /* Header gradients */
-    function stylesheets_alter($css){
+    function stylesheets_alter($css) {
         $s = Configure::read('Modules.theme_default');
         $ht = @$s['settings']['color_header_top'];
         $hb = @$s['settings']['color_header_bottom'];
@@ -27,7 +27,7 @@ class ThemeDefaultHookHelper extends AppHelper {
         }";
     }
 /* Adding toggle effect to advanced search form */
-    function javascripts_alter($js){
+    function javascripts_alter($js) {
         if (
             $this->request->params['plugin'] == 'node' && 
             $this->request->params['controller'] == 'node' && 
@@ -46,7 +46,7 @@ $(document).ready(function() {
  * Block
  *
  */
-    function theme_default_slider($block){
+    function theme_default_slider($block) {
 		return array(
 			'body' => $this->_View->element('theme_default_slider', array('block' => $block), array('plugin' => 'ThemeDefault') )
 		);
@@ -56,7 +56,7 @@ $(document).ready(function() {
  * Block Settings
  *
  */
-    function theme_default_slider_settings($data){
+    function theme_default_slider_settings($data) {
         return $this->_View->element('theme_default_slider_settings', array('block' => $data), array('plugin' => 'ThemeDefault') );
     }
     
@@ -65,9 +65,9 @@ $(document).ready(function() {
  *
  * @return string HTML
  */
-    function theme_menu($menu){
+    function theme_menu($menu) {
         $output = '';
-        switch ($menu['region']){
+        switch ($menu['region']) {
             case 'main-menu':
                 $settings = array('id' => 'top-menu');
             break;
@@ -80,13 +80,13 @@ $(document).ready(function() {
         return $this->Menu->generate($menu, $settings);
     }
 
-    function theme_breadcrumb($b){
+    function theme_breadcrumb($b) {
         $out = array();
-        foreach ($b as $node){
+        foreach ($b as $node) {
             $selected = $node['MenuLink']['router_path'] == str_replace($this->_View->base, '', $this->_View->here) ? 'text-decoration:underline;' : '';
             $out[] = $this->_View->Html->link($node['MenuLink']['link_title'], $node['MenuLink']['router_path'], array('style' => $selected) );
         }
-        if ( empty($out) )
+        if (empty($out) )
             return '';
             
         return implode(' » ', $out) . ' » ';
@@ -100,7 +100,7 @@ $(document).ready(function() {
         return $return;
     }
     
-    function button($atts, $content = null, $code=""){
+    function button($atts, $content = null, $code="") {
         $atts = Set::merge(
             array(
             'link'	=> '#',
@@ -119,10 +119,10 @@ $(document).ready(function() {
         return $out;
     }
     
-    function theme_block($block){
+    function theme_block($block) {
         $output = '';
         
-        switch ( $block['region'] ){
+        switch ( $block['region']) {
             case 'main-menu':
                 case 'footer':
                     case 'slider':

@@ -11,18 +11,18 @@
  * @link     http://cms.quickapps.es
  */
 class ConfigurationController extends AppController {
-    var $name = 'Configuration';
-	var $uses = array();
+    public $name = 'Configuration';
+	public $uses = array();
 	
-	function admin_index(){
-        if ( isset($this->data['Variable']) ){
+	public function admin_index() {
+        if (isset($this->data['Variable'])) {
             $err = false;
-            foreach($this->data['Variable'] as $name => $value){
-                if ( $name == 'site_name' && empty($value) ){
+            foreach ($this->data['Variable'] as $name => $value) {
+                if ($name == 'site_name' && empty($value)) {
                     $this->Variable->invalidate('site_name', 'Site name can not be blank');
-                     $err = true;
+                    $err = true;
                     break;
-                } elseif ($name == 'site_mail' && (empty($value) || !Validation::email($value) ) ){
+                } elseif ($name == 'site_mail' && (empty($value) || !Validation::email($value) )) {
                     $this->Variable->invalidate('site_mail', 'Invalid site email');
                     $err = true;
                     break;
@@ -30,7 +30,8 @@ class ConfigurationController extends AppController {
                     $this->Variable->save( array('name' => $name, 'value' => $value) );
                 }
             }
-            if ( !$err ){
+            
+            if (!$err) {
                 $this->flashMsg(__t('Configuration has been saved.'), 'success');
                 $this->redirect($this->referer());
             } else {
@@ -44,10 +45,13 @@ class ConfigurationController extends AppController {
         }
 	}
     
-    function __setLangs(){
+    private function __setLangs() {
         $languages = array();
-        foreach ( Configure::read('Variable.languages') as $l )
+        
+        foreach (Configure::read('Variable.languages') as $l) {
             $languages[$l['Language']['code']] = $l['Language']['native'];
+        }
+        
         $this->set('languages', $languages);
     }
 }

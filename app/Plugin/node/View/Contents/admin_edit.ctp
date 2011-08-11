@@ -1,4 +1,4 @@
-<?php if ( !empty($this->data['NodeType']['id']) ): ?>
+<?php if (!empty($this->data['NodeType']['id']) ): ?>
     <?php echo $this->Form->create('Node', array('url' => "/admin/node/contents/edit/{$this->data['Node']['slug']}") ); ?>
         <!-- Content -->
         <?php echo $this->Html->useTag('fieldsetstart', __t('Editing') . " \"{$this->data['Node']['title']}\" ({$this->data['NodeType']['name']})"   ); ?>
@@ -72,11 +72,11 @@
             <?php echo $this->Html->useTag('fieldsetend'); ?>
         <?php echo $this->Html->useTag('fieldsetend'); ?>
         
-        <?php if ( !empty($vocabularies) ) : ?>
+        <?php if (!empty($vocabularies) ) : ?>
         <!-- Terms -->
         <?php echo $this->Html->useTag('fieldsetstart', __t('Terms')); ?>
             <?php foreach ($vocabularies as $vocabulary => $terms): ?>
-                <?php if ( empty($terms) ) continue; ?>
+                <?php if (empty($terms) ) continue; ?>
                 <?php $s =  $this->Form->input("Term.{$vocabulary}", array('name' => "data[Term][{$vocabulary}]", 'selected' => Set::extract('/Term/id', $this->data), 'escape' => false, 'options' => $terms, 'type' => 'select', 'multiple' => true, 'label' => __t($vocabulary) ) ); ?>
                 <?php echo $this->Html->div(null, $s, array('style' => 'width:auto; float:left; margin-right:20px;') ); ?>
             <?php endforeach; ?>

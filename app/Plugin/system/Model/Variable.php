@@ -11,40 +11,45 @@
  * @link     http://cms.quickapps.es
  */
 class Variable extends SystemAppModel {
-    var $name       = 'Variable';
-    var $useTable   = "variables";
-	var $primaryKey = 'name';
-    var $actsAs     = array('Serialized' => array('value'));
+    public $name = 'Variable';
+    public $useTable = "variables";
+	public $primaryKey = 'name';
+    public $actsAs = array('Serialized' => array('value'));
     
-    function save($data = null, $validate = true, $fieldList = array()){
-        if( # saving data array of type: array('var_name' => 'value')
-            !isset($data['Variable']['name']) && 
+    public function save($data = null, $validate = true, $fieldList = array()) {
+        if (!isset($data['Variable']['name']) && 
             !isset($data['Variable']['value']) && 
             !empty($data['Variable'])
-        ){ 
+        ) { # saving data array of type: array('var_name' => 'value')
             $rows = array();
-            foreach($data['Variable'] as $name => $value){
+            
+            foreach ($data['Variable'] as $name => $value) {
                 $rows['Variable'][] = array(
                     'name' => $name,
                     'value' => $value
                 );
             }
+            
             return $this->saveAll($rows['Variable'], array('validate' => $validate) );
         } else {
             return parent::save($data, $validate, $fieldList);
         }
     }
    
-	function afterSave(){
+	public function afterSave() {
         Cache::delete('Variable');
 		$this->writeCache();
+        
 		return true;
 	}    
     
-    function writeCache(){
+    public function writeCache() {
         $variables = $this->find('all', array('fields' => array('name', 'value') ) );
-        foreach ($variables as $v)
+        
+        foreach ($variables as $v) {
             Configure::write('Variable.' . $v['Variable']['name'] , $v['Variable']['value']);
+        }
+        
         Cache::write('Variable', Configure::read('Variable') );
     }
 }

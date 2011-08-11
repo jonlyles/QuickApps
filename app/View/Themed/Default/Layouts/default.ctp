@@ -47,7 +47,7 @@
         <!--<div id="top-shadow"></div>-->
         
         <div id="page">
-            <?php if ( $this->plugin == 'Node' && $this->params['action'] == 'index'): ?>
+            <?php if ($this->plugin == 'Node' && $this->params['action'] == 'index'): ?>
                 <?php if (!$this->Layout->emptyRegion('slider') ): ?>
                 <div class="slider">
                     <div class="container clearfix">
@@ -93,7 +93,7 @@
                         <?php echo $this->Layout->blocks('help'); ?>
                     </div>
                     
-                    <?php if ( $sessionFlash = $this->Layout->sessionFlash() ): ?>
+                    <?php if ($sessionFlash = $this->Layout->sessionFlash() ): ?>
                     <div id="sessionFlash">
                         <?php echo $sessionFlash; ?>
                     </div>
@@ -109,7 +109,7 @@
         <div id="footer">
             <div class="container">
                 <?php 
-                    if ($Layout['feed']){
+                    if ($Layout['feed']) {
                         echo $this->Html->link(
                             $this->Html->image('feed.png'),
                             $Layout['feed'],

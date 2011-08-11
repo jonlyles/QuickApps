@@ -18,9 +18,9 @@ class ThemeAdminDefaultHookHelper extends AppHelper {
 	*
 	* @return string HTML
 	*/
-	function theme_menu($menu){
+	function theme_menu($menu) {
 		$output = '';
-		switch ($menu['region']){
+		switch ($menu['region']) {
 			case 'management-menu':
 				$settings = array('id' => 'top-menu');
             break;
@@ -37,36 +37,36 @@ class ThemeAdminDefaultHookHelper extends AppHelper {
         return $this->Menu->generate($menu, $settings);
 	}
 	
-	function theme_breadcrumb($b){
+	function theme_breadcrumb($b) {
 		$out = array();
-		foreach ($b as $node){
+		foreach ($b as $node) {
 			$selected = $node['MenuLink']['router_path'] == str_replace($this->_View->base, '', $this->_View->here) ? 'text-decoration:underline;' : '';
 			$out[] = $this->_View->Html->link($node['MenuLink']['link_title'], $node['MenuLink']['router_path'], array('title' => $node['MenuLink']['description'], 'style' => $selected) );
 		}
-		if ( empty($out) )
+		if (empty($out) )
             return '';
             
 		return implode(' » ', $out) . ' » ';
 	}
 	
-    function stylesheets_alter($css){
-        if ( isset($this->request->params['prefix']) && $this->request->params['prefix'] == 'admin'){
-            foreach($css['all'] as $k => $file){
-                if ( $file == 'default.frontend.css')
+    function stylesheets_alter($css) {
+        if (isset($this->request->params['prefix']) && $this->request->params['prefix'] == 'admin') {
+            foreach ($css['all'] as $k => $file) {
+                if ($file == 'default.frontend.css')
                     unset($css['all'][$k]);
             }
         } else {
-            foreach($css['all'] as $k => $file){
-                if ( $file == 'default.backend.css')
+            foreach ($css['all'] as $k => $file) {
+                if ($file == 'default.backend.css')
                     unset($css['all'][$k]);
             }        
         }
     }
 	
-	function theme_block($block){
+	function theme_block($block) {
 		$output = '';
 		
-		switch ( $block['region'] ){
+		switch ( $block['region']) {
 			case 'management-menu':
 					$output .= "<div id=\"{$block['region']}\" class=\"item-list\">{$block['body']}</div>";
 			break;

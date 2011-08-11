@@ -11,7 +11,7 @@
  * @link     http://cms.quickapps.es
  */
 class CommentHookHelper extends AppHelper {
-    function beforeLayout($layoutFile){
+    public function beforeLayout($layoutFile) {
         # content list toolbar:
         $showOn = (
             isset($this->request->params['admin']) && 
@@ -19,8 +19,8 @@ class CommentHookHelper extends AppHelper {
             in_array($this->request->params['controller'], array('published', 'unpublished') ) && 
             $this->request->params['action'] == 'admin_index' 
         );
-        $this->_View->Layout->blockPush( array('body' => $this->_View->element('toolbar') . '<!-- CommentHookHelper -->' ), 'toolbar', $showOn);
         
+        $this->_View->Layout->blockPush( array('body' => $this->_View->element('toolbar') . '<!-- CommentHookHelper -->' ), 'toolbar', $showOn);
         
         $markeItUp_showOn = (
             !isset($this->request->params['admin']) && 
@@ -29,7 +29,7 @@ class CommentHookHelper extends AppHelper {
             $this->request->params['action'] == 'details' 
         );
         
-        if ( $markeItUp_showOn ){
+        if ($markeItUp_showOn) {
             $this->_View->viewVars['Layout']['javascripts']['file'][] = '/comment/js/markitup/locale/' . Configure::read('Variable.language.code') . '.js';
             $this->_View->viewVars['Layout']['javascripts']['file'][] = '/comment/js/markItUp/jquery.markitup.js';
             $this->_View->viewVars['Layout']['javascripts']['file'][] = '/comment/js/markitup/sets/bbcode/set.js';
@@ -43,7 +43,6 @@ class CommentHookHelper extends AppHelper {
             $this->_View->viewVars['Layout']['stylesheets']['all'][] = '/comment/js/markItUp/sets/bbcode/style.css';
             $this->_View->viewVars['Layout']['stylesheets']['all'][] = '/comment/js/markItUp/skins/simple/style.css';
         }
-        
         
         return true;
     }

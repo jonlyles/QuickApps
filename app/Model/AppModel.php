@@ -11,18 +11,18 @@
  * @link     http://cms.quickapps.es
  */
 class AppModel extends Model {
-	var $cacheQueries = false;
-	var $actsAs = array(
+	public $cacheQueries = false;
+	public $actsAs = array(
         'WhoDidIt' => array(
             'auth_session' => 'Auth.User.id', 
             'user_model' => 'User.User'
         )
     ); 
 
-	var $listeners = array();
-	var $events = array();
+	public $listeners = array();
+	public $events = array();
 	
-	function __construct($id = false, $table = null, $ds = null) {
+	public function __construct($id = false, $table = null, $ds = null) {
 		$this->__loadHooks();
 		parent::__construct($id, $table, $ds);
 		$this->__loadHookEvents();
@@ -37,7 +37,7 @@ class AppModel extends Model {
  * 
  * @return mixed FALSE -or- result array
  */
-	function hook($hook, &$data = array(), $options = array()){
+	public function hook($hook, &$data = array(), $options = array()) {
 		return $this->__dispatchEvent($hook, $data, $options);
 	}
 	
@@ -48,15 +48,15 @@ class AppModel extends Model {
  * 
  * @return bool
  */
-	function hook_defined($hook){
-		return ( in_array($hook, $this->events) == true );
+	public function hook_defined($hook) {
+		return (in_array($hook, $this->events) == true);
 	}
 	
 /**
  * Translate validation messages
  *
  */
-	function invalidate($field, $value = true) {
+	public function invalidate($field, $value = true) {
 		return parent::invalidate($field, __t($value));
 	}
 	
@@ -64,13 +64,13 @@ class AppModel extends Model {
  * Utility function
  *
  */
-	function optimize() {
+	public function optimize() {
 		$db =& ConnectionManager::getDataSource($this->useDbConfig);
 		$tablename = $db->fullTableName($this);
-		if(!empty($tablename)) {
-				return $db->query('OPTIMIZE TABLE ' . $tablename . ';');
+		if (!empty($tablename)) {
+            return $db->query('OPTIMIZE TABLE ' . $tablename . ';');
 		} else {
-				return false;
+            return false;
 		}
 	}
     
@@ -83,7 +83,7 @@ class AppModel extends Model {
  * 
  * @return mixed result array if collectReturn is set to true or NULL in case of no response
  */
-	function __dispatchEvent($event, &$data = array(), $options = array()) {
+	private function __dispatchEvent($event, &$data = array(), $options = array()) {
 		$options = array_merge(
 			array(
 				'break' => false,
@@ -95,22 +95,28 @@ class AppModel extends Model {
 		);
         
         # protect original varriable
-        if (!$options['alter']) $_data = $data;
+        if (!$options['alter']) {
+            $_data = $data;
+        }
         
 		$collected = array();
-		if ( !$this->hook_defined($event) ) return null;
+		if (!$this->hook_defined($event)) {
+            return null;
+        }
         
 		foreach ($this->listeners as $object => $methods) {
-			foreach ( $methods as $method){
-				if ( $method == $event && is_callable(array($this->Behaviors->{$object}, $method)) ) {
-                    if (!$options['alter']){
+			foreach ($methods as $method) {
+				if ($method == $event && is_callable(array($this->Behaviors->{$object}, $method))) {
+                    if (!$options['alter']) {
                         $result = call_user_func(array($this->Behaviors->{$object}, $event), $_data);
                     } else {
                         $result = call_user_func(array($this->Behaviors->{$object}, $event), &$data);
                     }
+                    
                     if ($options['collectReturn'] === true) {
                         $collected[] = $result;
                     }
+                    
                     if (
                         $options['break'] && ($result === $options['breakOn'] ||
                         (is_array($options['breakOn']) && in_array($result, $options['breakOn'], true)))
@@ -120,25 +126,33 @@ class AppModel extends Model {
 				}
 			}
 		}
-        if(empty($collected) && empty($result)) return null;
+        
+        if (empty($collected) && empty($result)) {
+            return null;
+        }
+        
         return $options['collectReturn'] ? $collected : $result;    
 	}
     
-	function __loadHooks(){
+	private function __loadHooks() {
         $b = Configure::read('Hook.behaviors');
-        if ( !$b ) return false; # fix for AppController __preloadHooks()
-		foreach ( $b as $hook ){
+        
+        if (!$b){
+            return false; # fix for AppController __preloadHooks()
+        }
+        
+		foreach ($b as $hook) {
 			$this->actsAs[$hook] = array();
 		}
 	}
 	
-	function __loadHookEvents(){
-		foreach ( $this->actsAs as $behavior => $b_data ){
+	private function __loadHookEvents() {
+		foreach ($this->actsAs as $behavior => $b_data) {
 			$behavior = strpos($behavior, '.') !== false ? substr($behavior, strpos($behavior, '.')+1) : $behavior;
-			if ( strpos($behavior, 'Hook') ){
+			if (strpos($behavior, 'Hook')) {
 				$methods = array();
 				$_methods = get_this_class_methods($this->Behaviors->{$behavior});
-				foreach ($_methods as $method){
+				foreach ($_methods as $method) {
 					$methods[] = $method;
 				}
 

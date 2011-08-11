@@ -11,10 +11,9 @@
  * @link     http://cms.quickapps.es
  */
 class Term extends TaxonomyAppModel {
-	var $useTable = 'terms';
-    var $actsAs = array('Tree', 'Sluggable' => array('label' => 'name') );
-    
-    var $validate = array(
-        'name' => array( 'required' => true, 'allowEmpty' => false, 'rule' => 'notEmpty', 'message' => 'Term name can not be empty')
+	public $useTable = 'terms';
+    public $actsAs = array('Tree', 'Sluggable' => array('label' => 'name'));
+    public $validate = array(
+        'name' => array('required' => true, 'allowEmpty' => false, 'rule' => 'notEmpty', 'message' => 'Term name can not be empty')
     );
 }

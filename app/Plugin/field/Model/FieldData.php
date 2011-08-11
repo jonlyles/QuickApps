@@ -11,9 +11,10 @@
  * @link     http://cms.quickapps.es
  */
 class FieldData extends FieldAppModel {
-    var $name       = 'FieldData';
-    var $useTable   = 'field_data';
-    var $belongsTo = array(
+    public $name = 'FieldData';
+    public $useTable = 'field_data';
+    
+    public $belongsTo = array(
         'Field' => array(
             'className' => 'Field.Field',
             'dependent' => false

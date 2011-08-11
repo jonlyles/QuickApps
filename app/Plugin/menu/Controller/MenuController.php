@@ -11,10 +11,10 @@
  * @link     http://cms.quickapps.es
  */
 class MenuController extends MenuAppController {
-	var $name = 'Menu';
-	var $uses = array();
+	public $name = 'Menu';
+	public $uses = array();
 	
-	function admin_index(){
+	public function admin_index() {
         $this->redirect('/admin/menu/manage');
 	}
 }

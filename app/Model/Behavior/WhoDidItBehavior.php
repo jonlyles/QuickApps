@@ -53,7 +53,7 @@ class WhoDidItBehavior extends ModelBehavior {
 		
 		//handles model binding to the User model
 		//according to the auto_bind settings (default true)
-		if($this->settings[$model->alias]['auto_bind'])
+		if ($this->settings[$model->alias]['auto_bind'])
 		{
 		    if ($hasFieldCreatedBy) {
     			$commonBelongsTo = array(

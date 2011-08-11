@@ -13,7 +13,7 @@
             <?php echo $this->Paginator->next(__d('comment', '»'), null, null, array('class' => 'disabled')); ?>
         </div>
         
-        <?php foreach($Layout['node']['Comment'] as $comment): ?>
+        <?php foreach ($Layout['node']['Comment'] as $comment): ?>
             <?php $this->Layout->hook('comment_alter', $comment, array('alter' => true, 'collectReturn' => false)); ?>
             <?php $comment_time_zone = $this->Layout->loggedIn() ? $this->Session->read('Auth.User.timezone') : Configure::read('Variable.date_default_timezone');  ?>
                 <div id="<?php echo "comment-{$comment['Comment']['id']}"; ?>" class="comment <?php echo $i%2 ? 'even': 'odd'; ?> <?php echo $i==1 ? 'comment-first' : ''; ?> <?php echo $i == $count ? 'comment-last' : ''; ?>">

@@ -12,8 +12,8 @@
         <p><?php echo __t("Uh oh. There's a server compatibility issue. See below."); ?> <?php echo $this->Html->image('error.png', array('align' => 'right') ); ?></p>
         <p>
             <ul>
-                <?php foreach( $tests as $name => $testNode): ?>
-                    <?php if ( !$testNode['test'] ): ?>
+                <?php foreach ($tests as $name => $testNode): ?>
+                    <?php if (!$testNode['test'] ): ?>
                         <li><em><?php echo $testNode['msg']; ?></em><br/></li>
                     <?php endif; ?>
                 <?php endforeach; ?>

@@ -11,17 +11,21 @@
  * @link     http://cms.quickapps.es
  */
 class Vocabulary extends TaxonomyAppModel {
-	var $useTable = 'vocabularies';
-    var $order = array('Vocabulary.ordering' => 'ASC');
+	public $useTable = 'vocabularies';
+    public $order = array('Vocabulary.ordering' => 'ASC');
+    public $actsAs = array('Sluggable');
+    public $validate = array(
+        'title' => array('required' => true, 'allowEmpty' => false, 'rule' => 'notEmpty', 'message' => 'Vocabulary title can not be empty'),
+    );
     
-    var $hasMany = array(
+    public $hasMany = array(
         'Term' => array(
             'className' => 'Taxonomy.Term',
             'foreignKey' => 'vocabulary_id'
         )
     );
     
-    var $hasAndBelongsToMany = array(
+    public $hasAndBelongsToMany = array(
         'NodeType' => array(
             'joinTable' => 'types_vocabularies',
             'className' => 'Node.NodeType',
@@ -32,14 +36,10 @@ class Vocabulary extends TaxonomyAppModel {
         )
     );
     
-    var $actsAs = array('Sluggable');
-    var $validate = array(
-        'title' => array( 'required' => true, 'allowEmpty' => false, 'rule' => 'notEmpty', 'message' => 'Vocabulary title can not be empty'),
-    );
-    
-    function move($id, $dir = 'up'){
-        if ( !($record = $this->findById($id)) )
+    public function move($id, $dir = 'up') {
+        if (!($record = $this->findById($id))) {
             return false;
+        }
         
         $nodes = $this->find('all',
             array(
@@ -50,11 +50,13 @@ class Vocabulary extends TaxonomyAppModel {
         );
 
         $ids = Set::extract('/Vocabulary/id', $nodes);
-        if (    ($dir == 'down' && $ids[count($ids)-1] == $record['Vocabulary']['id']) || 
-                ($dir == 'up' && $ids[0] == $record['Vocabulary']['id'])
-        ) #edge -> cant go down/up
+        
+        if (($dir == 'down' && $ids[count($ids)-1] == $record['Vocabulary']['id']) || 
+            ($dir == 'up' && $ids[0] == $record['Vocabulary']['id'])
+        ) { #edge -> cant go down/up
             return false;
-            
+        }
+        
         $position = array_search($record['Vocabulary']['id'], $ids);
         $key = ($dir == 'up') ? $position-1 : $position+1;
         $tmp = $ids[$key];
@@ -63,14 +65,15 @@ class Vocabulary extends TaxonomyAppModel {
         
         $i = 1;
         $prev_id = $this->id;
-        foreach($ids as $id){
+        
+        foreach ($ids as $id) {
             $this->id = $id;
             $this->saveField('ordering', $i, false);
             $i++;
         }
         
         $this->id = $prev_id;
+        
         return true;
     }
-   
 }

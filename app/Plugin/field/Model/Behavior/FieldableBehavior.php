@@ -11,8 +11,8 @@
  * @link     http://cms.quickapps.es
  */
 class FieldableBehavior extends ModelBehavior {
-    var $settings = array('belongsTo' => null);
-    var $fieldData = null;
+    public $settings = array('belongsTo' => null);
+    public $fieldData = null;
 /**
  * Initiate Fieldable behavior
  *
@@ -21,7 +21,7 @@ class FieldableBehavior extends ModelBehavior {
  * @return void
  * @access public
  */
-	function setup($Model, $settings = array()) {
+	public function setup($Model, $settings = array()) {
         $this->settings['belongsTo'] = $Model->alias;
 		$this->settings = array_merge($this->settings, $settings);
         $this->Field = ClassRegistry::init('Field.Field');
@@ -43,8 +43,8 @@ class FieldableBehavior extends ModelBehavior {
         return true;
     }
     
-    function beforeFind(&$Model){
-        if ( isset($Model->fieldsNoFetch) && $Model->fieldsNoFetch){
+    public function beforeFind(&$Model) {
+        if (isset($Model->fieldsNoFetch) && $Model->fieldsNoFetch) {
             $Model->unbindModel(
                 array(
                     'hasMany' => array('Field')
@@ -54,11 +54,11 @@ class FieldableBehavior extends ModelBehavior {
         return true;
     }
     
-    function beforeSave(&$Model){
+    public function beforeSave(&$Model) {
         $r = array();
-        if ( isset($Model->data['FieldData']) && $Model->id ){ # save only id already exists
-            foreach ($Model->data['FieldData'] as $field_module => $fields){
-                foreach ($fields as $field_id => $info){
+        if (isset($Model->data['FieldData']) && $Model->id) { # save only id already exists
+            foreach ($Model->data['FieldData'] as $field_module => $fields) {
+                foreach ($fields as $field_id => $info) {
                     $info['field_id'] = $field_id;
                     $info['model_name'] = $Model->name;
                     $info['model_id'] = $Model->id;
@@ -66,16 +66,16 @@ class FieldableBehavior extends ModelBehavior {
                     $r[] = $Model->hook("{$field_module}_beforeSave", $info, array('collectReturn' => false));
                 }
             }
-        } elseif( isset($Model->data['FieldData']) ) {
+        } elseif (isset($Model->data['FieldData'])) {
             $this->fieldData = $Model->data['FieldData']; # hold data for new nodes 
         }
         return !in_array(false, $r, true);
     }
     
-    function afterSave(&$Model, $created){
-        if ( !empty($this->fieldData) && $created ){ # procced to save field data for new node
-            foreach ($this->fieldData as $field_module => $fields){
-                foreach ($fields as $field_id => $info){
+    public function afterSave(&$Model, $created) {
+        if (!empty($this->fieldData) && $created) { # procced to save field data for new node
+            foreach ($this->fieldData as $field_module => $fields) {
+                foreach ($fields as $field_id => $info) {
                     $info['field_id'] = $field_id;
                     $info['model_name'] = $Model->name;
                     $info['model_id'] = $Model->id;
@@ -87,15 +87,15 @@ class FieldableBehavior extends ModelBehavior {
         return true;
     }
     
-    function beforeDelete(&$Model){
+    public function beforeDelete(&$Model) {
        return $this->__beforeAfterDelete(&$Model, 'before');
     }
     
-    function afterDelete(&$Model){
+    public function afterDelete(&$Model) {
         return $this->__beforeAfterDelete(&$Model, 'after');
     }
     
-    function __beforeAfterDelete(&$Model, $type = 'before'){
+    private function __beforeAfterDelete(&$Model, $type = 'before') {
         $model_id = $Model->id ? $Model->id : $Model->tmpId;
         $fields = ClassRegistry::init('Field.Field')->find('all',
             array(
@@ -104,10 +104,14 @@ class FieldableBehavior extends ModelBehavior {
                 )
             )
         );
+        
         $r = array();
-        foreach($fields as $field){
-            if ( $type == 'before' )
+        
+        foreach ($fields as $field) {
+            if ($type == 'before') {
                 $Model->tmpId = $Model->id;
+            }
+            
             $info['field_id'] = $field['Field']['id'];
             $info['model_name'] = $Model->name;
             $info['model_id'] = $model_id;
@@ -117,7 +121,7 @@ class FieldableBehavior extends ModelBehavior {
         return !in_array(false, $r, true);
     }
 
-    function prepareFields(){
+    public function prepareFields() {
         $results =  $this->Field->find('all', 
             array(
                 'conditions' => array(
@@ -130,12 +134,16 @@ class FieldableBehavior extends ModelBehavior {
         return $results = Set::extract('/Field/.', $results);
     }
     
-    function beforeValidate(&$Model){
-        if( !isset($Model->data['FieldData']) ) return true;
+    public function beforeValidate(&$Model) {
+        if (!isset($Model->data['FieldData'])) {
+            return true;
+        }
+        
         $DummyModel = ClassRegistry::init('Dummy');
         $r = array();
-        foreach($Model->data['FieldData'] as $field_module => $fields){
-            foreach( $fields as $field_id => $info ){
+        
+        foreach ($Model->data['FieldData'] as $field_module => $fields) {
+            foreach ($fields as $field_id => $info) {
                 $info['field_id'] = $field_id;
                 $info['model_name'] = $Model->name;
                 $info['model_id'] = $Model->id;
@@ -146,20 +154,25 @@ class FieldableBehavior extends ModelBehavior {
         return !in_array(false, $r, true);
     }
     
-    function unbindFields(&$Model){
+    public function unbindFields(&$Model) {
         $Model->fieldsNoFetch = true;
     }
     
-    function bindFields(&$Model){
+    public function bindFields(&$Model) {
         $Model->fieldsNoFetch = false;
     }
     
-    function afterFind(&$Model, $results, $primary) {
-        if ( empty($results) || !$primary || (isset($Model->fieldsNoFetch) && $Model->fieldsNoFetch) ) 
+    public function afterFind(&$Model, $results, $primary) {
+        if (empty($results) || !$primary || (isset($Model->fieldsNoFetch) && $Model->fieldsNoFetch)) {
             return $results;
+        }
+        
         # fetch model instance Fields
-        foreach ($results as &$result){
-            if ( !isset($result[$Model->alias]) ) continue;
+        foreach ($results as &$result) {
+            if (!isset($result[$Model->alias])) {
+                continue;
+            }
+            
             $result['Field'] = array();
             $modelFields = $this->Field->find('all', 
                 array(
@@ -172,7 +185,7 @@ class FieldableBehavior extends ModelBehavior {
             
             $result['Field'] = Set::extract('/Field/.', $modelFields);
             
-            foreach ( $result['Field'] as $key => &$field){
+            foreach ($result['Field'] as $key => &$field) {
                 /*
                  * Attempt to find basic data (FieldData).
                  * Remember: fields can define their own storage tables (or 'storage system' in general), 
@@ -186,6 +199,7 @@ class FieldableBehavior extends ModelBehavior {
                         )
                     )
                 );
+                
                 $field['FieldData'] = Set::extract('/FieldData/.', $field['FieldData']);
                 $field['FieldData'] = isset($field['FieldData'][0]) ? $field['FieldData'][0] : $field['FieldData'];
                 $Model->hook("{$field['name']}_afterFind", $result['Field'][$key]);

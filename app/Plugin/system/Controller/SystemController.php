@@ -11,10 +11,10 @@
  * @link     http://cms.quickapps.es
  */
 class SystemController extends SystemAppController {
-	var $name = 'System';
-	var $uses = array();
+	public $name = 'System';
+	public $uses = array();
 	
-	function admin_index(){
+	public function admin_index() {
 		$this->redirect("/admin/system/dashboard");
 	}
 }

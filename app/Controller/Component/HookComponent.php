@@ -11,21 +11,21 @@
  * @link     http://cms.quickapps.es
  */
 class HookComponent extends Object {
-	var $Controller;
+	public $Controller;
 	
 /**
  * Array with loaded event listener classes
  *
  * @var array
  */
-	public $listeners   = array();
-	public $events      = array();
-	public $eventMap    = array();
+	public $listeners = array();
+	public $events = array();
+	public $eventMap = array();
 	
-	function startup(){ }
-	function beforeRender(){ }
-	function shutdown(){ }
-    function beforeRedirect(){}
+	public function startup() { }
+	public function beforeRender() { }
+	public function shutdown() { }
+    public function beforeRedirect() {}
 	
 /**
  * On every controller startup
@@ -36,12 +36,12 @@ class HookComponent extends Object {
 		$this->Controller =& $Controller;
 		$eventMap = array();
         
-		foreach ( Configure::read('Hook.components') as $component ){
+		foreach (Configure::read('Hook.components') as $component) {
 			$component = strpos($component, '.') !== false ? substr($component, strpos($component, '.')+1) : $component;
-			if ( strpos($component, 'Hook') ){
+			if (strpos($component, 'Hook')) {
 				$methods = array();
 				$_methods = get_this_class_methods($this->Controller->{$component});
-				foreach ($_methods as $method){
+				foreach ($_methods as $method) {
 					$methods[] = $method;
                     $eventMap[$method] = (string)$component;
 				}
@@ -63,23 +63,23 @@ class HookComponent extends Object {
  *
  * @return string HTML
  */	
-    public function hookTags($text){
+    public function hookTags($text) {
         $text = $this->specialTags($text);
         $tags = implode('|', $this->events);
         return preg_replace_callback('/(.?)\[(' . $tags . ')\b(.*?)(?:(\/))?\](?:(.+?)\[\/\2\])?(.?)/s', array($this, '__doHookTag'), $text);
     }
     
-    private function __doHookTag($m){
+    private function __doHookTag($m) {
         // allow [[foo]] syntax for escaping a tag
-        if ( $m[1] == '[' && $m[6] == ']' )
+        if ($m[1] == '[' && $m[6] == ']' )
             return substr($m[0], 1, -1);
 
         $tag = $m[2];
         $attr = $this->__hookTagParseAtts( $m[3] );
         $hook = isset($this->eventMap[$tag]) ? $this->eventMap[$tag] : false;
-        if ( $hook ){
+        if ($hook) {
             $hook =& $this->Controller->{$hook};
-            if ( isset( $m[5] ) ) {
+            if (isset( $m[5] )) {
                 // enclosing tag - extra parameter
                 return $m[1] . call_user_func(array($hook, $tag), $attr, $m[5], $tag) . $m[6];
             } else {
@@ -94,7 +94,7 @@ class HookComponent extends Object {
         $atts       = array();
         $pattern    = '/(\w+)\s*=\s*"([^"]*)"(?:\s|$)|(\w+)\s*=\s*\'([^\']*)\'(?:\s|$)|(\w+)\s*=\s*([^\s\'"]+)(?:\s|$)|"([^"]*)"(?:\s|$)|(\S+)(?:\s|$)/';
         $text       = preg_replace("/[\x{00a0}\x{200b}]+/u", " ", $text);
-        if ( preg_match_all($pattern, $text, $match, PREG_SET_ORDER) ) {
+        if (preg_match_all($pattern, $text, $match, PREG_SET_ORDER)) {
             foreach ($match as $m) {
                 if (!empty($m[1]))
                     $atts[strtolower($m[1])] = stripcslashes($m[2]);
@@ -126,43 +126,43 @@ class HookComponent extends Object {
  * @param string $text original text to replace tags
  * @return string
  */	
-    public function specialTags($text){
+    public function specialTags($text) {
         // [locale]
         $text = str_replace('[language]', Configure::read('Variable.language.code'), $text);
         
         //[locale.OPTION]
         preg_match_all('/\[language.(.+)\]/iUs', $text, $localeMatches);
-        foreach ( $localeMatches[1] as $attr )
+        foreach ($localeMatches[1] as $attr )
             $text = str_replace("[language.{$attr}]", Configure::read('Variable.language.' .$attr ), $text );
 
         //[url]URL[/url]
         preg_match_all('/\[url\](.+)\[\/url\]/iUs', $text, $urlMatches);
-        foreach ( $urlMatches[1] as $url )
+        foreach ($urlMatches[1] as $url )
             $text = str_replace("[url]{$url}[/url]", $this->_View->Html->url($url, true), $text );
         
         //[url=URL]
         preg_match_all('/\[url\=(.+)\]/iUs', $text, $urlMatches);
-        foreach ( $urlMatches[1] as $url )
+        foreach ($urlMatches[1] as $url )
             $text = str_replace("[url={$url}]", $this->_View->Html->url($url, true), $text );
         
         //[t=text to translate]
         preg_match_all('/\[t\=(.+)\]/iUs', $text, $tMatches);
-        foreach ( $tMatches[1] as $string )
+        foreach ($tMatches[1] as $string )
             $text = str_replace("[t={$string}]", __t($string), $text );
 
         //[t]text to translate[/t]
         preg_match_all('/\[t\](.+)\[\/t\]/iUs', $text, $tMatches);
-        foreach ( $tMatches[1] as $string )
+        foreach ($tMatches[1] as $string )
             $text = str_replace("[t]{$string}[/t]", __t($string), $text );
 
         //[t=domain@@text to translate]
         preg_match_all('/\[t\=(.+)\@\@(.+)\]/iUs', $text, $dMatches);
-        foreach ( $dMatches[1] as $key => $domain )
+        foreach ($dMatches[1] as $key => $domain )
             $text = str_replace("[d={$domain}@@{$dMatches[2][$key]}]", __d($domain, $dMatches[2][$key]), $text );
             
         //[date=FORMAT@@TIME_STAMP]
         preg_match_all('/\[date\=(.+)\@\@(.+)\]/iUs', $text, $dateMatches);
-        foreach ( $dateMatches[1] as $key => $format ){
+        foreach ($dateMatches[1] as $key => $format) {
             $stamp = $dateMatches[2][$key];
             $replace = is_numeric($stamp) ? date($format, $stamp) : date($format, strtotime($stamp) );
             $text = str_replace("[date={$format}@@{$stamp}]", $replace, $text);
@@ -170,7 +170,7 @@ class HookComponent extends Object {
             
         //[date=FORMAT]
         preg_match_all('/\[date\=(.+)\]/iUs', $text, $dateMatches);
-        foreach ( $dateMatches[1] as $format )
+        foreach ($dateMatches[1] as $format )
             $text = str_replace("[date={$format}]", date($format), $text);
         
         # pass text to modules so they can apply their own special tags
@@ -186,8 +186,8 @@ class HookComponent extends Object {
  * 
  * @return boolean
  */
-	function hook_defined($hook){
-		return ( in_array($hook, $this->events) == true );
+	public function hook_defined($hook) {
+		return (in_array($hook, $this->events) == true);
 	}
 	
 /**
@@ -199,7 +199,7 @@ class HookComponent extends Object {
  * 
  * @return mixed FALSE -or- result array
  */
-	function hook($event, &$data = array(), $options = array()) {
+	public function hook($event, &$data = array(), $options = array()) {
 		return $this->__dispatchEvent($event, &$data, $options);
 	}
 	
@@ -212,7 +212,7 @@ class HookComponent extends Object {
  * 
  * @return mixed result array if collectReturn is set to true or NULL in case of no response
  */
-	function __dispatchEvent($event, &$data = array(), $options = array()) {
+	private function __dispatchEvent($event, &$data = array(), $options = array()) {
 		$options = array_merge(
 			array(
 				'break' => false,
@@ -227,12 +227,12 @@ class HookComponent extends Object {
         if (!$options['alter']) $_data = $data;
         
 		$collected = array();
-		if ( !$this->hook_defined($event) ) return null;
+		if (!$this->hook_defined($event) ) return null;
         
 		foreach ($this->listeners as $component => $methods) {
-			foreach ( $methods as $method){
-				if ( $method == $event && is_callable(array($this->Controller->{$component}, $method)) ) {
-                    if (!$options['alter']){
+			foreach ($methods as $method) {
+				if ($method == $event && is_callable(array($this->Controller->{$component}, $method))) {
+                    if (!$options['alter']) {
                         $result = call_user_func(array($this->Controller->{$component}, $event), $_data);
                     } else {
                         $result = call_user_func(array($this->Controller->{$component}, $event), &$data);
@@ -243,13 +243,13 @@ class HookComponent extends Object {
                     if (
                         $options['break'] && ($result === $options['breakOn'] ||
                         (is_array($options['breakOn']) && in_array($result, $options['breakOn'], true)))
-                    ) {
+                   ) {
                         return $result;
                     }
 				}
 			}
 		}
-        if(empty($collected) && empty($result)) return null;
+        if (empty($collected) && empty($result)) return null;
         return $options['collectReturn'] ? $collected : $result;
 	}
 }

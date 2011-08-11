@@ -11,5 +11,5 @@
  * @link     http://cms.quickapps.es
  */
 class UserAppController extends AppController {
-    var $components = array('User.Mailer');
+    public $components = array('User.Mailer');
 }

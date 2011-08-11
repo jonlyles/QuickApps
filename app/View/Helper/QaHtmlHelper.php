@@ -27,7 +27,7 @@ class QaHtmlHelper extends AppHelper {
  * @var array
  * @access public
  */
-    function table($data , $options){
+    function table($data , $options) {
         $_data = array('data' => $data, 'options' => $options);
 		$this->hook('html_table_alter', $_data);
         extract($_data);

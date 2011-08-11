@@ -110,7 +110,7 @@
 				. "| {$b}{$b} (?: [^{$e}\\r\\n] | {$e}[^{$e}\\r\\n] )* {$e}{$e}"
 
 				// Match single-line comments, which start with [-- or [' or [rem .
-				. "| {$b} (?: -- | ' ) (?: [^{$e}\\n\\r]* ) {$e}"
+				. "| {$b} (?: -- | ' ) (?: [^{$e}\\n\\r]*) {$e}"
 
 				// Match multi-line comments, which start with [!-- and end with --] and contain
 				// no --] in between.

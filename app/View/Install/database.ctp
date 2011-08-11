@@ -1,7 +1,7 @@
 <h1><?php echo __t('Installation'); ?>: <?php echo __t('Data Base'); ?></h1>
 <p>
     <form action="" method="post" >
-        <?php if( $error = $this->Layout->sessionFlash()): ?>
+        <?php if ($error = $this->Layout->sessionFlash()): ?>
         <div class="content-box content-box-error">
             <?php echo $error; ?>
         </div>

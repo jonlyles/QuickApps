@@ -11,8 +11,8 @@
  * @link     http://cms.quickapps.es
  */
 class Dummy extends AppModel {
-    var $name = 'Dummy';
-	var $cacheQueries = false;
-    var $useTable = false;
+    public $name = 'Dummy';
+	public $cacheQueries = false;
+    public $useTable = false;
 
 }

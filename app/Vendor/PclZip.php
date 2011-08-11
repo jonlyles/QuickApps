@@ -1521,7 +1521,7 @@
           }
 
           // ----- Get the value
-          if (   is_string($p_options_list[$i+1])
+          if ( is_string($p_options_list[$i+1])
               && ($p_options_list[$i+1] != '')) {
             $v_result_list[$p_options_list[$i]] = PclZipUtilTranslateWinPath($p_options_list[$i+1], FALSE);
             $i++;
@@ -1837,13 +1837,13 @@
     $v_memory_limit = trim($v_memory_limit);
     $last = strtolower(substr($v_memory_limit, -1));
  
-    if($last == 'g')
+    if ($last == 'g')
         //$v_memory_limit = $v_memory_limit*1024*1024*1024;
         $v_memory_limit = $v_memory_limit*1073741824;
-    if($last == 'm')
+    if ($last == 'm')
         //$v_memory_limit = $v_memory_limit*1024*1024;
         $v_memory_limit = $v_memory_limit*1048576;
-    if($last == 'k')
+    if ($last == 'k')
         $v_memory_limit = $v_memory_limit*1024;
             
     $p_options[PCLZIP_OPT_TEMP_FILE_THRESHOLD] = floor($v_memory_limit*PCLZIP_TEMPORARY_FILE_RATIO);
@@ -2482,7 +2482,7 @@
       }
 
       // ----- Check the filename
-      if (   ($p_filedescr_list[$j]['type'] != 'virtual_file')
+      if ( ($p_filedescr_list[$j]['type'] != 'virtual_file')
           && (!file_exists($p_filedescr_list[$j]['filename']))) {
         PclZip::privErrorLog(PCLZIP_ERR_MISSING_FILE, "File '".$p_filedescr_list[$j]['filename']."' does not exist");
         return PclZip::errorCode();
@@ -2490,14 +2490,14 @@
 
       // ----- Look if it is a file or a dir with no all path remove option
       // or a dir with all its path removed
-//      if (   (is_file($p_filedescr_list[$j]['filename']))
+//      if ( (is_file($p_filedescr_list[$j]['filename']))
 //          || (   is_dir($p_filedescr_list[$j]['filename'])
-      if (   ($p_filedescr_list[$j]['type'] == 'file')
+      if ( ($p_filedescr_list[$j]['type'] == 'file')
           || ($p_filedescr_list[$j]['type'] == 'virtual_file')
           || (   ($p_filedescr_list[$j]['type'] == 'folder')
               && (   !isset($p_options[PCLZIP_OPT_REMOVE_ALL_PATH])
                   || !$p_options[PCLZIP_OPT_REMOVE_ALL_PATH]))
-          ) {
+         ) {
 
         // ----- Add the file
         $v_result = $this->privAddFile($p_filedescr_list[$j], $v_header,
@@ -2650,10 +2650,10 @@
       // ----- Look for a file
       if ($p_filedescr['type'] == 'file') {
         // ----- Look for using temporary file to zip
-        if ( (!isset($p_options[PCLZIP_OPT_TEMP_FILE_OFF])) 
+        if ((!isset($p_options[PCLZIP_OPT_TEMP_FILE_OFF])) 
             && (isset($p_options[PCLZIP_OPT_TEMP_FILE_ON])
                 || (isset($p_options[PCLZIP_OPT_TEMP_FILE_THRESHOLD])
-                    && ($p_options[PCLZIP_OPT_TEMP_FILE_THRESHOLD] <= $p_header['size'])) ) ) {
+                    && ($p_options[PCLZIP_OPT_TEMP_FILE_THRESHOLD] <= $p_header['size'])) )) {
           $v_result = $this->privAddFileUsingTempFile($p_filedescr, $p_header, $p_options);
           if ($v_result < PCLZIP_ERR_NO_ERROR) {
             return $v_result;
@@ -2966,14 +2966,14 @@
         if (substr($p_remove_dir, -1) != '/')
           $p_remove_dir .= "/";
 
-        if (   (substr($p_filename, 0, 2) == "./")
+        if ( (substr($p_filename, 0, 2) == "./")
             || (substr($p_remove_dir, 0, 2) == "./")) {
             
-          if (   (substr($p_filename, 0, 2) == "./")
+          if ( (substr($p_filename, 0, 2) == "./")
               && (substr($p_remove_dir, 0, 2) != "./")) {
             $p_remove_dir = "./".$p_remove_dir;
           }
-          if (   (substr($p_filename, 0, 2) != "./")
+          if ( (substr($p_filename, 0, 2) != "./")
               && (substr($p_remove_dir, 0, 2) == "./")) {
             $p_remove_dir = substr($p_remove_dir, 2);
           }
@@ -3280,7 +3280,7 @@
     $this->privDisableMagicQuotes();
 
     // ----- Check the path
-    if (   ($p_path == "")
+    if ( ($p_path == "")
 	    || (   (substr($p_path, 0, 1) != "/")
 		    && (substr($p_path, 0, 3) != "../")
 			&& (substr($p_path,1,2)!=":/")))
@@ -3365,7 +3365,7 @@
       $v_extract = false;
 
       // ----- Look for extract by name rule
-      if (   (isset($p_options[PCLZIP_OPT_BY_NAME]))
+      if ( (isset($p_options[PCLZIP_OPT_BY_NAME]))
           && ($p_options[PCLZIP_OPT_BY_NAME] != 0)) {
 
           // ----- Look if the filename is in the list
@@ -3375,7 +3375,7 @@
               if (substr($p_options[PCLZIP_OPT_BY_NAME][$j], -1) == "/") {
 
                   // ----- Look if the directory is in the filename path
-                  if (   (strlen($v_header['stored_filename']) > strlen($p_options[PCLZIP_OPT_BY_NAME][$j]))
+                  if ( (strlen($v_header['stored_filename']) > strlen($p_options[PCLZIP_OPT_BY_NAME][$j]))
                       && (substr($v_header['stored_filename'], 0, strlen($p_options[PCLZIP_OPT_BY_NAME][$j])) == $p_options[PCLZIP_OPT_BY_NAME][$j])) {
                       $v_extract = true;
                   }
@@ -3390,7 +3390,7 @@
       // ----- Look for extract by ereg rule
       // ereg() is deprecated with PHP 5.3
       /* 
-      else if (   (isset($p_options[PCLZIP_OPT_BY_EREG]))
+      else if ( (isset($p_options[PCLZIP_OPT_BY_EREG]))
                && ($p_options[PCLZIP_OPT_BY_EREG] != "")) {
 
           if (ereg($p_options[PCLZIP_OPT_BY_EREG], $v_header['stored_filename'])) {
@@ -3400,7 +3400,7 @@
       */
 
       // ----- Look for extract by preg rule
-      else if (   (isset($p_options[PCLZIP_OPT_BY_PREG]))
+      else if ( (isset($p_options[PCLZIP_OPT_BY_PREG]))
                && ($p_options[PCLZIP_OPT_BY_PREG] != "")) {
 
           if (preg_match($p_options[PCLZIP_OPT_BY_PREG], $v_header['stored_filename'])) {
@@ -3409,7 +3409,7 @@
       }
 
       // ----- Look for extract by index rule
-      else if (   (isset($p_options[PCLZIP_OPT_BY_INDEX]))
+      else if ( (isset($p_options[PCLZIP_OPT_BY_INDEX]))
                && ($p_options[PCLZIP_OPT_BY_INDEX] != 0)) {
           
           // ----- Look if the index is in the list
@@ -3434,13 +3434,13 @@
       }
 
 	  // ----- Check compression method
-	  if (   ($v_extract)
+	  if ( ($v_extract)
 	      && (   ($v_header['compression'] != 8)
 		      && ($v_header['compression'] != 0))) {
           $v_header['status'] = 'unsupported_compression';
 
           // ----- Look for PCLZIP_OPT_STOP_ON_ERROR
-          if (   (isset($p_options[PCLZIP_OPT_STOP_ON_ERROR]))
+          if ( (isset($p_options[PCLZIP_OPT_STOP_ON_ERROR]))
 		      && ($p_options[PCLZIP_OPT_STOP_ON_ERROR]===true)) {
 
               $this->privSwapBackMagicQuotes();
@@ -3459,7 +3459,7 @@
           $v_header['status'] = 'unsupported_encryption';
 
           // ----- Look for PCLZIP_OPT_STOP_ON_ERROR
-          if (   (isset($p_options[PCLZIP_OPT_STOP_ON_ERROR]))
+          if ( (isset($p_options[PCLZIP_OPT_STOP_ON_ERROR]))
 		      && ($p_options[PCLZIP_OPT_STOP_ON_ERROR]===true)) {
 
               $this->privSwapBackMagicQuotes();
@@ -3541,7 +3541,7 @@
           }
         }
         // ----- Look for extraction in standard output
-        elseif (   (isset($p_options[PCLZIP_OPT_EXTRACT_IN_OUTPUT]))
+        elseif ( (isset($p_options[PCLZIP_OPT_EXTRACT_IN_OUTPUT]))
 		        && ($p_options[PCLZIP_OPT_EXTRACT_IN_OUTPUT])) {
           // ----- Extracting the file in standard output
           $v_result1 = $this->privExtractFileInOutput($v_header, $p_options);
@@ -3734,7 +3734,7 @@
         // ----- Look for PCLZIP_OPT_STOP_ON_ERROR
         // For historical reason first PclZip implementation does not stop
         // when this kind of error occurs.
-        if (   (isset($p_options[PCLZIP_OPT_STOP_ON_ERROR]))
+        if ( (isset($p_options[PCLZIP_OPT_STOP_ON_ERROR]))
 		    && ($p_options[PCLZIP_OPT_STOP_ON_ERROR]===true)) {
 
             PclZip::privErrorLog(PCLZIP_ERR_ALREADY_A_DIRECTORY,
@@ -3754,7 +3754,7 @@
         // ----- Look for PCLZIP_OPT_STOP_ON_ERROR
         // For historical reason first PclZip implementation does not stop
         // when this kind of error occurs.
-        if (   (isset($p_options[PCLZIP_OPT_STOP_ON_ERROR]))
+        if ( (isset($p_options[PCLZIP_OPT_STOP_ON_ERROR]))
 		    && ($p_options[PCLZIP_OPT_STOP_ON_ERROR]===true)) {
 
             PclZip::privErrorLog(PCLZIP_ERR_WRITE_OPEN_FAIL,
@@ -3769,7 +3769,7 @@
       else if (filemtime($p_entry['filename']) > $p_entry['mtime'])
       {
         // ----- Change the file status
-        if (   (isset($p_options[PCLZIP_OPT_REPLACE_NEWER]))
+        if ( (isset($p_options[PCLZIP_OPT_REPLACE_NEWER]))
 		    && ($p_options[PCLZIP_OPT_REPLACE_NEWER]===true)) {
 	  	  }
 		    else {
@@ -3778,7 +3778,7 @@
             // ----- Look for PCLZIP_OPT_STOP_ON_ERROR
             // For historical reason first PclZip implementation does not stop
             // when this kind of error occurs.
-            if (   (isset($p_options[PCLZIP_OPT_STOP_ON_ERROR]))
+            if ( (isset($p_options[PCLZIP_OPT_STOP_ON_ERROR]))
 		        && ($p_options[PCLZIP_OPT_STOP_ON_ERROR]===true)) {
 
                 PclZip::privErrorLog(PCLZIP_ERR_WRITE_OPEN_FAIL,
@@ -3867,10 +3867,10 @@
 
 
           // ----- Look for using temporary file to unzip
-          if ( (!isset($p_options[PCLZIP_OPT_TEMP_FILE_OFF])) 
+          if ((!isset($p_options[PCLZIP_OPT_TEMP_FILE_OFF])) 
               && (isset($p_options[PCLZIP_OPT_TEMP_FILE_ON])
                   || (isset($p_options[PCLZIP_OPT_TEMP_FILE_THRESHOLD])
-                      && ($p_options[PCLZIP_OPT_TEMP_FILE_THRESHOLD] <= $p_entry['size'])) ) ) {
+                      && ($p_options[PCLZIP_OPT_TEMP_FILE_THRESHOLD] <= $p_entry['size'])) )) {
             $v_result = $this->privExtractFileUsingTempFile($p_entry, $p_options);
             if ($v_result < PCLZIP_ERR_NO_ERROR) {
               return $v_result;
@@ -4742,7 +4742,7 @@
       $v_found = false;
 
       // ----- Look for extract by name rule
-      if (   (isset($p_options[PCLZIP_OPT_BY_NAME]))
+      if ( (isset($p_options[PCLZIP_OPT_BY_NAME]))
           && ($p_options[PCLZIP_OPT_BY_NAME] != 0)) {
 
           // ----- Look if the filename is in the list
@@ -4752,11 +4752,11 @@
               if (substr($p_options[PCLZIP_OPT_BY_NAME][$j], -1) == "/") {
 
                   // ----- Look if the directory is in the filename path
-                  if (   (strlen($v_header_list[$v_nb_extracted]['stored_filename']) > strlen($p_options[PCLZIP_OPT_BY_NAME][$j]))
+                  if ( (strlen($v_header_list[$v_nb_extracted]['stored_filename']) > strlen($p_options[PCLZIP_OPT_BY_NAME][$j]))
                       && (substr($v_header_list[$v_nb_extracted]['stored_filename'], 0, strlen($p_options[PCLZIP_OPT_BY_NAME][$j])) == $p_options[PCLZIP_OPT_BY_NAME][$j])) {
                       $v_found = true;
                   }
-                  elseif (   (($v_header_list[$v_nb_extracted]['external']&0x00000010)==0x00000010) /* Indicates a folder */
+                  elseif ( (($v_header_list[$v_nb_extracted]['external']&0x00000010)==0x00000010) /* Indicates a folder */
                           && ($v_header_list[$v_nb_extracted]['stored_filename'].'/' == $p_options[PCLZIP_OPT_BY_NAME][$j])) {
                       $v_found = true;
                   }
@@ -4771,7 +4771,7 @@
       // ----- Look for extract by ereg rule
       // ereg() is deprecated with PHP 5.3
       /*
-      else if (   (isset($p_options[PCLZIP_OPT_BY_EREG]))
+      else if ( (isset($p_options[PCLZIP_OPT_BY_EREG]))
                && ($p_options[PCLZIP_OPT_BY_EREG] != "")) {
 
           if (ereg($p_options[PCLZIP_OPT_BY_EREG], $v_header_list[$v_nb_extracted]['stored_filename'])) {
@@ -4781,7 +4781,7 @@
       */
 
       // ----- Look for extract by preg rule
-      else if (   (isset($p_options[PCLZIP_OPT_BY_PREG]))
+      else if ( (isset($p_options[PCLZIP_OPT_BY_PREG]))
                && ($p_options[PCLZIP_OPT_BY_PREG] != "")) {
 
           if (preg_match($p_options[PCLZIP_OPT_BY_PREG], $v_header_list[$v_nb_extracted]['stored_filename'])) {
@@ -4790,7 +4790,7 @@
       }
 
       // ----- Look for extract by index rule
-      else if (   (isset($p_options[PCLZIP_OPT_BY_INDEX]))
+      else if ( (isset($p_options[PCLZIP_OPT_BY_INDEX]))
                && ($p_options[PCLZIP_OPT_BY_INDEX] != 0)) {
 
           // ----- Look if the index is in the list
@@ -5329,7 +5329,7 @@
     $v_result=1;
 
     // ----- Look if function exists
-    if (   (!function_exists("get_magic_quotes_runtime"))
+    if ( (!function_exists("get_magic_quotes_runtime"))
 	    || (!function_exists("set_magic_quotes_runtime"))) {
       return $v_result;
 	}
@@ -5363,7 +5363,7 @@
     $v_result=1;
 
     // ----- Look if function exists
-    if (   (!function_exists("get_magic_quotes_runtime"))
+    if ( (!function_exists("get_magic_quotes_runtime"))
 	    || (!function_exists("set_magic_quotes_runtime"))) {
       return $v_result;
 	}
@@ -5479,11 +5479,11 @@
     $v_result = 1;
     
     // ----- Look for path beginning by ./
-    if (   ($p_dir == '.')
+    if ( ($p_dir == '.')
         || ((strlen($p_dir) >=2) && (substr($p_dir, 0, 2) == './'))) {
       $p_dir = PclZipUtilTranslateWinPath(getcwd(), FALSE).'/'.substr($p_dir, 1);
     }
-    if (   ($p_path == '.')
+    if ( ($p_path == '.')
         || ((strlen($p_path) >=2) && (substr($p_path, 0, 2) == './'))) {
       $p_path = PclZipUtilTranslateWinPath(getcwd(), FALSE).'/'.substr($p_path, 1);
     }

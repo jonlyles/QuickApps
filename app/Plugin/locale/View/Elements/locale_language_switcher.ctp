@@ -1,5 +1,5 @@
 <ul id="lang-selector">
-    <?php foreach ( Configure::read('Variable.languages') as $key => $lang ): ?>
+    <?php foreach (Configure::read('Variable.languages') as $key => $lang ): ?>
     <?php $selected = Configure::read('Variable.language.code') == $lang['Language']['code'] ? 'selected' : ''; ?>
     <?php
         $flag = $block['Block']['settings']['flags'] && !empty($lang['Language']['icon']) ? 

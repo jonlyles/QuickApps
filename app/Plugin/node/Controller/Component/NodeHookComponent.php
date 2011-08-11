@@ -15,11 +15,11 @@ class NodeHookComponent extends Component {
 	var $controller = null;
 	var $components = array('Hook');
 
-	function initialize(&$controller){
+	function initialize(&$controller) {
 		$this->controller = $controller;
 	}
 
-	function get_node_types(){
+	function get_node_types() {
 		$NodeType = ClassRegistry::init('Node.NodeType');
 		$types = $NodeType->find('all', array('recursive' => -1, 'fields' => array('type', 'name') ) );
 		

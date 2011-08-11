@@ -8,7 +8,7 @@
         )
     );
     
-    foreach($_variables as $v)
+    foreach ($_variables as $v)
         $variables[$v['Variable']['name']] = $v['Variable']['value'];
 ?>
 
@@ -145,7 +145,7 @@
 
 <script>
     $(document).ready(
-        function(){
+        function() {
             $('form#VariableAdminSettingsForm fieldset legend').css({'cursor': 'pointer'});
             $('form#VariableAdminSettingsForm #messages fieldset legend').click(
                 function() {

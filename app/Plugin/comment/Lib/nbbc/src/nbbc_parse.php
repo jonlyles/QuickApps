@@ -332,7 +332,7 @@
 					(?:[a-zA-Z0-9-]*[a-zA-Z0-9])?
 				|
 					\\[
-					(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}
+					(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.) {3}
 					(?:
 						25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-zA-Z0-9-]*[a-zA-Z0-9]:
 						(?:[\\x01-\\x08\\x0B\\x0C\\x0E-\\x1F\\x21-\\x5A\\x53-\\x7F]
@@ -379,7 +379,7 @@
 					(?:[a-z0-9-]*[a-z0-9])?
 				|
 					\\[
-					(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}
+					(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.) {3}
 					(?:
 						25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:
 						(?:[\\x01-\\x08\\x0B\\x0C\\x0E-\\x1F\\x21-\\x5A\\x53-\\x7F]
@@ -2125,7 +2125,7 @@
 				// Turn all non-newline whitespace characters into single spaces.
 				$result = preg_replace("/[\\x00-\\x09\\x0B-\\x20]+/", " ", $result);
 				// Turn multiple newlines into at most two newlines.
-				$result = preg_replace("/(?:[\\x20]*\\n){2,}[\\x20]*/", "\n\n", $result);
+				$result = preg_replace("/(?:[\\x20]*\\n) {2,}[\\x20]*/", "\n\n", $result);
 				// Strip off all surrounding whitespace.
 				$result = trim($result);
 			}

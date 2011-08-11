@@ -1,5 +1,5 @@
 <?php
-if ( !class_exists('L10n') ) App::import('I18n', 'L10n');
+if (!class_exists('L10n') ) App::import('I18n', 'L10n');
 class Locale {
 
     function languages() {
@@ -7,19 +7,19 @@ class Locale {
         $catalog = $L10n->catalog();
         
         $r = array();
-        foreach ( $catalog as $language => $info ){
+        foreach ($catalog as $language => $info) {
             $code = $L10n->map($language);
-            if ( $code )
+            if ($code )
                 $r[$code] = $info['language'];
         }
         return $r;
     }
     
-    function language_direction($code = false){
+    function language_direction($code = false) {
         if (!$code) $code = Configure::read('Config.language');
         $L10n = new L10n;
         $l = $L10n->catalog($L10n->map($code));
-        if ( !$l ) return 'ltr';
+        if (!$l ) return 'ltr';
         return $l['direction'];
     }
     

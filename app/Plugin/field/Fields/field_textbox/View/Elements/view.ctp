@@ -1,9 +1,9 @@
 <?php 
     $view_mode = isset($data['settings']['display'][$Layout['viewMode']]) ? $Layout['viewMode'] : 'default';
-    if ( $data['settings']['display'][$view_mode]['type'] != 'hidden' ){
+    if ($data['settings']['display'][$view_mode]['type'] != 'hidden') {
         echo '<p class="fieldContainer">';
             $label = $data['settings']['display'][$view_mode]['label'];
-            switch($label){
+            switch($label) {
                 case 'hidden': 
                     default: 
                         echo '';

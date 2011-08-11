@@ -11,11 +11,10 @@
  * @link     http://cms.quickapps.es
  */
 class SystemHookComponent extends Component {
-	
-	var $Controller = null;
-	var $components = array('Hook');
+	public $Controller = null;
+	public $components = array('Hook');
 
-	function initialize(&$Controller){
+	public function initialize(&$Controller) {
 		$this->Controller = $Controller;
 	}
 }

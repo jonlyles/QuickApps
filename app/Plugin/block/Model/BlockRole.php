@@ -11,8 +11,7 @@
  * @link     http://cms.quickapps.es
  */
 class BlockRole extends BlockAppModel {
-    var $name       = 'BlockRole';
-    var $useTable   = "block_roles";
-    var $primaryKey = null;
-    
+    public $name = 'BlockRole';
+    public $useTable = "block_roles";
+    public $primaryKey = null;
 }

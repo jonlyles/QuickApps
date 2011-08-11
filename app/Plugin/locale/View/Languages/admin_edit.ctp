@@ -1,6 +1,6 @@
 <?php echo $this->Form->create('Language', array('url' => "/admin/locale/languages/edit/{$this->data['Language']['id']}") ); ?>
     <?php echo $this->Html->useTag('fieldsetstart', __t('Editing language')); ?>
-        <?php if (  !in_array($this->data['Language']['code'], array('eng', Configure::read('Variable.default_language'))) ): ?>
+        <?php if (!in_array($this->data['Language']['code'], array('eng', Configure::read('Variable.default_language'))) ): ?>
             <?php echo $this->Form->input('status', array('type' => 'checkbox', 'label' => __t('Active') ) ); ?>
         <?php endif; ?>
         <?php echo $this->Form->input('id', array('type' => 'hidden') ); ?>
@@ -58,8 +58,8 @@
 <?php echo $this->Form->end(); ?>
 
 <script>
-    function showFlag(s){
-        if ( s.value == '' ){
+    function showFlag(s) {
+        if (s.value == '') {
              $('#flag-icon').hide();
         } else {
             $('#flag-icon').attr('src', QuickApps.settings.base_url + 'locale/img/flags/' + s.value);

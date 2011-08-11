@@ -11,11 +11,10 @@
  * @link     http://cms.quickapps.es
  */
 class BlockHookHelper extends AppHelper {
-	
     // toolbar
-    function beforeLayout($layoutFile){
-        $show_on = ( isset($this->request->params['plugin']) &&  $this->request->params['plugin'] == 'block' && $this->request->params['action'] != 'admin_add' );
-        $this->_View->Layout->blockPush( array('body' => $this->_View->element('toolbar') ), 'toolbar', $show_on);
+    public function beforeLayout($layoutFile) {
+        $show_on = (isset($this->request->params['plugin']) &&  $this->request->params['plugin'] == 'block' && $this->request->params['action'] != 'admin_add');
+        $this->_View->Layout->blockPush(array('body' => $this->_View->element('toolbar') ), 'toolbar', $show_on);
         return true;
     }
     
@@ -24,30 +23,46 @@ class BlockHookHelper extends AppHelper {
  *
  */
     # hooktag, block rendering
-    function block($options){
+    public function block($options) {
         extract($options);
-        if(!isset($id)) return;
-        if ( $_block = Set::extract("/Block[id={$id}]/..", $this->_View->viewVars['Layout']['blocks']) ){
+        
+        if (!isset($id)) {
+            return;
+        }
+        
+        if ($_block = Set::extract("/Block[id={$id}]/..", $this->_View->viewVars['Layout']['blocks'])) {
             $block = $_block[0];
         } else {
             $block = ClassRegistry::init('Block.Block')->findById($id);
         }
-        if ( !$block ) return;
+        
+        if (!$block ) {
+            return;
+        }
+        
         $region = isset($region) ? $region : false;
         $title = isset($title) ? int_val($title) : false;
+        
         return $this->_View->Layout->block($block, array('title' => $title, 'region' => $region) );
     }
     
     # hooktag
-    function block_title($options){
+    public function block_title($options) {
         extract($options);
-        if(!isset($id)) return;
-        if ( $_block = Set::extract("/Block[id={$id}]/..", $this->_View->viewVars['Layout']['blocks']) ){
+        if (!isset($id)) {
+            return;
+        }
+        
+        if ($_block = Set::extract("/Block[id={$id}]/..", $this->_View->viewVars['Layout']['blocks'])) {
             $block = $_block[0];
         } else {
             $block = ClassRegistry::init('Block.Block')->findById($id);
         }
-        if (!$block) return false;
+        
+        if (!$block) {
+            return false;
+        }
+        
         return $this->_View->Layout->hookTags($block['Block']['title']);
     }
 }

@@ -244,7 +244,7 @@ class QaFormHelper extends AppHelper {
         /* Hook */
         $data = array('fieldName' => $fieldName, 'options' => $options);
         $this->hook('form_input_alter', $data);
-        if ( isset($options['type']) )
+        if (isset($options['type']) )
             $this->hook("form_{$options['type']}_alter", $data);
         extract($data);
     

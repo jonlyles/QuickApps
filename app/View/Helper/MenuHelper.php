@@ -142,7 +142,7 @@ class MenuHelper extends AppHelper {
         extract($this->__settings);
         
         # prevent bad formated data
-        if ( isset($data[$this->__settings['model']]) ){
+        if (isset($data[$this->__settings['model']])) {
             $data = $data[$this->__settings['model']];
             $data = $this->__prepareMenuLink($data);
         }
@@ -279,10 +279,10 @@ class MenuHelper extends AppHelper {
                 $return .= "\r\n" . $whiteSpace . "\t";
             }
             
-            if($count===1)
+            if ($count===1)
                 $this->addItemAttribute('class', 'first');
             
-            if($count===$total)
+            if ($count===$total)
                 $this->addItemAttribute('class', 'last');
 
             if ($itemType) {
@@ -465,7 +465,7 @@ class MenuHelper extends AppHelper {
         }
        
         $crumb_urls = Set::extract("{n}.{$this->__settings['model']}.router_path", $this->_View->viewVars['breadCrumb']);
-        if( 
+        if (
             (
                 ( isset($elementData['data'][$this->__settings['model']]) && in_array($elementData['data'][$this->__settings['model']][$this->__settings['url']], $crumb_urls))
                 ||
@@ -506,20 +506,20 @@ class MenuHelper extends AppHelper {
         return '';
     }
     
-    private function __prepareMenuLink($links){
+    private function __prepareMenuLink($links) {
         $no_expanded = array();
-        foreach ( $links as &$link){
+        foreach ($links as &$link) {
             $_link = $link;
             $link = array();
             $link[$this->__settings['model']] = $_link;
             
-            if ( $link[$this->__settings['model']]['expanded'] == 0 )
+            if ($link[$this->__settings['model']]['expanded'] == 0 )
                 $no_expanded[] = $link;
         }
         
         /* Remove childs from no expanded nodes */
         $remove_ids = array();
-        foreach ($no_expanded as $node){
+        foreach ($no_expanded as $node) {
             $ids = Set::extract("/{$this->__settings['model']}[{$this->__settings['left']}>{$node['MenuLink']['lft']}]", $links);
             $ids = Set::extract("/{$this->__settings['model']}[{$this->__settings['right']}<{$node['MenuLink']['rght']}]", $ids);
             $remove_ids = array_merge($remove_ids, Set::extract("/{$this->__settings['model']}/id", $ids));
@@ -527,8 +527,8 @@ class MenuHelper extends AppHelper {
         
         $remove_ids = array_unique($remove_ids);
       
-        foreach ($links as $i => $l){
-            if ( in_array($l[$this->__settings['model']]['id'], $remove_ids) )
+        foreach ($links as $i => $l) {
+            if (in_array($l[$this->__settings['model']]['id'], $remove_ids) )
                 unset($links[$i]);
         }
         

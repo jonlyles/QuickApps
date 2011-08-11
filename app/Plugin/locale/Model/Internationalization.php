@@ -11,7 +11,7 @@
  * @link     http://cms.quickapps.es
  */
 class Internationalization extends LocaleAppModel {
-    var $name = 'Internationalization';
-    var $useTable = "i18n";
-	var $primaryKey = 'id';
+    public $name = 'Internationalization';
+    public $useTable = "i18n";
+	public $primaryKey = 'id';
 }

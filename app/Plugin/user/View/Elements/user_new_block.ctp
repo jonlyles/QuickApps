@@ -10,7 +10,7 @@
 ?>
 
 <ul id="whos_new">
-    <?php foreach($users as $user): ?>
+    <?php foreach ($users as $user): ?>
     <li><a href="<?php echo $this->Html->url('/admin/user/list/edit/' . $user['User']['id']); ?>"><span><?php echo $user['User']['username']; ?></span></a></li>
     <?php endforeach; ?>
 </ul>
