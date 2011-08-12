@@ -4,8 +4,7 @@
  *
  * PHP version 5
  *
- * @category Node.Controller/Component
- * @package  QuickApps
+ * @package  QuickApps.Plugin.Node.Controller.Component
  * @version  1.0
  * @author   Christopher Castro <chris@quickapps.es>
  * @link     http://cms.quickapps.es

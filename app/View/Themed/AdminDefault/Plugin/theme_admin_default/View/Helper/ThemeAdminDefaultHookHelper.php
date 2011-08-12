@@ -1,12 +1,11 @@
 <?php
 /**
  * Theme Helper
- * Theme: default
+ * Theme: AdminDefault
  *
  * PHP version 5
  *
- * @category Helper
- * @package  Quickapps
+ * @package  Quickapps.Theme.AdminDefault.View.Helper
  * @version  1.0
  * @author   Christopher Castro <chris@qucikapps.es>
  * @link     http://cms.quickapps.es

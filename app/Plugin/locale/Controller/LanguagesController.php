@@ -4,8 +4,7 @@
  *
  * PHP version 5
  *
- * @category Locale.Controller
- * @package  QuickApps
+ * @package  QuickApps.Plugin.Locale.Controller
  * @version  1.0
  * @author   Christopher Castro <chris@quickapps.es>
  * @link     http://cms.quickapps.es

@@ -8,7 +8,7 @@
  * 
  * This is useful to track who created records, and the last user that has changed them
  *
- * @package behaviors
+ * @package QuickApps.Model.Behavior
  * @author Daniel Vecchiato
  * @version 1.2
  * @date 01/03/2009

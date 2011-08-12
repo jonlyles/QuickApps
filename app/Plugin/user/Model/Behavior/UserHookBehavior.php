@@ -4,8 +4,7 @@
  *
  * PHP version 5
  *
- * @category User.Model/Behavior
- * @package  QuickApps
+ * @package  QuickApps.Plugin.User.Model.Behavior
  * @version  1.0
  * @author   Christopher Castro <chris@qucikapps.es>
  * @link     http://cms.quickapps.es

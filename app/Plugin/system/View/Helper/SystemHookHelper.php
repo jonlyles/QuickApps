@@ -4,8 +4,7 @@
  *
  * PHP version 5
  *
- * @category System.View/Helper
- * @package  QuickApps
+ * @package  QuickApps.Plugin.System.View.Helper
  * @version  1.0
  * @author   Christopher Castro <chris@qucikapps.es>
  * @link     http://cms.quickapps.es

@@ -4,8 +4,7 @@
  *
  * PHP version 5
  *
- * @category Taxonomy.Model
- * @package  QuickApps
+ * @package  QuickApps.Plugin.Taxonomy.Model
  * @version  1.0
  * @author   Christopher Castro <chris@quickapps.es>
  * @link     http://cms.quickapps.es

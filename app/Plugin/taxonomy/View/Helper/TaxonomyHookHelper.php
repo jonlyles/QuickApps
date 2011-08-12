@@ -4,8 +4,7 @@
  *
  * PHP version 5
  *
- * @category Taxonomy.View/Helper
- * @package  QuickApps
+ * @package  QuickApps.Plugin.Taxonomy.View.Helper
  * @version  1.0
  * @author   Christopher Castro <chris@qucikapps.es>
  * @link     http://cms.quickapps.es
