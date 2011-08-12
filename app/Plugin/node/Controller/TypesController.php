@@ -13,17 +13,21 @@ class TypesController extends NodeAppController {
 	public $name = 'Types';
 	public $uses = array('Node.NodeType');
 	
+/**
+ * NodeType listing
+ */    
 	public function admin_index() {
-		$this->title(__t('Content Types'));
 		$results = $this->NodeType->find('all');
-		$this->set('results', $results);
+        
+        $this->set('results', $results);
+        $this->title(__t('Content Types'));
 	}
-	
+
 	public function admin_edit($id) {
 		if (!empty($this->data['NodeType']['id'])) {
 			if ($this->NodeType->save($this->data)) {
                 $this->flashMsg(__t('Content type has been saved!'), 'success');
-                $this->redirect( $this->referer() );
+                $this->redirect($this->referer());
             } else {
                 $this->flashMsg(__t('Content type could not be saved'), 'error');
             }
@@ -37,7 +41,7 @@ class TypesController extends NodeAppController {
 		$this->setCrumb('/admin/node/types');
 		$this->title(__t('Editing Type'));
 	}
-    
+
 	public function admin_add() {
 		if (!empty($this->data['NodeType'])) {
             $data = $this->data;
@@ -45,16 +49,17 @@ class TypesController extends NodeAppController {
             $data['NodeType']['module'] = $data['NodeType']['base'] = 'node';
             
 			if ($this->NodeType->save($data)) {
-                $this->redirect( '/admin/node/types/fields/' . $this->NodeType->id );
+                $this->redirect('/admin/node/types/fields/' . $this->NodeType->id);
             }
 		}
-		
+        
+		$this->__setLangVar();
+        
         $this->set('vocabularies',$this->NodeType->Vocabulary->find('list'));
-        $this->__setLangVar();
 		$this->setCrumb('/admin/node/types');
 		$this->title(__t('Add Content Type'));
 	}
-    
+
     public function admin_delete($id) {
 		$nodeType = $this->NodeType->findById($id);
         
@@ -69,7 +74,7 @@ class TypesController extends NodeAppController {
         
         $this->redirect($this->referer());
     }
-    
+
     //node type display settings
     public function admin_display($typeId, $view_mode = false) {
         if (!$view_mode && !isset($this->data['NodeType']['viewModes'])) {
@@ -88,7 +93,7 @@ class TypesController extends NodeAppController {
                 'hasAndBelongsToMany' => array('Vocabulary')
             )
         );
-        
+
         $this->NodeType->recursive = -1;
         $nodeType = $this->NodeType->findById($typeId) or $this->redirect('/admin/node/types');
         $this->loadModel('Field.Field');
@@ -112,7 +117,7 @@ class TypesController extends NodeAppController {
         $this->setCrumb(array('Display', ''));
         $this->title(__t('Display Settings'));
     }
-    
+
     public function admin_field_settings($id) {
         if (isset($this->data['Field'])) {
             $this->loadModel('Field.Field');

@@ -39,7 +39,7 @@ class AppController extends Controller {
         ),
         'meta' => array() # meta tags for layout
     );
-    
+
     public $helpers = array(
         'Layout',    
         'Form' => array('className' => 'QaForm'),
@@ -49,7 +49,7 @@ class AppController extends Controller {
         'Js',
         'Time'
     );
-    
+
     public $uses = array(
         'System.Variable',
         'System.Module',
@@ -196,7 +196,7 @@ class AppController extends Controller {
  * @return mixed FALSE -or- result array
  */
     public function hook($hook, &$data = array(), $options = array()) {
-        return $this->Hook->hook($hook, &$data, $options);
+        return $this->Hook->hook($hook, $data, $options);
     }
     
 /**
@@ -211,6 +211,7 @@ class AppController extends Controller {
         if (is_array($url) && !empty($url)) {
             if (is_array($url[0])) {
                 foreach ($url as $link) {
+                    
                     if (empty($link)) {
                         continue;
                     }
@@ -218,7 +219,7 @@ class AppController extends Controller {
                     $push = array(
                         'MenuLink' => array(
                             'link_title' => $link[0],
-                            'router_path' => ( empty($link[1]) ? 'javascript:return false;': $link[1] ),
+                            'router_path' => (empty($link[1]) ? 'javascript:return false;': $link[1]),
                             'description' => (isset($link[2]) ? $link[2] : ''),
                         )
                     );
@@ -229,7 +230,7 @@ class AppController extends Controller {
                 $push = array(
                     'MenuLink' => array(
                         'link_title' => $url[0],
-                        'router_path' => ( empty($url[1]) ? 'javascript:return false;': $url[1] ),
+                        'router_path' => (empty($url[1]) ? 'javascript:return false;': $url[1]),
                         'description' => (isset($url[2]) ? $url[2] : ''),
                     )
                 );
@@ -252,7 +253,7 @@ class AppController extends Controller {
         $current = $this->MenuLink->find('first', 
             array(
                 'conditions' => array(
-                    'MenuLink.router_path' => ( empty($url) ? 'javascript:return false;': $url )
+                    'MenuLink.router_path' => (empty($url) ? 'javascript:return false;': $url)
                 )
             )
         );
@@ -262,12 +263,21 @@ class AppController extends Controller {
         }
         
         $this->MenuLink->Behaviors->detach('Tree');
-        $this->MenuLink->Behaviors->attach('Tree', array('parent' => 'parent_id', 'left' => 'lft', 'right' => 'rght', 'scope' => "MenuLink.menu_id = '{$current['MenuLink']['menu_id']}'"));
-        
+        $this->MenuLink->Behaviors->attach('Tree', 
+            array(
+                'parent' => 'parent_id', 
+                'left' => 'lft', 
+                'right' => 'rght', 
+                'scope' => "MenuLink.menu_id = '{$current['MenuLink']['menu_id']}'"
+            )
+        );
+
         $path = $this->MenuLink->getPath($current['MenuLink']['id']);
+        
         if (isset($path[0]['MenuLink']['link_title'])) {
             $path[0]['MenuLink']['link_title'] = __t($path[0]['MenuLink']['link_title']);
         }
+        
         $this->set('breadCrumb', $path);
     }
     
@@ -276,8 +286,8 @@ class AppController extends Controller {
             if (
                 $this->plugin != 'user' && 
                 $this->request->params['controller'] != 'log' && 
-                !in_array($this->request->params['controller'], array('login', 'logout') ) 
-           ) {
+                !in_array($this->request->params['controller'], array('login', 'logout')) 
+            ) {
                 # TODO: site down throw
                 //throw new NotFoundException(__t('Site offline'), 503);
             }

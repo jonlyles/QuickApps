@@ -12,16 +12,23 @@
 class NodeController extends NodeAppController {
 	public $name = 'Node';
 	public $uses = array('Node.Node');
-	
+
+/**
+ * Redirect to default controller (Contents)
+ */	
 	public function admin_index() {
 		$this->redirect("/admin/node/contents");
 	}
 	
 /**
- * Site frontpage
+ * Site FrontPage.
+ * "Default front page" URL will be displayed if this option has been set in configuration panel.
+ * Otherwise, promoted nodes are captured and default front page is rendered, 
+ * how it is displayed depends on active FrontEnd Theme.
  */
     public function index() {
         $fp = Configure::read('Variable.site_frontpage');
+        
         if (!empty($fp)) {
             $this->set('front_page', $this->requestAction($fp, array('return') ) );
         } else {
@@ -45,13 +52,13 @@ class NodeController extends NodeAppController {
                     array('Node.roles_cache = ' => null),
                     array('Node.roles_cache = ' => '')
                 ),
-                'Node.language' => array( '', Configure::read('Variable.language.code') )
+                'Node.language' => array('', Configure::read('Variable.language.code'))
             );
             
             $userRoles = $this->Auth->user('role_id') ? $this->Auth->user('role_id') : array(3);
             
             foreach ($userRoles as $role_id) {
-                $conditions['OR'][] = array('Node.roles_cache LIKE' => "%|{$role_id}|%" );
+                $conditions['OR'][] = array('Node.roles_cache LIKE' => "%|{$role_id}|%");
             }
             
             if ($this->__isAdmin()) { #admin-> no role restrictions
@@ -68,8 +75,13 @@ class NodeController extends NodeAppController {
 	}
 	
 /**
- * node details
- *
+ * Node rendering by given node-slug.
+ * Error 404 will be rendered if:
+ *  - Node does not exists
+ *  - User has no access to it (Roles)
+ *  - User's language is different to the node's language
+ * 
+ * @param string $slug Slug of the Node to render
  */
 	public function details($slug) {
         $result = Cache::read("node_{$slug}");
@@ -100,10 +112,10 @@ class NodeController extends NodeAppController {
             }
                 
             $this->Node->recursive = 2;
-            $result = $this->Node->find('first', array('conditions' => $conditions) );
+            $result = $this->Node->find('first', array('conditions' => $conditions));
             
             if (isset($result['Node']['cache']) && !empty($result['Node']['cache'])) { #in seconds
-                Cache::config('node_cache', array('engine' => 'File', 'duration' => $result['Node']['cache'] ));
+                Cache::config('node_cache', array('engine' => 'File', 'duration' => $result['Node']['cache']));
                 Cache::write("node_{$slug}", $result, 'node_cache');
             }
 		}
@@ -117,6 +129,7 @@ class NodeController extends NodeAppController {
         }
         
         $this->loadModel('Comment.Comment');
+        
         # comment reply
         if (isset($this->data['Comment']) && $result['Node']['comment'] == 2) {
             $data = $this->data;
@@ -152,7 +165,16 @@ class NodeController extends NodeAppController {
         $this->Layout['viewMode'] = 'full';
         $this->Layout['node']     = $result;
 	}
-    
+
+/**
+ * Search engine.
+ * Process search post criteria and convert it to a nice-well-formatted url query.
+ * If no post criteria is given then query criteria is spected.
+ * Optional it can render results as RSS feed. Theme rendering is invoked otherwise.
+ * 
+ * @param string $criteria Well formatted filter criteria. If no criteria is pass POST criteria is spected
+ * @param boolean $rss set to true to render all results as RSS feed layout 
+ */
     public function search($criteria = false, $rss = false) {
         $keys = array(
             'type' => null,
@@ -295,7 +317,7 @@ class NodeController extends NodeAppController {
             $this->hook('node_search_keys_alter', $keys);
             
             if (!empty($keys)) {
-                $keys = implode(' ', $keys);
+                $keys = preg_replace('/ {2,}/', ' ',  implode(' ', $keys));
                 $this->redirect('/s/' . urldecode(trim($keys)));
             }
         }
@@ -338,14 +360,55 @@ class NodeController extends NodeAppController {
         }
     }
 
+/**
+ * Drupal
+ * Adds a search option to a search expression.
+ *
+ * They take the form option:value, and are added to the ordinary 
+ * keywords in the search expression.
+ *
+ * @param $expression
+ *   The search expression to add to.
+ * @param $option
+ *   The name of the option to add to the search expression.
+ * @param $value
+ *   The value to add for the option. If present, it will replace any previous
+ *   value added for the option. Cannot contain any spaces or | characters, as
+ *   these are used as delimiters. If you want to add a blank value $option: to
+ *   the search expression, pass in an empty string or a string that is composed
+ *   of only spaces. To clear a previously-stored option without adding a
+ *   replacement, pass in NULL for $value or omit.
+ *
+ * @return
+ *   $expression, with any previous value for this option removed, and a new
+ *   $option:$value pair added if $value was provided.
+ */
     private function __search_expression($expression, $option, $value = null) {
         $expression = trim(preg_replace('/(^| )' . $option . ':[^ ]*/i', '', $expression));
+
         if (isset($value)) {
             $expression .= ' ' . $option . ':' . trim($value);
         }
+
         return $expression;
     }
-
+    
+/**
+ * Drupal
+ * Extracts a search option from a search expression.
+ *
+ * They take the form option:value, and
+ * are added to the ordinary keywords in the search expression.
+ *
+ * @param $expression
+ *   The search expression to extract from.
+ * @param $option
+ *   The name of the option to retrieve from the search expression.
+ *
+ * @return
+ *   The value previously stored in the search expression for option $option,
+ *   if any. Trailing spaces in values will not be included.
+ */
     private function __search_expression_extract($expression, $option) {
         if (preg_match('/(^| )' . $option . ':([^ ]*)( |$)/i', $expression, $matches)) {
             return $matches[2];

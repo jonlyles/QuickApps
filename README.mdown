@@ -1,6 +1,6 @@
 # QuickApps
 
-**QuickApps** is a free open source, content management system for PHP, released under GPL License and powered by [CakePHP](http://cakephp.org) MVC framework.
+**QuickApps** is a free open source, content management system for PHP, released under GPL License and powered by [CakePHP 2.0](http://cakephp.org) MVC framework.
 
 ## Requirements
   * Apache with mod_rewrite
@@ -12,4 +12,11 @@
 #### Web based installer
 
   * Extract the archive. Upload the content to your server.
+  * visit http://your-site.com/ from your browser and follow the instructions.
+  
+#### Quick-Installer
+    
+  * Download the one-file installer from [here](http://cms.quickapps.es/files/installer/index.install)
+  * Rename from 'index.install' to 'index.php'
+  * Upload the new 'index.php' to your server
   * visit http://your-site.com/ from your browser and follow the instructions.

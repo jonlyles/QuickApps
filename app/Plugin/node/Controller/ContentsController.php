@@ -17,7 +17,7 @@ class ContentsController extends NodeAppController {
 		$this->title(__t('Contents') );
         if (isset($this->data['Node']['update'])) {
             if (isset($this->data['Items']['id'])) {
-                $update = ( !in_array($this->data['Node']['update'], array('delete', 'clear_cache')) );
+                $update = (!in_array($this->data['Node']['update'], array('delete', 'clear_cache')));
                 switch ($this->data['Node']['update']) {
                     case 'publish':
                         default: 
@@ -57,6 +57,7 @@ class ContentsController extends NodeAppController {
                             case 'delete':
                                 $this->requestAction("/admin/node/contents/delete/{$slug}");
                             break;
+                            
                             case 'clear_cache':
                                 if ($slug ) $this->requestAction("/admin/node/contents/clear_cache/{$slug}");
                             break;
@@ -86,16 +87,18 @@ class ContentsController extends NodeAppController {
         }
         
 		$results = $this->paginate('Node', $paginationScope);
+        
 		$this->set('results', $results);
-        $this->set('types', $this->Node->NodeType->find('list') );
+        $this->set('types', $this->Node->NodeType->find('list'));
 	}
 	
 	public function admin_edit($slug = null) {
         if (!empty($this->data)) {
             $data = $this->data;
             if ($this->Node->saveAll($data)) {
-                $this->flashMsg(__t('Content has been saved'), 'success');
                 $n = $this->Node->read();
+                
+                $this->flashMsg(__t('Content has been saved'), 'success');
                 $this->redirect('/admin/node/contents/edit/' . $n['Node']['slug']);
             } else {
                 $this->flashMsg(__t('Content could not be saved. Please, try again.'), 'error');
@@ -112,18 +115,21 @@ class ContentsController extends NodeAppController {
             $this->loadModel('User.Role');
             $this->__setLangVar();
             $this->data = $data;
+            
             $this->set('roles', $this->Role->find('list') );
             $this->set('vocabularies', $this->__typeTerms($data['NodeType']) );
         }
+        
 		$this->setCrumb('/admin/node/contents');
 		$this->title(__t('Editing Content'));
 	}
     
 	public function admin_create() {
+        $types = $this->Node->NodeType->find('all', array('conditions' => array('NodeType.status' => 1)));
+        
 		$this->title(__t('Add Content'));
         $this->setCrumb('/admin/node/contents');
         $this->setCrumb(array(__t('Select content type'), ''));
-        $types = $this->Node->NodeType->find('all', array('conditions' => array('NodeType.status' => 1)));
         $this->set('types', $types);
     }
     
@@ -170,6 +176,7 @@ class ContentsController extends NodeAppController {
         $this->data = $type;
         $this->__setLangVar();
         $this->loadModel('User.Role');
+        
         $this->set('roles', $this->Role->find('list') );
         $this->set('vocabularies', $this->__typeTerms($type) );
         $this->setCrumb('/admin/node/contents');
