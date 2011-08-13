@@ -2,20 +2,14 @@
 class FieldTermsHookBehavior extends ModelBehavior {
     
     function field_terms_beforeSave($info) {
-        $info['id'] =  empty($info['id']) || !isset($info['id']) ? null : $info['id'];
-        $data['FieldData'] = array(
-            'id' => $info['id'], # update or create
-            'field_id' => $info['field_id'],
-            'data' => implode('|', $info['data']),
-            'belongsTo' => $info['model_name'],
-            'foreignKey' => $info['model_id']
-        );
-        ClassRegistry::init('Field.FieldData')->save($data);
         return true;
     }
 
     function field_terms_afterSave($info) {
-        if (empty($info) ) return true;
+        if (empty($info)) {
+            return true;
+        }
+        
         $info['id'] =  empty($info['id']) || !isset($info['id']) ? null : $info['id'];
         $data['FieldData'] = array(
             'id' => $info['id'],
@@ -24,7 +18,9 @@ class FieldTermsHookBehavior extends ModelBehavior {
             'belongsTo' => $info['model_name'],
             'foreignKey' => $info['model_id']
         );
+        
         ClassRegistry::init('Field.FieldData')->save($data);
+        
         return true;
     }
 
@@ -34,6 +30,7 @@ class FieldTermsHookBehavior extends ModelBehavior {
 
     function field_terms_beforeValidate($info) {
         $FieldInstance = ClassRegistry::init('Field.Field')->findById($info['field_id']);
+        
         if ($FieldInstance['Field']['required'] == 1) {
             $info['data'] = is_array($info['data']) ? implode('', $info['data']) : $info['data'];
             $filtered = strip_tags($info['data']);
@@ -42,9 +39,11 @@ class FieldTermsHookBehavior extends ModelBehavior {
                     "field_list.{$info['field_id']}.data",
                     __d('field_list', 'You must select at least on option')
                 );
+                
                 return false;
             }
         }
+        
         return true;    
     }
     
@@ -60,6 +59,7 @@ class FieldTermsHookBehavior extends ModelBehavior {
                 'FieldData.foreignKey' => $info['model_id']
             )
         );
+        
         return true;
     }
     
@@ -70,5 +70,4 @@ class FieldTermsHookBehavior extends ModelBehavior {
             )
         );
     }
-
 }

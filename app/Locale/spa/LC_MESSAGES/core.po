@@ -55,3 +55,10 @@ msgstr "Cerrar sesión"
 
 msgid "My account"
 msgstr "Mi cuenta"
+
+msgid "« Previous "
+msgstr "« Anterior "
+
+msgid " Next »"
+msgstr " Siguiente »"
+

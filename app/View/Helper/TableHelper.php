@@ -63,6 +63,7 @@ class TableHelper extends AppHelper {
 	function create($data, $options) {
         $this->_defaults['paginate']['prev']['title'] = __t('« Previous ');
         $this->_defaults['paginate']['next']['title'] = __t(' Next »');
+        
 		if (isset($options['paginate']) && $options['paginate'] === true) {
 			unset($options['paginate']); # default settings
 		} else {

@@ -2,20 +2,14 @@
 class FieldTextareaHookBehavior extends ModelBehavior {
 
     function field_textarea_beforeSave($info) {
-        $info['id'] =  empty($info['id']) || !isset($info['id']) ? null : $info['id'];
-        $data['FieldData'] = array(
-            'id' => $info['id'], # update or create
-            'field_id' => $info['field_id'],
-            'data' => $info['data'],
-            'belongsTo' => $info['model_name'],
-            'foreignKey' => $info['model_id']
-        );
-        ClassRegistry::init('Field.FieldData')->save($data);
         return true;
     }
 
     function field_textarea_afterSave($info) {
-        if (empty($info) ) return true;
+        if (empty($info)) {
+            return true;
+        }
+        
         $info['id'] =  empty($info['id']) || !isset($info['id']) ? null : $info['id'];
         $data['FieldData'] = array(
             'id' => $info['id'], # update or create
@@ -24,7 +18,9 @@ class FieldTextareaHookBehavior extends ModelBehavior {
             'belongsTo' => $info['model_name'],
             'foreignKey' => $info['model_id']
         );
+        
         ClassRegistry::init('Field.FieldData')->save($data);
+        
         return true;
     }
 
@@ -34,16 +30,20 @@ class FieldTextareaHookBehavior extends ModelBehavior {
 
     function field_textarea_beforeValidate($info) {
         $FieldInstance = ClassRegistry::init('Field.Field')->findById($info['field_id']);
+        
         if ($FieldInstance['Field']['required'] == 1) {
             $filtered = html_entity_decode(strip_tags($info['data']));
+            
             if (empty($filtered)) {
                 ClassRegistry::init('Field.FieldData')->invalidate(
                     "field_textarea.{$info['field_id']}.data",
                     __d('field_textarea', 'This field can not be empty.')
                 );
+                
                 return false;
             }
         }
+        
         return true;
     }
 
@@ -58,7 +58,8 @@ class FieldTextareaHookBehavior extends ModelBehavior {
                 'FieldData.field_id' => $info['field_id'],
                 'FieldData.foreignKey' => $info['model_id']
             )
-        );    
+        );
+        
         return true;
     }
     

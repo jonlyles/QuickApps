@@ -8,7 +8,8 @@ $tSettings = array(
 		),
 		__t('Title') => array(
 			'value' => '{Node.title} {php} return ( {Node.sticky} ) ? \'<img src="{url}/node/img/sticky.png{/url}" title="' . __t('Sticky at top') . '" />\' : ""; {/php} {php} return ( {Node.promote} ) ? \'<img src="{url}/node/img/promote.png{/url}" title="' . __t('Promoted in front page') .'" />\' : ""; {/php}',
-            'sort' => 'Node.title'
+            'sort' => 'Node.title',
+            'tdOptions' => array('width' => '40%', 'align' => 'left')
 		),
 		__t('Type') => array(
 			'value' => '{php} return ("{NodeType.name}" != "") ? "{NodeType.name}" : "---"; {/php}',
@@ -56,6 +57,7 @@ $tSettings = array(
                     )
                 );
             ?>
+            
             <?php echo $this->Form->input('Node.filter.Node|status',
                     array(
                         'type' => 'select',
@@ -68,6 +70,7 @@ $tSettings = array(
                     )
                 );
             ?>
+            
             <?php echo $this->Form->input('Node.filter.Node|promote',
                     array(
                         'type' => 'select',
@@ -80,6 +83,7 @@ $tSettings = array(
                     )
                 );
             ?>
+            
             <?php echo $this->Form->input('Node.filter.Node|sticky',
                     array(
                         'type' => 'select',
@@ -92,6 +96,7 @@ $tSettings = array(
                     )
                 );
             ?>
+            
             <?php echo $this->Form->input('Node.filter.NodeType|id',
                     array(
                         'type' => 'select',
@@ -101,6 +106,7 @@ $tSettings = array(
                     )
                 );
             ?>
+            
             <?php echo $this->Form->input(__t('Filter'), array('type' => 'submit', 'label' => false ) ); ?>
         </div>
     <?php echo $this->Html->useTag('fieldsetend'); ?>

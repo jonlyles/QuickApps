@@ -67,7 +67,7 @@ class ContentsController extends NodeAppController {
             }
             $this->redirect($this->referer());
         }
-        
+
         $paginationScope = array();
         if (isset($this->data['Node']['filter']) || $this->Session->check('Node.filter')) {
             if (isset($this->data['Node']['filter']) && empty($this->data['Node']['filter'])) {
@@ -91,8 +91,13 @@ class ContentsController extends NodeAppController {
 		$this->set('results', $results);
         $this->set('types', $this->Node->NodeType->find('list'));
 	}
-	
+
 	public function admin_edit($slug = null) {
+        // attach fieldable behavior based on nodetype
+        $this->Node->recursive = 0;
+        $data = $this->Node->findBySlug($slug) or $this->redirect('/admin/node/contents');
+        $this->Node->Behaviors->attach('Field.Fieldable', array('belongsTo' => 'NodeType-' . $data['Node']['node_type_id'])); 
+       
         if (!empty($this->data)) {
             $data = $this->data;
             if ($this->Node->saveAll($data)) {
@@ -106,16 +111,15 @@ class ContentsController extends NodeAppController {
             }
         }
         
-        $this->Node->recursive = 2;
-        $data = $this->Node->findBySlug($slug) or $this->redirect('/admin/node/contents');
-
         if (empty($data['NodeType']['id'])) {
             $this->flashMsg(__t("<b>Content type not found.</b><br/>You can't edit this unidentified type of content."), 'alert');
         } else {
             $this->loadModel('User.Role');
             $this->__setLangVar();
-            $this->data = $data;
             
+            $this->Node->recursive = 2;
+            $this->data = $this->Node->findBySlug($slug);
+
             $this->set('roles', $this->Role->find('list') );
             $this->set('vocabularies', $this->__typeTerms($data['NodeType']) );
         }
@@ -123,7 +127,7 @@ class ContentsController extends NodeAppController {
 		$this->setCrumb('/admin/node/contents');
 		$this->title(__t('Editing Content'));
 	}
-    
+
 	public function admin_create() {
         $types = $this->Node->NodeType->find('all', array('conditions' => array('NodeType.status' => 1)));
         
@@ -132,9 +136,11 @@ class ContentsController extends NodeAppController {
         $this->setCrumb(array(__t('Select content type'), ''));
         $this->set('types', $types);
     }
-    
+
 	public function admin_add($node_type_id) {
         if (!empty($this->data)) {
+            $this->Node->Behaviors->attach('Field.Fieldable', array('belongsTo' => 'NodeType-' . $node_type_id)); 
+            
             if ($this->Node->saveAll($this->data, array('validate' => 'first'))) {
                 $Node = $this->Node->read();
                 $this->flashMsg(__t('Content has been saved'), 'success');
@@ -143,7 +149,7 @@ class ContentsController extends NodeAppController {
                 $this->flashMsg(__t('Content could not be saved. Please, try again.'), 'error');
             }
         }
-        
+
         $this->Node->NodeType->bindModel(
             array(
                 'hasMany' =>  array(

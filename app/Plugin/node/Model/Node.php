@@ -17,13 +17,13 @@ class Node extends NodeAppModel {
     public $validate = array(
         'title' => array('required' => true, 'allowEmpty' => false, 'rule' => 'notEmpty', 'message' => 'Node title can not be empty')
     );
-    
+
 	public $belongsTo = array(
 		'NodeType' => array(
 			'className' => 'Node.NodeType'
 		)
 	);
-    
+
     public $hasAndBelongsToMany = array(
         'Term' => array(
             'joinTable' => 'nodes_terms',
@@ -42,37 +42,12 @@ class Node extends NodeAppModel {
             'dependent' => false
         )
     );
-    
+
     public function afterFind($results, $primary) {
-        if (empty($results) || !$primary ) return $results;
-        # fetch Field => FieldData based on NodeType
-        $Field      = ClassRegistry::init('Field.Field');
-        $FieldData  = ClassRegistry::init('Field.FieldData');
-        foreach ($results as &$result) {
-            $result['Field'] = array();
-            
-            if (!isset($result['NodeType'])) {
-                continue;
-            }
-            
-            $type_fields = $Field->find('all', 
-                array(
-                    'conditions' => array(
-                        'Field.belongsTo' => "NodeType-{$result['NodeType']['id']}"
-                    ),
-                    'order' => array('Field.ordering' => 'ASC')
-                )
-            );
-            
-            $result['Field'] = Set::extract('/Field/.', $type_fields);
-            
-            foreach ($result['Field'] as &$field) {
-                $field['FieldData'] = $FieldData->find('first', array('conditions' => array('FieldData.field_id' => $field['id'], 'FieldData.foreignKey' => $result['Node']['id'], 'FieldData.belongsTo' => 'Node') ) );
-                $field['FieldData'] = Set::extract('/FieldData/.', $field['FieldData']);
-                $field['FieldData'] = isset($field['FieldData'][0]) ? $field['FieldData'][0] : $field['FieldData'];                
-            }
+        if (empty($results) || !$primary ) {
+            return $results;
         }
-        
+
         foreach ($results as &$result) {
             if (empty($result['Node']['node_type_base'])) {
                 continue;
@@ -86,7 +61,7 @@ class Node extends NodeAppModel {
 
     public function beforeValidate() {
         $r = isset($this->data['Node']['node_type_base']) ? $this->hook("{$this->data['Node']['node_type_base']}_beforeValidate", $this) : null;
-        $r = is_array($r) ? (in_array(false, $r) ? false : $r) : $r;
+        
         return ($r === null ? true : $r);
     }
 
@@ -118,31 +93,28 @@ class Node extends NodeAppModel {
         if (isset($this->data['Node']['node_type_base'])) {
             $this->node_type_base = $this->data['Node']['node_type_base'];
         }
-        
+
         $r = isset($this->data['Node']['node_type_base']) ? $this->hook("{$this->data['Node']['node_type_base']}_beforeSave", $this) : null;
-        $r = is_array($r) ? (in_array(false, $r) ? false : $r) : $r;
         
         return ($r === null ? true : $r);
     }
-    
+
     public function afterSave($created) {
         if (isset($this->data['Node']['slug'])) {
             Cache::delete("node_{$this->data['Node']['slug']}");
         }
         
         $r = isset($this->node_type_base) ? $this->hook("{$this->node_type_base}_afterSave", $this) : null;
-        $r = is_array($r) ? (in_array(false, $r) ? false : $r) : $r;
         
         return ( $r === null ? true : $r);
     }
-    
+
     public function beforeDelete($cascade) {
         # bind comments and delete them
         $this->bindComments();
         $this->recursive = -1;
         $n = $this->data = $this->read();
         $r = isset($n['Node']['node_type_base']) ? $this->hook("{$n['Node']['node_type_base']}_beforeDelete", $this) : null;
-        $r = is_array($r) ? (in_array(false, $r) ? false : $r) : $r;
         $r = $r === null ? true : $r;
         
         return $r;
@@ -159,7 +131,7 @@ class Node extends NodeAppModel {
         
         return ($r === null ? true : $r);
     }
-    
+
     public function bindComments() {
         return $this->bindModel(
             array(
@@ -172,7 +144,7 @@ class Node extends NodeAppModel {
             )
         );
     }
-    
+
     public function unbindComments() {
         return $this->unbindModel(array('hasMany' => array('Comment')));
     }

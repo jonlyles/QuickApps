@@ -114,7 +114,7 @@ class ListController extends UserAppController {
             }
         }
         
-        $this->set('fields', $this->User->prepareFields());
+        $this->set('fields', $this->User->fieldInstances());
         $this->set('roles', 
             $this->User->Role->find('list', 
                 array(
