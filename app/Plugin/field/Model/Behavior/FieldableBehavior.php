@@ -183,8 +183,9 @@ class FieldableBehavior extends ModelBehavior {
                 }
             }
         }
-
-        $this->fieldData = $Model->data['FieldData'];
+        if(isset($Model->data['FieldData'])) {
+            $this->fieldData = $Model->data['FieldData'];
+        }
 
         return !in_array(false, $r, true);
     }

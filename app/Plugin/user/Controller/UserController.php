@@ -37,7 +37,7 @@ class UserController extends UserAppController {
         if ($this->__login()) {
             $this->redirect($this->Auth->loginRedirect);
         } else {
-            $this->flashMsg(__t('Invalid username or password', 'error'));
+            $this->flashMsg(__t('Invalid username or password'), 'error');
         }
         
         $this->title(__t('Log in'));

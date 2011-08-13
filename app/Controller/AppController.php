@@ -117,7 +117,7 @@ class AppController extends Controller {
  *
  * @return void
  */
-    public function flashMsg($msg, $class) {
+    public function flashMsg($msg, $class = 'success') {
         $this->Session->setFlash($msg, 'default', array('class' => $class));
     }
     
@@ -223,7 +223,7 @@ class AppController extends Controller {
                             'description' => (isset($link[2]) ? $link[2] : ''),
                         )
                     );
-                    
+
                     $this->viewVars['breadCrumb'][] = $push;
                 }
             } else {
@@ -240,7 +240,7 @@ class AppController extends Controller {
         } else {
             $url = !is_string($url) ? $this->__getUrl() : $url;
         }
-         
+
         if (is_array($url)) {
             foreach ($url as $k => $u) {
                 $url[$k] = preg_replace('/\/{2,}/', '',  "{$u}//");
