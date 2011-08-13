@@ -2,24 +2,53 @@
 /**
  * Fieldable Behavior
  * 
- * Attach extra fields to any Model.
- * Fields are actually a module (cake plugin), with its own Hooks.
- * Fields may define they own store system (extra tables commonly) but QuickApps provides a 
- * basic store table: {prefix}_field_data
- * Each field's data must have a unique ID in that store system and each 
- * data is associated with a record Model.
+ * PHP version 5
+ *
+ * @package  QuickApps.Plugin.Field.Model.Behavior
+ * @version  1.0
+ * @author   Christopher Castro <chris@quickapps.es>
+ * @link     http://cms.quickapps.es
+ */
+ 
+ /**
+ * Basically this behavior allows to:
+ * Expand your table columns by attaching extra fields to any your Model.
  * 
- * Model -> hasMany -> FieldInstances 
- * FieldInstance -> hasMany -> FieldData
- * Model -> FieldInstance -> hasOne -> FieldData # a field within a model record has only one data record
+ * ### What a Field is
  * 
- *  Field data Post structure:
+ * Fields are actually a module (cake plugin), which manage the storing proccess of especific data.
+ * Acts like a module, what means they may have hooks and all that a common plugin have.
+ * The data storaged is commonly stored in DB tables, QuickApps provides a basic storing table
+ * called '{prefix}_field_data'. But each field may define its own storing system (extra tables commonly).
+ * Each field's data must have a unique ID in that storing system and each data is associated 
+ * to a unique Model record.
+ * 
+ * ### Understanding Model->Field relations
+ * 
+ * - Model -> hasMany -> FieldInstances:
+ *      A model may have multples instances of the same field, i.e.: 
+ *      An User model may define extra field 'last name' and 'age', and both are represented
+ *      by a textbox, means that each field is an instance of the same Field: 'field_textbox'.
+ *   
+ * 
+ * - FieldInstance -> hasMany -> FieldData:
+ *      Obviously each instance may have multiples data in its storing system, BUT each of
+ *      this records belongs to diferent Model record. i.e.: the instance 'last name' for the 
+ *      User model may have many records of data but each 'last name' actually belongs to diferent Users. 
+ * 
+ * - Model -> FieldInstance -> hasOne -> FieldData:
+ *      When retrieving a Model record, all its extra fields are captured (instances).
+ *      Then each of this instances has ONLY ONE related data for this Model record.
+ * 
+ * ### Field posting strucure:
+ * 
+ * Each field MUST always send its information following this structure,
+ * 
  *      data[FieldData][{field_module}][{field_instance_id}][data]
  *      data[FieldData][{field_module}][{field_instance_id}][id]
  * 
  *      - (string) {field_module}: name of the field handler, i.e.: 'field_textarea', 'field_my_field'.
- *                                 'field_' prefix is not required but highly recommended. That is name of
- *                                  the plugin (underscored) that represent the field
+ *                                 Note: 'field_' prefix is not required but highly recommended.
  * 
  *      - (int) {field_instance_id}: ID of the field instance attached to the current Model. 
  *                                   field instances are stored in {prefix}_fields table.
@@ -30,9 +59,9 @@
  *      - (int) id: Storage ID. Unique ID for the data in the store system implemented by the field.
  *                  null ID means that there is no data stored yet for this Model record and field instance.
  *
- *  A debug() of Post data should look like:
- *      array(
+ *  debug($this->data) should look like:
  *          array(
+ *              .... // Other Model's native fields (table columns)
  *              'FieldData' => array(
  *                  'field_module_1' => array(
  *                      41 => array(
@@ -52,28 +81,22 @@
  *                  )
  *              )
  *          )
- *      )
+ * ### Fields, capturing POST and saving the data
  * 
- * All field objects (modules) may/must have the following hooks:
- * Model hooks (Behavior): 
- * 
+ * All field objects (modules) may/must have the following Model hooks:
  *  - {field_module}_beforeSave() [optional]
- *  - {field_module}_afterSave() [required] # save logic here
- *  - {field_module}_deleteInstance() [required] # delete an instance an all related data
+ *  - {field_module}_afterSave() [required]         # save() logic here.
+ *  - {field_module}_deleteInstance() [required]    # delete an instance an all related data
  *  - {field_module}_beforeValidate() [optional]
  *  - {field_module}_beforeDelete() [optional]
  *  - {field_module}_afterDelete() [optional]
  * 
- * NOTE:
- * Field data must always be saved after Model 
- * record has been saved, that is on afterSave() callback.
+ * ### NOTE:
  * 
- * PHP version 5
- *
- * @package  QuickApps.Plugin.Field.Model.Behavior
- * @version  1.0
- * @author   Christopher Castro <chris@quickapps.es>
- * @link     http://cms.quickapps.es
+ * Field data must always be saved after Model record has been saved, 
+ * that is on afterSave() callback. i.e.: When updating/creating a new User, all field's data
+ * must be saved after the User native data has been saved
+ * 
  */
 class FieldableBehavior extends ModelBehavior {
 /**
@@ -97,27 +120,14 @@ class FieldableBehavior extends ModelBehavior {
  */
 	public function setup($Model, $settings = array()) {
 		$this->__settings = Set::merge($this->__settings, $settings);
-        
+
         if(empty($this->__settings['belongsTo'])) {
             $this->__settings['belongsTo'] = $Model->alias;
         }
-        
+
         $this->Field = ClassRegistry::init('Field.Field');
         $this->Field->FieldData = ClassRegistry::init('Field.FieldData');
-
-        $Model->bindModel(
-            array(
-                'hasMany' =>  array(
-                    'Field' => array(
-                        'className' => 'Field.Field',
-                        'foreignKey' => false,
-                        'order' => array('Field.ordering' => 'ASC'),
-                        'conditions' => array('Field.belongsTo' => $this->__settings['belongsTo'])
-                    )
-                )
-            )
-        );
-
+        
         return;
     }
 
@@ -136,6 +146,7 @@ class FieldableBehavior extends ModelBehavior {
                 )
             );
         }
+        
         return true;
     }
 
@@ -153,7 +164,7 @@ class FieldableBehavior extends ModelBehavior {
  */    
     public function beforeSave(&$Model) {
         $r = array();
-        
+
         /**
          * optionaly we send field information to field handlers before save the Model record, 
          * so they can stop the proccess if it is required
@@ -176,7 +187,7 @@ class FieldableBehavior extends ModelBehavior {
     }
 
 /**
- * If a new Mode-record has been saved, then proceed to save related field's data.
+ * If a new Model-record has been saved, then proceed to save related field's data.
  * 
  * @param object $Model instance of model
  * @param boolean $created wich indicate if a new record has been inserted
@@ -261,10 +272,10 @@ class FieldableBehavior extends ModelBehavior {
         if (!isset($Model->data['FieldData'])) {
             return true;
         }
-        
+
         $DummyModel = ClassRegistry::init('Dummy'); # shortcut to AppModel::hook()
         $r = array();
-        
+
         foreach ($Model->data['FieldData'] as $field_module => $fields) {
             foreach ($fields as $field_id => $info) {
                 $info['field_id'] = $field_id;
@@ -285,13 +296,13 @@ class FieldableBehavior extends ModelBehavior {
         ) {
             return $results;
         }
-        
+
         # fetch model instance Fields
         foreach ($results as &$result) {
             if (!isset($result[$Model->alias])) {
                 continue;
             }
-            
+
             $belongsTo = $this->__settings['belongsTo'];
 
             # look for array paths
@@ -328,7 +339,7 @@ class FieldableBehavior extends ModelBehavior {
                         )
                     )
                 );
-                
+
                 $field['FieldData'] = Set::extract('/FieldData/.', $field['FieldData']);
                 $field['FieldData'] = isset($field['FieldData'][0]) ? $field['FieldData'][0] : $field['FieldData'];
                 $Model->hook("{$field['name']}_afterFind", $result['Field'][$key]);
