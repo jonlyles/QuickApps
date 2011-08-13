@@ -80,7 +80,7 @@ class FieldableBehavior extends ModelBehavior {
  * belongsTo: Name of the object that field belongs to. (Commonly Model Name)
  * If no information is given then Model name is used as default. 
  */
-    public $settings = array('belongsTo' => null);
+    private $__settings = array('belongsTo' => null);
     
 /**
  * Temp holder for afterSave() proccessing
@@ -96,12 +96,15 @@ class FieldableBehavior extends ModelBehavior {
  * @return void
  */
 	public function setup($Model, $settings = array()) {
-        $this->settings['belongsTo'] = $Model->alias;
-		$this->settings = array_merge($this->settings, $settings);
+		$this->__settings = Set::merge($this->__settings, $settings);
+        
+        if(empty($this->__settings['belongsTo'])) {
+            $this->__settings['belongsTo'] = $Model->alias;
+        }
         
         $this->Field = ClassRegistry::init('Field.Field');
         $this->Field->FieldData = ClassRegistry::init('Field.FieldData');
-        
+
         $Model->bindModel(
             array(
                 'hasMany' =>  array(
@@ -109,7 +112,7 @@ class FieldableBehavior extends ModelBehavior {
                         'className' => 'Field.Field',
                         'foreignKey' => false,
                         'order' => array('Field.ordering' => 'ASC'),
-                        'conditions' => array('Field.belongsTo' => "{$Model->name}")
+                        'conditions' => array('Field.belongsTo' => $this->__settings['belongsTo'])
                     )
                 )
             )
@@ -276,7 +279,10 @@ class FieldableBehavior extends ModelBehavior {
     }
 
     public function afterFind(&$Model, $results, $primary) {
-        if (empty($results) || !$primary || (isset($Model->fieldsNoFetch) && $Model->fieldsNoFetch)) {
+        if (empty($results) || 
+            !$primary || 
+            (isset($Model->fieldsNoFetch) && $Model->fieldsNoFetch)
+        ) {
             return $results;
         }
         
@@ -286,12 +292,22 @@ class FieldableBehavior extends ModelBehavior {
                 continue;
             }
             
+            $belongsTo = $this->__settings['belongsTo'];
+
+            # look for array paths
+    		preg_match_all('/\{([\{\}0-9a-zA-Z_\.]+)\}/iUs', $belongsTo, $matches);
+    		if (isset($matches[1]) && !empty($matches[1])) {
+    			foreach ($matches[0] as $i => $m) {
+    				$belongsTo = str_replace($m, Set::extract(trim($matches[1][$i]), $result), $belongsTo);
+    			}
+    		}
+
             $result['Field'] = array();
             $modelFields = $this->Field->find('all', 
                 array(
                     'order' => array('Field.ordering' => 'ASC'), 
                     'conditions' => array(
-                        'Field.belongsTo' => $this->settings['belongsTo']
+                        'Field.belongsTo' => $belongsTo
                     )
                 )
             );
@@ -332,7 +348,7 @@ class FieldableBehavior extends ModelBehavior {
         $results = $this->Field->find('all', 
             array(
                 'conditions' => array(
-                    'Field.belongsTo' => $this->settings['belongsTo']
+                    'Field.belongsTo' => $this->__settings['belongsTo']
                 ),
                 'order' => array('Field.ordering' => 'ASC')
             )

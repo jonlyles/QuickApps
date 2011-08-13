@@ -98,4 +98,4 @@
 </html>
 <?php endif; ?>
 
-<?php $this->Layout->isAllowed(); ?>
+<?php echo $this->element('sql_dump'); ?>

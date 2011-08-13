@@ -13,7 +13,7 @@ class Node extends NodeAppModel {
     public $name = 'Node';
     public $useTable = "nodes";
     public $order = array('Node.modified' => 'DESC');
-    public $actsAs = array('Sluggable');
+    public $actsAs = array('Sluggable', 'Field.Fieldable' => array('belongsTo' => 'NodeType-{Node.node_type_id}'));
     public $validate = array(
         'title' => array('required' => true, 'allowEmpty' => false, 'rule' => 'notEmpty', 'message' => 'Node title can not be empty')
     );
@@ -55,7 +55,7 @@ class Node extends NodeAppModel {
             
             $this->hook("{$result['Node']['node_type_base']}_afterFind", $result, array('collectReturn' => false, 'alter' => true));
         }
-        
+
         return $results;
     }
 

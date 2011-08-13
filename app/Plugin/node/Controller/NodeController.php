@@ -89,7 +89,12 @@ class NodeController extends NodeAppController {
             # USE Node.roles_cache
             $this->Node->unbindModel(array('hasAndBelongsToMany' => array('Role'))); 
             $this->Node->unbindComments();
-            
+            $this->Node->Behaviors->attach('Field.Fieldable', 
+                array(
+                    'belongsTo' => 'NodeType-{Node.node_type_id}'
+                )
+            );
+
             $conditions = array(
                 'Node.slug' => $slug,
                 'Node.status' => 1,
@@ -100,9 +105,9 @@ class NodeController extends NodeAppController {
                 ),
                 'Node.language' => array('', Configure::read('Variable.language.code'))
             );
-            
+
             $userRoles = $this->Auth->user('role_id') ? $this->Auth->user('role_id') : array(3);
-            
+
             foreach ($userRoles as $role_id) {
                 $conditions['OR'][] = array('Node.roles_cache LIKE' => "%|{$role_id}|%" );
             }

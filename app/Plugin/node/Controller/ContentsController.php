@@ -96,8 +96,7 @@ class ContentsController extends NodeAppController {
         // attach fieldable behavior based on nodetype
         $this->Node->recursive = 0;
         $data = $this->Node->findBySlug($slug) or $this->redirect('/admin/node/contents');
-        $this->Node->Behaviors->attach('Field.Fieldable', array('belongsTo' => 'NodeType-' . $data['Node']['node_type_id'])); 
-       
+      
         if (!empty($this->data)) {
             $data = $this->data;
             if ($this->Node->saveAll($data)) {
@@ -110,7 +109,7 @@ class ContentsController extends NodeAppController {
                 $err = true;
             }
         }
-        
+
         if (empty($data['NodeType']['id'])) {
             $this->flashMsg(__t("<b>Content type not found.</b><br/>You can't edit this unidentified type of content."), 'alert');
         } else {
