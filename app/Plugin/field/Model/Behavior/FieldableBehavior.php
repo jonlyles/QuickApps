@@ -16,29 +16,31 @@
  * 
  * ### What a Field is
  * 
- * Fields are actually a module (cake plugin), which manage the storing proccess of especific data.
+ * Fields are actually modules (cake plugin), which manage the storing proccess of especific data.
  * Acts like a module, what means they may have hooks and all that a common plugin have.
- * The data storaged is commonly stored in DB tables, QuickApps provides a basic storing table
- * called '{prefix}_field_data'. But each field may define its own storing system (extra tables commonly).
- * Each field's data must have a unique ID in that storing system and each data is associated 
+ * The data is commonly stored in DB tables, QuickApps provides a basic storage table
+ * called '{prefix}_field_data'. Anyway, each field is able to define its own storing system (extra tables commonly).
+ * Also, each field's data must have a unique ID in that storing system and each data is associated 
  * to a unique Model record.
  * 
  * ### Understanding Model->Field relations
  * 
  * - Model -> hasMany -> FieldInstances:
  *      A model may have multples instances of the same field, i.e.: 
- *      An User model may define extra field 'last name' and 'age', and both are represented
- *      by a textbox, means that each field is an instance of the same Field: 'field_textbox'.
+ *      An User model may define extra fields 'last name' and 'age', both represented
+ *      by a textbox, means that each field ('last name' & 'age') is an instance of the same Field handler: 'field_textbox'.
  *   
  * 
  * - FieldInstance -> hasMany -> FieldData:
- *      Obviously each instance may have multiples data in its storing system, BUT each of
+ *      Obviously each instance may have multiple data records in its storing system, BUT each of
  *      this records belongs to diferent Model record. i.e.: the instance 'last name' for the 
- *      User model may have many records of data but each 'last name' actually belongs to diferent Users. 
+ *      User model may have many records of data but each 'last name' actually belong to diferent Users. 
  * 
  * - Model -> FieldInstance -> hasOne -> FieldData:
  *      When retrieving a Model record, all its extra fields are captured (instances).
  *      Then each of this instances has ONLY ONE related data for this Model record.
+ *      i.e.: When editing a User, its 'last name' field must have only one value even though the 
+ *      field instance has many data records in its storage system. (explanation above)
  * 
  * ### Field posting strucure:
  * 
@@ -51,13 +53,13 @@
  *                                 Note: 'field_' prefix is not required but highly recommended.
  * 
  *      - (int) {field_instance_id}: ID of the field instance attached to the current Model. 
- *                                   field instances are stored in {prefix}_fields table.
+ *                                   (field instances are stored in '{prefix}_fields' table)
  * 
  *      - (mixed) data: Field data. It may be from a simple text to complex arrays of mixed data
  *                      For example, an 'field_image_album' could define data as an array of images.
  * 
- *      - (int) id: Storage ID. Unique ID for the data in the store system implemented by the field.
- *                  null ID means that there is no data stored yet for this Model record and field instance.
+ *      - (int) id: Storage ID. Unique ID for the data in the storage system implemented by the field.
+ *                  null ID means that there is no data stored yet for this Model record and this field instance.
  *
  *  debug($this->data) should look like:
  *          array(
@@ -81,6 +83,7 @@
  *                  )
  *              )
  *          )
+ * 
  * ### Fields, capturing POST and saving the data
  * 
  * All field objects (modules) may/must have the following Model hooks:
@@ -95,7 +98,7 @@
  * 
  * Field data must always be saved after Model record has been saved, 
  * that is on afterSave() callback. i.e.: When updating/creating a new User, all field's data
- * must be saved after the User native data has been saved
+ * must be saved after the User native data has been updated/created
  * 
  */
 class FieldableBehavior extends ModelBehavior {

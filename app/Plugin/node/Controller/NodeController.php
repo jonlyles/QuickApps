@@ -79,7 +79,7 @@ class NodeController extends NodeAppController {
  * Error 404 will be rendered if:
  *  - Node does not exists
  *  - User has no access to it (Roles)
- *  - User's language is different to the node's language
+ *  - User's language is different to the node's languages
  * 
  * @param string $slug Slug of the Node to render
  */
@@ -173,9 +173,9 @@ class NodeController extends NodeAppController {
 
 /**
  * Search engine.
- * Process search post criteria and convert it to a nice-well-formatted url query.
- * If no post criteria is given then query criteria is spected.
- * Optional it can render results as RSS feed. Theme rendering is invoked otherwise.
+ * Process search form-POST criteria and convert it to a nice-well-formatted url query.
+ * If no form-POST criteria is given then query criteria is spected.
+ * Optionally it can render results as RSS feed. Theme rendering is invoked as default.
  * 
  * @param string $criteria Well formatted filter criteria. If no criteria is pass POST criteria is spected
  * @param boolean $rss set to true to render all results as RSS feed layout 
@@ -366,7 +366,7 @@ class NodeController extends NodeAppController {
     }
 
 /**
- * Drupal
+ * By: Drupal
  * Adds a search option to a search expression.
  *
  * They take the form option:value, and are added to the ordinary 
@@ -399,7 +399,7 @@ class NodeController extends NodeAppController {
     }
     
 /**
- * Drupal
+ * By: Drupal
  * Extracts a search option from a search expression.
  *
  * They take the form option:value, and

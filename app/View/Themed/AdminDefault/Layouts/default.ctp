@@ -22,7 +22,7 @@
             h2 { display:none; }
             #sessionFlash { display:none; }
         </style>
-        <?php echo $this->Layout->header();?>
+        <?php echo $this->Layout->header(); ?>
 	</head>
 	<body>
         <?php if ($sessionFlash = $this->Layout->sessionFlash() ): ?>
@@ -65,19 +65,19 @@
 			</div>
 			
 			<div id="page">
-                <?php if (!$this->Layout->emptyRegion('toolbar') ): ?>
+                <?php if (!$this->Layout->emptyRegion('toolbar')): ?>
                 <div class="toolbar">
                     <?php echo $this->Layout->blocks('toolbar'); ?>
                 </div>
                 <?php endif; ?>
                 
-                <?php if (!$this->Layout->emptyRegion('help') ): ?>
+                <?php if (!$this->Layout->emptyRegion('help')): ?>
                 <div class="help">
                     <?php echo $this->Layout->blocks('help'); ?>
                 </div>
                 <?php endif; ?>
 
-                <?php if ($sessionFlash = $this->Layout->sessionFlash() ): ?>
+                <?php if ($sessionFlash = $this->Layout->sessionFlash()): ?>
                 <div id="sessionFlash">
                     <?php echo $sessionFlash; ?>
                 </div>
@@ -97,5 +97,3 @@
 	</body>
 </html>
 <?php endif; ?>
-
-<?php echo $this->element('sql_dump'); ?>

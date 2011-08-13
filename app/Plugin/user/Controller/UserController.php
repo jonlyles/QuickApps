@@ -12,38 +12,42 @@
 class UserController extends UserAppController {
     public $components = array('Cookie', 'Session');
     public $uses = array('User.User');
-	
+
     # do not touch this method
 	public function admin_index() {
 		$this->redirect('/admin/user/list');
 	}
-    
+
     public function login() {
         if ($this->__login()) {
             $this->redirect($this->Auth->loginRedirect);
+        } else {
+            $this->flashMsg(__t('Invalid username or password', 'error'));
         }
-        
+
         $this->title(__t('Log in'));
     }
-    
+
     public function logout() {
         $this->__logout();
         $this->redirect($this->Auth->logout());
     }
-    
-    public function admin_logout() {
-        $this->__logout();
-        $this->redirect($this->Auth->logout());
-    }
-    
+
     public function admin_login() {
         if ($this->__login()) {
             $this->redirect($this->Auth->loginRedirect);
+        } else {
+            $this->flashMsg(__t('Invalid username or password', 'error'));
         }
         
         $this->title(__t('Log in'));
     }
-    
+
+    public function admin_logout() {
+        $this->__logout();
+        $this->redirect($this->Auth->logout());
+    }
+
     public function register() {
         if (isset($this->data['User'])) {
             if ($this->User->save($this->data)) {

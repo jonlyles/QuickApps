@@ -510,7 +510,7 @@ class InstallerComponent extends Object {
     }
     
 /**
- * Credits: Drupal
+ * By: Drupal
  * Parse a dependency for comparison by checkIncompatibility().
  *
  * @param $dependency
@@ -561,7 +561,7 @@ class InstallerComponent extends Object {
     }
     
 /**
- * Credits: Drupal
+ * By: Drupal
  * Check whether a version is compatible with a given dependency.
  *
  * @param $v

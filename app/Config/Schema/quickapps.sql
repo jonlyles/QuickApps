@@ -444,7 +444,7 @@ CREATE TABLE IF NOT EXISTS `#__field_data` (
   `field_id` int(11) NOT NULL,
   `foreignKey` varchar(20) COLLATE utf8_unicode_ci NOT NULL,
   `belongsTo` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
-  `data` longtext COLLATE utf8_unicode_ci NOT NULL,
+  `data` longtext COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=3 ;
 

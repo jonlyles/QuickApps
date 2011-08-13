@@ -14,7 +14,7 @@ class FieldListHookBehavior extends ModelBehavior {
         $data['FieldData'] = array(
             'id' => $info['id'], # update or create
             'field_id' => $info['field_id'],
-            'data' => implode('|', $info['data']),
+            'data' => implode('|', (array)$info['data']),
             'belongsTo' => $info['model_name'],
             'foreignKey' => $info['model_id']
         );
