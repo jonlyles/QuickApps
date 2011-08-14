@@ -12,11 +12,11 @@
  
  /**
  * Basically this behavior allows to:
- * Expand your table columns by attaching extra fields to any your Model.
+ * Expand your table columns by attaching extra fields to any Model.
  * 
  * ### What a Field is
  * 
- * Fields are actually modules (cake plugin), which manage the storing proccess of especific data.
+ * Fields are actually modules (cake's plugin), which manage the storing proccess of especific data.
  * Acts like a module, what means they may have hooks and all that a common plugin have.
  * The data is commonly stored in DB tables, QuickApps provides a basic storage table
  * called '{prefix}_field_data'. Anyway, each field is able to define its own storing system (extra tables commonly).
@@ -293,6 +293,15 @@ class FieldableBehavior extends ModelBehavior {
         return !in_array(false, $r, true);
     }
 
+/**
+ * Fecth fields to Model results
+ * 
+ * @param object $Model instance of model
+ * @param array $results The results of the Model's find operation
+ * @param boolean $primary Whether Model is being queried directly (vs. being queried as an association)
+ * 
+ * @return mixed An array value will replace the value of $results - any other value will be ignored.
+ */
     public function afterFind(&$Model, $results, $primary) {
         if (empty($results) || 
             !$primary || 
@@ -309,7 +318,7 @@ class FieldableBehavior extends ModelBehavior {
 
             $belongsTo = $this->__settings['belongsTo'];
 
-            # look for array paths
+            # look for dynamic belongsTo
     		preg_match_all('/\{([\{\}0-9a-zA-Z_\.]+)\}/iUs', $belongsTo, $matches);
     		if (isset($matches[1]) && !empty($matches[1])) {
     			foreach ($matches[0] as $i => $m) {
@@ -330,23 +339,14 @@ class FieldableBehavior extends ModelBehavior {
             $result['Field'] = Set::extract('/Field/.', $modelFields);
 
             foreach ($result['Field'] as $key => &$field) {
-                /*
-                 * Attempt to find basic data (FieldData).
-                 * Remember: fields can define their own storage tables (or 'storage system' in general), 
-                 * but FieldData is the basic common
-                 */
-                $field['FieldData'] = $this->Field->FieldData->find('first', 
-                    array(
-                        'conditions' => array(
-                            'FieldData.field_id' => $field['id'], 
-                            'FieldData.foreignKey' => $result[$Model->alias][$Model->primaryKey]
-                        )
-                    )
-                );
-
-                $field['FieldData'] = Set::extract('/FieldData/.', $field['FieldData']);
-                $field['FieldData'] = isset($field['FieldData'][0]) ? $field['FieldData'][0] : $field['FieldData'];
-                $Model->hook("{$field['name']}_afterFind", $result['Field'][$key]);
+                $field['FieldData'] = array();  # field module storage data must be set here
+                
+                $data['field'] =& $field; # field instance information
+                $data['belongsTo'] = $Model->alias; # field belongsTo
+                $data['foreignKey'] = $result[$Model->alias][$Model->primaryKey]; # Model unique ID                                                                
+                $data['result'] =& $result; # instance of the current node being fetched
+                
+                $Model->hook("{$field['field_module']}_afterFind", $data);
             }
         }
 

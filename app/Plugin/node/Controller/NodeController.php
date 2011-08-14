@@ -221,14 +221,14 @@ class NodeController extends NodeAppController {
             if ($term = $this->__search_expression_extract($criteria, 'term')) {
                 $criteria = str_replace("term:{$term}", '', $criteria);
                 $term = explode(',', $term);
-                
+
                 foreach ($term as $t) {
                     $t = trim($t);
-                    
+
                     if (empty($t)) {
                         continue;
                     }
-                    
+
                     $scope['OR'][] = array('Node.terms_cache LIKE' => "%:{$t}%" );
                 }
             }

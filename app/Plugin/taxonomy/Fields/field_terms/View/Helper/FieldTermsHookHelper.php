@@ -3,37 +3,46 @@ class FieldTermsHookHelper extends AppHelper {
     function field_terms_view($data) {
         return $this->_View->element('view', array('data' => $data), array('plugin' => 'FieldTerms') );
     }
-    
+
     function field_terms_edit($data) {
         return $this->_View->element('edit', array('data' => $data), array('plugin' => 'FieldTerms') );
     }
-    
-    function field_terms_formatter($data) {
-        $_options = $options = array();
-        if (!empty($data['options'])) {
-            $_options = explode("\n", $data['options']);
-            foreach ($_options as $option) {
-                $option = explode("|",$option);
-                $value = $option[0];
-                $label = isset($option[1]) ? $option[1] : $option[0];
-                $options[$value] = $label;
-            }
-        }        
-        
-        $content = explode("|", $data['content']);
 
-        $data['content'] = '';
-        foreach ($content as $key) {
+    function field_terms_formatter($data) {
+        $terms = ClassRegistry::init('Texonomy.Term')->find('all',
+            array(
+                'conditions' => array(
+                    'Term.id' => explode("|", $data['content'])
+                )
+            )
+        );
+        
+        if(isset($data['format']['type']) && $data['format']['type'] == 'hidden') {
+            $data['content'] = '';
+            return;
+        }
+        
+        $data['content'] = array();
+
+        foreach ($terms as $term) {
             switch($data['format']['type']) {
-                case 'key': 
-                    $data['content'] .= "{$key}<br/>";
-                break;
-                case 'default': #Label
+                case 'plain': 
                     default:
-                        $data['content'] .= @"{$options[$key]}<br/>";
+                        $data['content'][]= "{$term['Term']['name']}";
+                break;
+                
+                case 'link-localized':
+                    $data['content'][] = $this->_View->Html->link(__t($term['Term']['name']), "/s/term:{$term['Term']['slug']}");
+                break;
+                
+                case 'plain-localized':
+                    $data['content'][]= __t($term['Term']['name']);
                 break;
             }
         }
+        
+        $data['content'] = implode(', ', $data['content']);
+        
         return;
     }
 }

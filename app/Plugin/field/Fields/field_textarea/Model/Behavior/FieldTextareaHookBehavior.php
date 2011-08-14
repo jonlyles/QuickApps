@@ -24,8 +24,21 @@ class FieldTextareaHookBehavior extends ModelBehavior {
         return true;
     }
 
-    function field_textarea_afterFind(&$results) {
-        return true;
+    function field_textarea_afterFind($data) {
+        $data['field']['FieldData'] = ClassRegistry::init('Field.FieldData')->find('first', 
+            array(
+                'conditions' => array(
+                    'FieldData.field_id' => $data['field']['id'], 
+                    'FieldData.belongsTo' => $data['belongsTo'],
+                    'FieldData.foreignKey' => $data['foreignKey']
+                )
+            )
+        );
+
+        $data['field']['FieldData'] = Set::extract('/FieldData/.', $data['field']['FieldData']);
+        $data['field']['FieldData'] = isset($data['field']['FieldData'][0]) ? $data['field']['FieldData'][0] : $data['field']['FieldData'];
+        
+        return;
     }
 
     function field_textarea_beforeValidate($info) {
