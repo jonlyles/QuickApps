@@ -128,9 +128,6 @@ class FieldableBehavior extends ModelBehavior {
             $this->__settings['belongsTo'] = $Model->alias;
         }
 
-        $this->Field = ClassRegistry::init('Field.Field');
-        $this->Field->FieldData = ClassRegistry::init('Field.FieldData');
-        
         return;
     }
 
@@ -140,9 +137,11 @@ class FieldableBehavior extends ModelBehavior {
  * @param object $Model instance of model
  * 
  * @return boolean true
- */     
-    public function beforeFind(&$Model) {
-        if (isset($Model->fieldsNoFetch) && $Model->fieldsNoFetch) {
+ */
+    public function beforeFind(&$Model, $query) {
+        if ((isset($Model->fieldsNoFetch) && $Model->fieldsNoFetch) || 
+            (isset($query['recursive']) && $query['recursive'] == -1)
+        ) {
             $Model->unbindModel(
                 array(
                     'hasMany' => array('Field')
@@ -234,22 +233,35 @@ class FieldableBehavior extends ModelBehavior {
  * @return boolean True if all the fields has returned true. False otherwhise
  */    
     private function __beforeAfterDelete(&$Model, $type = 'before') {
-        $model_id = $Model->id ? $Model->id : $Model->tmpId;
+        $model_id = $Model->id ? $Model->id : $Model->tmpData[$Model->alias][$Model->primaryKey];
+
+        if($type == 'before') {
+            $result = $Model->find('first',
+                array(
+                    'conditions' => array(
+                        "{$Model->alias}.{$Model->primaryKey}" => $model_id
+                    ),
+                    'recursive' => -1
+                )
+            );
+
+            $Model->tmpBelongsTo = $belongsTo = $this->__parseBelongsTo($this->__settings['belongsTo'], $result);
+            $Model->tmpData = $result;
+        } else {
+            $belongsTo = $Model->tmpBelongsTo;
+        }
+
         $fields = ClassRegistry::init('Field.Field')->find('all',
             array(
                 'conditions' => array(
-                    'belongsTo' => "{$Model->name}"
+                    'belongsTo' => $belongsTo
                 )
             )
         );
-        
+
         $r = array();
 
         foreach ($fields as $field) {
-            if ($type == 'before') {
-                $Model->tmpId = $Model->id;
-            }
-
             $info['field_id'] = $field['Field']['id'];
             $info['model_name'] = $Model->name;
             $info['model_id'] = $model_id;
@@ -316,18 +328,10 @@ class FieldableBehavior extends ModelBehavior {
                 continue;
             }
 
-            $belongsTo = $this->__settings['belongsTo'];
-
-            # look for dynamic belongsTo
-    		preg_match_all('/\{([\{\}0-9a-zA-Z_\.]+)\}/iUs', $belongsTo, $matches);
-    		if (isset($matches[1]) && !empty($matches[1])) {
-    			foreach ($matches[0] as $i => $m) {
-    				$belongsTo = str_replace($m, Set::extract(trim($matches[1][$i]), $result), $belongsTo);
-    			}
-    		}
+            $belongsTo = $this->__parseBelongsTo($this->__settings['belongsTo'], $result);
 
             $result['Field'] = array();
-            $modelFields = $this->Field->find('all', 
+            $modelFields = ClassRegistry::init('Field.Field')->find('all', 
                 array(
                     'order' => array('Field.ordering' => 'ASC'), 
                     'conditions' => array(
@@ -343,7 +347,7 @@ class FieldableBehavior extends ModelBehavior {
                 
                 $data['field'] =& $field; # field instance information
                 $data['belongsTo'] = $Model->alias; # field belongsTo
-                $data['foreignKey'] = $result[$Model->alias][$Model->primaryKey]; # Model unique ID                                                                
+                $data['foreignKey'] = @$result[$Model->alias][$Model->primaryKey]; # Model unique ID                                                                
                 $data['result'] =& $result; # instance of the current node being fetched
                 
                 $Model->hook("{$field['field_module']}_afterFind", $data);
@@ -360,7 +364,7 @@ class FieldableBehavior extends ModelBehavior {
  * @return array List array of all attached fields
  */
     public function fieldInstances() {
-        $results = $this->Field->find('all', 
+        $results = ClassRegistry::init('Field.Field')->find('all', 
             array(
                 'conditions' => array(
                     'Field.belongsTo' => $this->__settings['belongsTo']
@@ -370,6 +374,18 @@ class FieldableBehavior extends ModelBehavior {
         );
 
         return $results = Set::extract('/Field/.', $results);
+    }
+    
+    private function __parseBelongsTo($belongsTo, $result = array()){
+         # look for dynamic belongsTo
+		preg_match_all('/\{([\{\}0-9a-zA-Z_\.]+)\}/iUs', $belongsTo, $matches);
+		if (isset($matches[1]) && !empty($matches[1])) {
+			foreach ($matches[0] as $i => $m) {
+				$belongsTo = str_replace($m, Set::extract(trim($matches[1][$i]), $result), $belongsTo);
+			}
+		}
+
+        return $belongsTo;
     }
     
 /**

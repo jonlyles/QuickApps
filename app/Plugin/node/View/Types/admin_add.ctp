@@ -36,7 +36,7 @@
     -->
     <?php echo $this->Html->useTag('fieldsetstart', __t('Default options')  ); ?>
         <?php echo $this->Html->useTag('fieldsetstart', __t('Comments')  ); ?>
-            <?php echo $this->Form->input('default_comment', array('type' => 'radio', 'legend' => false, 'separator' => '<br>', 'options' => array(2 => __t('Open'), 0 => __t('Closed'), 1 => __t('Read Only')) ) ); ?>
+            <?php echo $this->Form->input('default_comment', array('value' => 0, 'type' => 'radio', 'legend' => false, 'separator' => '<br>', 'options' => array(2 => __t('Open'), 0 => __t('Closed'), 1 => __t('Read Only')) ) ); ?>
             <em><?php echo __t('Default comment setting for new content'); ?></em>
         <?php echo $this->Html->useTag('fieldsetend'); ?>
         

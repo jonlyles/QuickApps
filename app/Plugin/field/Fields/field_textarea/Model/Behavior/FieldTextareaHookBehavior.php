@@ -72,10 +72,10 @@ class FieldTextareaHookBehavior extends ModelBehavior {
                 'FieldData.foreignKey' => $info['model_id']
             )
         );
-        
+
         return true;
     }
-    
+
     function field_textarea_deleteInstance($field_id) {
         ClassRegistry::init('Field.FieldData')->deleteAll(
             array(

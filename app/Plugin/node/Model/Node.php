@@ -93,6 +93,8 @@ class Node extends NodeAppModel {
         if (isset($this->data['Node']['node_type_base'])) {
             $this->node_type_base = $this->data['Node']['node_type_base'];
         }
+        
+        $this->data['Node']['comment'] = !isset($this->data['Node']['comment']) || empty($this->data['Node']['comment']) ? 0 : $this->data['Node']['comment'];
 
         $r = isset($this->data['Node']['node_type_base']) ? $this->hook("{$this->data['Node']['node_type_base']}_beforeSave", $this) : null;
         
@@ -103,7 +105,7 @@ class Node extends NodeAppModel {
         if (isset($this->data['Node']['slug'])) {
             Cache::delete("node_{$this->data['Node']['slug']}");
         }
-        
+
         $r = isset($this->node_type_base) ? $this->hook("{$this->node_type_base}_afterSave", $this) : null;
         
         return ( $r === null ? true : $r);

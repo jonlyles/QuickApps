@@ -45,21 +45,23 @@ class ContentsController extends NodeAppController {
                     break;
                 }
  
-                foreach ($this->data['Items']['id'] as $key => $id) {
+                foreach ($this->data['Items']['id'] as $id) {
                     if ($update) { # update node
                         $this->Node->id = $id;
                         $this->Node->saveField($data['field'], $data['value'], false);
                     } else { # delete node
                         $this->Node->id = $id;
                         $slug = $this->Node->field('slug');
-                        
+
                         switch ($this->data['Node']['update']) {
                             case 'delete':
-                                $this->requestAction("/admin/node/contents/delete/{$slug}");
+                                $this->requestAction("/admin/node/contents/delete/{$slug}", array('return'));
                             break;
                             
                             case 'clear_cache':
-                                if ($slug ) $this->requestAction("/admin/node/contents/clear_cache/{$slug}");
+                                if ($slug) {
+                                    $this->requestAction("/admin/node/contents/clear_cache/{$slug}", array('return'));
+                                }
                             break;
                         }
                     }
@@ -195,7 +197,7 @@ class ContentsController extends NodeAppController {
         if (empty($node)) {
             $this->redirect('/admin/node/contents');
         }
-        
+
         $this->Node->delete($node['Node']['id']);
         $this->redirect($this->referer());
     }
