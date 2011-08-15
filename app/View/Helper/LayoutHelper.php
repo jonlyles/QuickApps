@@ -776,7 +776,7 @@ class LayoutHelper extends AppHelper {
         if (empty($out)) {
             $out = $this->default_theme_block($Block);
         }
-        
+
         return $out;
     }
     
@@ -789,7 +789,12 @@ class LayoutHelper extends AppHelper {
  */	
     public function hookTags($text) {
         $text = $this->specialTags($text);
-        $tags = implode('|', $this->events);
+
+        if (!empty($this->tmp['hookTagsEvents'])) {
+            $tags = $this->tmp['hookTagsEvents'];
+        } else {
+            $tags = $this->tmp['hookTagsEvents'] = implode('|', $this->events);
+        }
         
         return preg_replace_callback('/(.?)\[(' . $tags . ')\b(.*?)(?:(\/))?\](?:(.+?)\[\/\2\])?(.?)/s', array($this, '__doHookTag'), $text);
     }
@@ -814,15 +819,15 @@ class LayoutHelper extends AppHelper {
                 return $m[1] . call_user_func(array($hook, $tag), $attr, null, $tag) . $m[6];
             }
         }
-        
+
         return false;
     }
-    
+
     private function __hookTagParseAtts($text) {
         $atts       = array();
         $pattern    = '/(\w+)\s*=\s*"([^"]*)"(?:\s|$)|(\w+)\s*=\s*\'([^\']*)\'(?:\s|$)|(\w+)\s*=\s*([^\s\'"]+)(?:\s|$)|"([^"]*)"(?:\s|$)|(\S+)(?:\s|$)/';
         $text       = preg_replace("/[\x{00a0}\x{200b}]+/u", " ", $text);
-        
+
         if (preg_match_all($pattern, $text, $match, PREG_SET_ORDER)) {
             foreach ($match as $m) {
                 if (!empty($m[1])) {
@@ -840,7 +845,7 @@ class LayoutHelper extends AppHelper {
         } else {
             $atts = ltrim($text);
         }
-        
+
         return $atts;
     }    
     
@@ -957,7 +962,7 @@ class LayoutHelper extends AppHelper {
       print eval('?>' . $code);
       $output = ob_get_contents();
       ob_end_clean();
-      
+
       return $output;
     }
   
@@ -973,7 +978,7 @@ class LayoutHelper extends AppHelper {
         if (empty($patterns)) {
             return false;
         }
-        
+
         $path = !$path ? $this->_View->here : $path;
         $path = str_replace($this->_View->base, '', $path);
         $patterns = explode("\n", $patterns);
@@ -1002,7 +1007,7 @@ class LayoutHelper extends AppHelper {
         
         $patterns_quoted = preg_quote($patterns, '/');
         $regexps[$patterns] = '/^(' . preg_replace($to_replace, $replacements, $patterns_quoted) . ')$/';
-        
+
         return (bool) preg_match($regexps[$patterns], $path);
     }
 }

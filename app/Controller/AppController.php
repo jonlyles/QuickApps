@@ -190,6 +190,7 @@ class AppController extends Controller {
             if (!isset($this->Variable)) {
                 $this->loadModel('System.Variable');
             }
+
             $q = $this->Variable->find('first', array('conditions' => array('Variable.name' => $_themeType)));
         }
         
@@ -206,7 +207,7 @@ class AppController extends Controller {
             ) {
                 continue; # Important: skip no active themes
             }
-            
+
             $paths["{$plugin}_components"] =  $ppath . 'Controller' . DS . 'Component' . DS;
             $paths["{$plugin}_behaviors"] = $ppath . 'Model' . DS . 'Behavior' . DS;
             $paths["{$plugin}_helpers"] = $ppath . 'View' . DS . 'Helper' . DS;
