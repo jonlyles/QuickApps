@@ -14,11 +14,10 @@ class ManageController extends BlockAppController {
 	public $uses = array('Block.Block', 'User.Role');
 	
 	public function admin_index() {
-        $this->setCrumb('/admin/block');
 		$this->title(__t('Blocks'));
-		
         $this->set('results', $this->Block->find('all'));
         $this->set('themes', $this->__themesYaml());
+        $this->setCrumb('/admin/block');
 	}
     
     public function admin_move($block_region_id, $dir) {
@@ -29,26 +28,40 @@ class ManageController extends BlockAppController {
                  $this->Block->BlockRegion->move($block_region_id, 'down');
             }
         }
+
         $this->redirect($this->referer());
     }
-	
-	public function admin_edit($bid) {
-        $this->title(__t('Editing Block'));
-        $this->setCrumb('/admin/block');
+    
+    public function admin_clone($bid) {
+        $this->Block->recursive = -1;
+        $block = $this->Block->findById($bid) or $this->redirect($this->referer());
         
+        unset($block['Block']['id']);
+        $block['Block']['themes_cache'] = '';
+        $block['Block']['title'] .= ' (' . __t('Clone') . ')';
+
+        if ($this->Block->save($block, false)) {
+            $this->flashMsg(__t('Block has been cloned'), 'success');
+        } else {
+            $this->flashMsg(__t('Block could not be cloned'), 'error');
+        }
+
+        $this->redirect($this->referer());
+    }
+
+	public function admin_edit($bid) {
         if (isset($this->data['Block'])) {
             $data =  $this->data;
             $data['Block']['locale'] = !empty($data['Block']['locale']) ? array_values($data['Block']['locale']) : array();
             $data['Block']['themes_cache'] = $this->__themesCache($data['BlockRegion']);
             
             if ($this->Block->saveAll($data, array('validate' => 'first'))) { # saveAll only will save Block related models!
-                $this->Block->BlockRegion->deleteAll( array('region' => ''));
                 if (isset($data['Module'])) { # save widgets variables
                     $this->Module->save($data['Module']);
                     Cache::delete('Modules');
                     $this->Quickapps->loadModules();
                 }
-                
+
                 if (isset($data['Variable'])) {
                      $this->Variable->save($data['Variable']);
                     Cache::delete('Variable'); 
@@ -57,12 +70,11 @@ class ManageController extends BlockAppController {
                 
                 $this->flashMsg(__t('Block has been saved'), 'success');
             } else {
-                //$invalidFields = $this->Block->invalidFields();
                 $this->flashMsg(__t('Block could not be saved. Please, try again.'), 'error');
             }
             $this->redirect("/admin/block/manage/edit/{$bid}");
         }
-        
+
         $themes = $this->__themesYaml();
         foreach ($themes as $theme => $yaml) {
             $_regions["{$yaml['info']['name']}@|@{$theme}"] = array();
@@ -71,7 +83,10 @@ class ManageController extends BlockAppController {
             }
         }
         
-		$this->data = $this->Block->findById($bid);
+        $this->data = $this->Block->findById($bid);
+        
+        $this->title(__t('Editing Block'));
+        $this->setCrumb('/admin/block');
         $this->set('regions', $_regions);
         $this->set('roles', $this->Role->find('list'));
 	}

@@ -1,7 +1,8 @@
 <?php 
     $actions = array(
+        "<a href='{url}/admin/block/manage/clone/{Block.id}{/url}'>" . __t('clone') . "</a> | ",
         "<a href='{url}/admin/block/manage/edit/{Block.id}{/url}'>" . __t('configure') . "</a> | ",
-        "{php} return ( '{Block.module}' == 'block' ? \"<a href='{url}/admin/block/manage/delete/{Block.id}{/url}' onclick='return confirm(\\\" " . __t('Delete selected block ?') . " \\\");'>" . __t('delete') . "</a> | \" : ''); {/php}",
+        "{php} return ('{Block.module}' == 'block' ? \"<a href='{url}/admin/block/manage/delete/{Block.id}{/url}' onclick='return confirm(\\\" " . __t('Delete selected block ?') . " \\\");'>" . __t('delete') . "</a> | \" : ''); {/php}",
         "<a href='{url}/admin/block/manage/move/{Block.__block_region_id}/up{/url}'>" . __t('move up') . "</a> | ",
         "<a href='{url}/admin/block/manage/move/{Block.__block_region_id}/down{/url}'>" . __t('move down') . "</a>"
     );
