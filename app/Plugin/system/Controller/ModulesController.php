@@ -27,7 +27,7 @@ class ModulesController extends SystemAppController {
             if (isset($this->data['Module']['name'])) {
                 $this->Module->save($this->data);
                 Cache::delete('Modules'); # regenerate modules cache
-                $this->_loadModules();
+                $this->Quickapps->loadModules();
             } else {
                 $this->Variable->save($this->data);
             }
@@ -80,7 +80,7 @@ class ModulesController extends SystemAppController {
             );
         
             Cache::delete('Modules'); # regenerate modules cache
-            $this->_loadModules();
+            $this->Quickapps->loadModules();
         
             if ($to == 1) {
                 if (method_exists($this->Install, 'afterEnable')) {

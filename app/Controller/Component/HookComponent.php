@@ -9,7 +9,7 @@
  * @author   Christopher Castro <chris@quickapps.es>
  * @link     http://cms.quickapps.es
  */
-class HookComponent extends Object {
+class HookComponent extends Component {
 	public $Controller;
 	
 /**

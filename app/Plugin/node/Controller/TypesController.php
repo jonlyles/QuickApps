@@ -62,14 +62,13 @@ class TypesController extends NodeAppController {
 
     public function admin_delete($id) {
 		$nodeType = $this->NodeType->findById($id);
-        
+
         if (!$nodeType || in_array($id, Configure::read('coreNodeTypes'))) {
             $this->redirect('/admin/node/types');
         }
-        
+
         if ($this->NodeType->delete($id)) {
-            $this->loadModel('Field.Field');
-            $this->Field->deleteAll( array('Field.belongsTo' => "NodeType-{$id}"), true, true ); #bridge conditions
+            $this->flashMsg(__t('Content type has been deleted'), 'success');
         }
         
         $this->redirect($this->referer());

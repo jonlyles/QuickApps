@@ -10,8 +10,7 @@
  * @link     http://cms.quickapps.es
  */
 class InstallerComponent extends Object {
-    private $errors = array();
-    
+    public $errors = array();
     public $Controller;
     public $settings = array(
         'name' => null, # used while deleting
@@ -410,8 +409,8 @@ class InstallerComponent extends Object {
     public function afterInstall() {
         Cache::delete('Modules');
         Cache::delete('Variable');
-        $this->Controller->_loadVariables();
-        $this->Controller->_loadModules();
+        $this->Controller->Quickapps->loadVariables();
+        $this->Controller->Quickapps->loadModules();
         
         return true;
     }
@@ -420,8 +419,8 @@ class InstallerComponent extends Object {
         # delete & regenerate caches
         Cache::delete('Modules');
         Cache::delete('Variable');
-       // $this->Controller->_loadModules();
-        //$this->Controller->_loadVariables();
+        $this->Controller->Quickapps->loadModules();
+        $this->Controller->Quickapps->loadVariables();
            
         # delete all menus created by module/theme
         ClassRegistry::init('Menu.Menu')->deleteAll(

@@ -230,7 +230,7 @@ class FieldableBehavior extends ModelBehavior {
  * @param object $Model instance of model
  * @param string $type callback to execute, possible values: 'before' or 'after'
  * 
- * @return boolean True if all the fields has returned true. False otherwhise
+ * @return boolean False if any of the fields has returned false. True otherwhise
  */    
     private function __beforeAfterDelete(&$Model, $type = 'before') {
         $model_id = $Model->id ? $Model->id : $Model->tmpData[$Model->alias][$Model->primaryKey];

@@ -30,7 +30,7 @@ class ThemesController extends SystemAppController {
 			$data['Variable']['name'] = strpos($theme_name, 'Admin') !== false ? 'admin_theme' : 'site_theme';
 			$this->Variable->save($data);
             Cache::delete('Variable');
-            $this->_loadVariables(); # IMPORTANT! regenerate cache 
+            $this->Quickapps->loadVariables(); # IMPORTANT! regenerate cache 
 		}
         
         $this->redirect('/admin/system/themes');
@@ -46,7 +46,7 @@ class ThemesController extends SystemAppController {
         if (isset($this->data['Module'])) {
             $this->Module->save($this->data);
             Cache::delete('Modules');
-            $this->_loadModules();
+            $this->Quickapps->loadModules();
             $this->redirect($this->referer());
         }
        

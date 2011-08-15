@@ -46,13 +46,13 @@ class ManageController extends BlockAppController {
                 if (isset($data['Module'])) { # save widgets variables
                     $this->Module->save($data['Module']);
                     Cache::delete('Modules');
-                    $this->_loadModules();
+                    $this->Quickapps->loadModules();
                 }
                 
                 if (isset($data['Variable'])) {
                      $this->Variable->save($data['Variable']);
                     Cache::delete('Variable'); 
-                    $this->_loadVariables();
+                    $this->Quickapps->loadVariables();
                 }
                 
                 $this->flashMsg(__t('Block has been saved'), 'success');

@@ -29,4 +29,13 @@ class NodeType extends NodeAppModel {
             'dependent' => false
         )
     );
+    
+    function beforeDelete(){
+        $this->tmpId = $this->id;
+        return true;
+    }
+
+    function afterDelete(){
+        return ClassRegistry::init('Field.Field')->deleteAll(array('Field.belongsTo' => "NodeType-{$this->tmpId}"), true, true);
+    }
 }
