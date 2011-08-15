@@ -200,7 +200,7 @@ class FormHelper extends AppHelper {
 			}
 
 			if ($key === 'key') {
-				return $this->fieldset[$model]['key'];
+				return $this->fieldset[$model]['key'] = $object->primaryKey;
 			}
 
 			if ($key === 'fields') {
@@ -2102,6 +2102,8 @@ class FormHelper extends AppHelper {
 
 					if (($time[0] > 12) && $timeFormat == '12') {
 						$time[0] = $time[0] - 12;
+						$meridian = 'pm';
+					} elseif ($time[0] == '12' && $timeFormat == '12') {
 						$meridian = 'pm';
 					} elseif ($time[0] == '00' && $timeFormat == '12') {
 						$time[0] = 12;

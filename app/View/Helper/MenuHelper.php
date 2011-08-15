@@ -431,6 +431,7 @@ class MenuHelper extends AppHelper {
         }
         return;
     }
+
 /**
  * attributes function
  *
@@ -463,13 +464,14 @@ class MenuHelper extends AppHelper {
                 $attributes['class'][] = $autoPath[3];
             }
         }
-       
-        $crumb_urls = Set::extract("{n}.{$this->__settings['model']}.router_path", $this->_View->viewVars['breadCrumb']);
+
+        $crumb_urls = (array)Set::extract("{n}.{$this->__settings['model']}.router_path", $this->_View->viewVars['breadCrumb']);
+
         if (
             (
-                ( isset($elementData['data'][$this->__settings['model']]) && in_array($elementData['data'][$this->__settings['model']][$this->__settings['url']], $crumb_urls))
+                (isset($elementData['data'][$this->__settings['model']]) && in_array($elementData['data'][$this->__settings['model']][$this->__settings['url']], $crumb_urls))
                 ||
-                ( isset($elementData['data']['data'][$this->__settings['model']]) && in_array($elementData['data']['data'][$this->__settings['model']][$this->__settings['url']], $crumb_urls))
+                (isset($elementData['data']['data'][$this->__settings['model']]) && in_array($elementData['data']['data'][$this->__settings['model']][$this->__settings['url']], $crumb_urls))
             ) && 
             $rType == $this->__settings['itemType'] && 
             empty($elementData['data'][$this->__settings['model']][$this->__settings['external_url']])

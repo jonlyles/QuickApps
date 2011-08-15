@@ -1414,6 +1414,9 @@ class Model extends Object {
 		if ($success && $count > 0) {
 			if (!empty($this->data)) {
 				$success = $this->data;
+				if ($created) {
+					$this->data[$this->alias][$this->primaryKey] = $this->id;
+				}
 			}
 			if ($options['callbacks'] === true || $options['callbacks'] === 'after') {
 				$this->Behaviors->trigger('afterSave', array(&$this, $created, $options));
@@ -1543,8 +1546,8 @@ class Model extends Object {
 				if (!array_key_exists($foreignKey, $keys)) {
 					$keys[$foreignKey] = $this->field($foreignKey);
 				}
-				$recursive = (isset($assoc['counterScope']) ? 1 : -1);
-				$conditions = ($recursive == 1) ? (array)$assoc['counterScope'] : array();
+				$recursive = (isset($assoc['counterScope']) ? 0 : -1);
+				$conditions = ($recursive === 0) ? (array)$assoc['counterScope'] : array();
 
 				if (isset($keys['old'][$foreignKey])) {
 					if ($keys['old'][$foreignKey] != $keys[$foreignKey]) {
@@ -1559,7 +1562,7 @@ class Model extends Object {
 				}
 				$conditions[$fkQuoted] = $keys[$foreignKey];
 
-				if ($recursive == 1) {
+				if ($recursive === 0) {
 					$conditions = array_merge($conditions, (array)$assoc['counterScope']);
 				}
 				$count = intval($this->find('count', compact('conditions', 'recursive')));
@@ -1957,15 +1960,25 @@ class Model extends Object {
 			$this->_deleteLinks($id);
 			$this->id = $id;
 
+			$updateCounterCache = false;
 			if (!empty($this->belongsTo)) {
+				foreach ($this->belongsTo as $parent => $assoc) {
+					if (!empty($assoc['counterCache'])) {
+						$updateCounterCache = true;
+						break;
+					}
+				}
+
 				$keys = $this->find('first', array(
 					'fields' => $this->__collectForeignKeys(),
-					'conditions' => array($this->alias . '.' . $this->primaryKey => $id)
+					'conditions' => array($this->alias . '.' . $this->primaryKey => $id),
+					'recursive' => -1,
+					'callbacks' => false
 				));
 			}
 
 			if ($db->delete($this, array($this->alias . '.' . $this->primaryKey => $id))) {
-				if (!empty($this->belongsTo)) {
+				if ($updateCounterCache) {
 					$this->updateCounterCache($keys[$this->alias]);
 				}
 				$this->Behaviors->trigger('afterDelete', array(&$this));
@@ -2032,7 +2045,8 @@ class Model extends Object {
 			$records = $this->{$joinModel}->find('all', array(
 				'conditions' => array_merge(array($this->{$joinModel}->escapeField($data['foreignKey']) => $id)),
 				'fields' => $this->{$joinModel}->primaryKey,
-				'recursive' => -1
+				'recursive' => -1,
+				'callbacks' => false
 			));
 			if (!empty($records)) {
 				foreach ($records as $record) {
@@ -2318,10 +2332,14 @@ class Model extends Object {
 			$query['order'] = false;
 			return $query;
 		} elseif ($state === 'after') {
-			if (isset($results[0][0]['count'])) {
-				return intval($results[0][0]['count']);
-			} elseif (isset($results[0][$this->alias]['count'])) {
-				return intval($results[0][$this->alias]['count']);
+			foreach (array(0, $this->alias) as $key) {
+				if (isset($results[0][$key]['count'])) {
+					if (count($results) > 1) {
+						return intval(array_sum(Set::extract('/' . $key . '/count', $results)));
+					} else {
+						return intval($results[0][$key]['count']);
+					}
+				}
 			}
 			return false;
 		}
