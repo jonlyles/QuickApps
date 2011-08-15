@@ -30,8 +30,7 @@ class QuickAppsComponent extends Component {
 
     public function siteStatus() {
         if (Configure::read('Variable.site_online') != 1 && !$this->isAdmin()) {
-            if (
-                $this->Controller->plugin != 'user' && 
+            if ($this->Controller->plugin != 'user' && 
                 $this->Controller->request->params['controller'] != 'log' && 
                 !in_array($this->Controller->request->params['controller'], array('login', 'logout')) 
             ) {
@@ -63,11 +62,12 @@ class QuickAppsComponent extends Component {
             $yaml['settings']['site_favicon_url'] = isset($yaml['settings']['site_favicon_url']) && !empty($yaml['settings']['site_favicon_url']) ? $yaml['settings']['site_logo_url'] : '/favicon.ico';
             
             Configure::write('Theme', $yaml);
+            
             foreach ($yaml['stylesheets'] as $media => $files) {
                 if (!isset($this->Controller->Layout['stylesheets'][$media])){
                     $this->Controller->Layout['stylesheets'][$media] = array();
                 }
-                
+
                 foreach ($files as $file) {
                     $this->Controller->Layout['stylesheets'][$media][] = $file;
                 }
@@ -95,7 +95,7 @@ class QuickAppsComponent extends Component {
                 )
             )
         );
-        
+
         $this->Controller->Layout['blocks'] = $this->Controller->hook('blocks_list', $options, array('alter' => false, 'collectReturn' => false)); # request blocks to block module
         $this->Controller->hook('blocks_alter', $this->Controller->Layout['blocks']); # pass blocks to modules
         
@@ -110,13 +110,15 @@ jQuery.extend(QuickApps.settings, {
         
         $this->Controller->hook('javascripts_alter', $this->Controller->Layout['javascripts']); # pass js to modules
         $this->Controller->paginate = array('limit' => Configure::read('Variable.rows_per_page'));
+        
         Configure::write('Variable.qa_version', Configure::read('Modules.system.yaml.version'));
+        
         $defaultMetaDescription = Configure::read('Variable.site_description');
         
         if (!empty($defaultMetaDescription)){
             $this->Controller->Layout['meta']['description'] = $defaultMetaDescription;
         }
-            
+  
         #auto favicon meta
         if (Configure::read('Theme.settings.site_favicon')) {
             $faviconURL = Configure::read('Theme.settings.site_favicon_url');
@@ -127,7 +129,6 @@ jQuery.extend(QuickApps.settings, {
     public function setLanguage() {
         $langs = $this->Controller->Language->find('all', array('conditions' => array('status' => 1), 'order' => array('ordering' => 'ASC')));
         $installed_codes = Set::extract('/Language/code', $langs);
-        
         $lang = $this->Controller->Session->read('language');
         $lang = isset($this->Controller->request->params['named']['lang']) ? $this->Controller->request->params['named']['lang'] : $lang;
         $lang = isset($this->Controller->request->query['lang']) && !empty($this->Controller->request->query['lang']) ? $this->Controller->request->query['lang'] : $lang;
@@ -136,6 +137,7 @@ jQuery.extend(QuickApps.settings, {
         
         $this->Controller->Session->write('language', $lang);
         $_lang = Set::extract("/Language[code={$lang}]/..", $langs);
+
         if (!isset($_lang[0]['Language'])) { # not defined -> default = english
             $_lang[0]['Language'] = array(
                 'code' => 'eng',
@@ -144,7 +146,7 @@ jQuery.extend(QuickApps.settings, {
                 'direction' => 'ltr'
             );
         }
-        
+
         Configure::write('Variable.language', $_lang[0]['Language']);
         Configure::write('Variable.languages', $langs);
         Configure::write('Config.language', Configure::read('Variable.language.code'));
@@ -171,7 +173,6 @@ jQuery.extend(QuickApps.settings, {
         $this->Controller->Auth->loginRedirect = Router::getParam('admin') ? '/admin' : '/';
         $this->Controller->Auth->logoutRedirect = $this->Controller->Auth->loginRedirect;
         $this->Controller->Auth->allowedActions = array('login', 'logout');
-        
         $cookie = $this->Controller->Cookie->read('UserLogin');
 
         if (!$this->Controller->Auth->user() && 
@@ -224,7 +225,6 @@ jQuery.extend(QuickApps.settings, {
                     'recursive' => -1,
                 )
             );
-            
             $aroId = $aro['Aro']['id'];
             
             # get current plugin ACO
@@ -247,6 +247,7 @@ jQuery.extend(QuickApps.settings, {
                     )
                 )
             );
+            
             if ($thisControllerNode) {
                 $thisControllerActions = $this->Controller->Acl->Aco->find('list', 
                     array(
@@ -279,13 +280,13 @@ jQuery.extend(QuickApps.settings, {
             }
             
             $allow = array();
-            if (isset($allowedActionsIds) &&
-                is_array($allowedActionsIds) &&
-                count($allowedActionsIds) > 0
-            )
-            foreach ($allowedActionsIds as $i => $aId){
-                $allow[] = $thisControllerActions[$aId];
+            
+            if (isset($allowedActionsIds) && is_array($allowedActionsIds) && count($allowedActionsIds) > 0) {
+                foreach ($allowedActionsIds as $i => $aId){
+                    $allow[] = $thisControllerActions[$aId];
+                }
             }
+            
             $this->Controller->Auth->allowedActions = array_merge($this->Controller->Auth->allowedActions, $allow);    
        }
     }
@@ -296,6 +297,7 @@ jQuery.extend(QuickApps.settings, {
     
     public function loadVariables() {
         $variables = Cache::read('Variable');
+
         if ($variables === false) {
             $this->Controller->Variable->writeCache();
         } else {
@@ -363,6 +365,7 @@ jQuery.extend(QuickApps.settings, {
                 );
                 $this->Controller->viewVars['breadCrumb'][] = $push;
             }
+            
             return;
         } else {
             $url = !is_string($url) ? $this->__getUrl() : $url;

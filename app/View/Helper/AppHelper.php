@@ -27,24 +27,31 @@ class AppHelper extends Helper {
     
     public function attachModuleHooks($plugin) {
         $Plugin = Inflector::camelize($plugin);
+        
         if (isset($this->listeners[$Plugin . 'Hook'])) {
             return;
         }
+        
         $folder = new Folder;
         $folder->path = CakePlugin::path($Plugin) . 'View' . DS . 'Helper' . DS;
         $files = $folder->find('(.*)Hook(Helper)\.php');
+        
         foreach ($files as $helper) {
             $helper = str_replace('Helper.php', '', $helper);
             $this->hooks[] = "{$Plugin}.{$helper}";
             $this->$helper = $this->_View->loadHelper("{$Plugin}.{$helper}" , array('plugin' => $plugin));
+            
             if (!is_object($this->{$helper})) {
                 continue;
             }
+            
             $methods = array();
             $_methods = get_this_class_methods($this->{$helper});
+            
             foreach ($_methods as $method) {
                 $methods[] = $method;
             }
+            
             $this->listeners[$helper] = $methods;
             $this->events = array_merge($this->events, $methods);
         }
@@ -57,10 +64,13 @@ class AppHelper extends Helper {
             if (strpos($hook, "{$Plugin}.") === false) {
                 continue;
             }
+            
             $Hook = str_replace("{$Plugin}.", '', $hook);
+            
             foreach ($this->listeners[$Hook] as $event) {
                 unset($this->events[array_search($event, $this->events)]);
             }
+            
             unset($this->hooks[$hk]);
             unset($this->listeners[$Hook]);
             unset($this->{$Hook});
@@ -139,6 +149,7 @@ class AppHelper extends Helper {
         if (empty($collected) && empty($result)) {
             return null;
         }
+        
         return $options['collectReturn'] ? $collected : $result;    
 	}	
 	
@@ -151,6 +162,7 @@ class AppHelper extends Helper {
             }
 				
 			$helper = strpos($helper, '.') !== false ? substr($helper, strpos($helper, '.')+1) : $helper;
+            
 			if (strpos($helper, 'Hook') !== false) {
 				if (!is_object($this->{$helper})) {
 					continue;
@@ -158,10 +170,12 @@ class AppHelper extends Helper {
                 
 				$methods = array();
 				$_methods = get_this_class_methods($this->{$helper});
+                
 				foreach ($_methods as $method) {
 					$methods[] = $method;
                     $eventMap[$method] = (string)$helper;
                 }
+                
 				$this->listeners[$helper] = $methods;
 				$this->events = array_merge($this->events, $methods);
 				$this->eventMap = array_merge($this->eventMap, $eventMap);

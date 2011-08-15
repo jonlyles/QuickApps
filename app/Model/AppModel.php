@@ -66,6 +66,7 @@ class AppModel extends Model {
 	public function optimize() {
 		$db =& ConnectionManager::getDataSource($this->useDbConfig);
 		$tablename = $db->fullTableName($this);
+
 		if (!empty($tablename)) {
             return $db->query('OPTIMIZE TABLE ' . $tablename . ';');
 		} else {
@@ -92,13 +93,14 @@ class AppModel extends Model {
 			),
 			(array)$options
 		);
-        
+
         # protect original varriable
         if (!$options['alter']) {
             $_data = $data;
         }
         
 		$collected = array();
+
 		if (!$this->hook_defined($event)) {
             return null;
         }
@@ -116,9 +118,8 @@ class AppModel extends Model {
                         $collected[] = $result;
                     }
                     
-                    if (
-                        $options['break'] && ($result === $options['breakOn'] ||
-                        (is_array($options['breakOn']) && in_array($result, $options['breakOn'], true)))
+                    if ($options['break'] && 
+                        ($result === $options['breakOn'] || (is_array($options['breakOn']) && in_array($result, $options['breakOn'], true)))
                     ) {
                         return $result;
                     }
@@ -148,9 +149,11 @@ class AppModel extends Model {
 	private function __loadHookEvents() {
 		foreach ($this->actsAs as $behavior => $b_data) {
 			$behavior = strpos($behavior, '.') !== false ? substr($behavior, strpos($behavior, '.')+1) : $behavior;
+            
 			if (strpos($behavior, 'Hook')) {
 				$methods = array();
 				$_methods = get_this_class_methods($this->Behaviors->{$behavior});
+
 				foreach ($_methods as $method) {
 					$methods[] = $method;
 				}
@@ -161,6 +164,7 @@ class AppModel extends Model {
 		}
 		
 		$this->events = array_unique($this->events);
+
 		return true;	
 	}
 }

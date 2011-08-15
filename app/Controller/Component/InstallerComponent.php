@@ -25,6 +25,7 @@ class InstallerComponent extends Object {
 
     public function initialize(&$Controller) {
         $this->Controller =& $Controller;
+        
         return true;
     }
 
@@ -59,11 +60,14 @@ class InstallerComponent extends Object {
  * @return bool true on success or false otherwise
  */ 
     public function install($data = false, $settings = array()) {
-        if (!$data ) return false;
+        if (!$data) {
+            return false;
+        }
+        
         $oldMask = umask(0);
         $this->settings = Set::merge($this->settings, $settings);
-
         $ext = strtolower(strrchr($data['Package']['data']['name'], '.'));
+
         if ($ext !== '.app') {
             $this->errors[] = __d('system', 'Invalid package extension. Got `%s`, `.app` expected', $ext);
             return false;
@@ -73,9 +77,9 @@ class InstallerComponent extends Object {
         /* upload */
         /**********/
         App::import('Vendor', 'Upload');
+
         $uploadPath = CACHE. 'installer';
         $workingDir = CACHE . 'installer' . DS . $data['Package']['data']['name'] . DS;
-        
         $Folder = new Folder;
         $Upload = new Upload($data['Package']['data']);
         $Upload->allowed = array('application/zip');
@@ -93,9 +97,12 @@ class InstallerComponent extends Object {
         /* unzip & install */
         /*******************/
         App::import('Vendor', 'PclZip');
+        
         $PclZip = new PclZip($Upload->file_dst_pathname);
+        
         if (($v_result_list = $PclZip->extract(PCLZIP_OPT_PATH, $workingDir . 'unzip')) == 0 ) {
             $this->errors[] = __d('system', 'Unzip error.') . "<br/><p>{$PclZip->errorInfo(true)}</p>";
+            
             return false;
         } else {
             /* Package Validation */
@@ -103,10 +110,12 @@ class InstallerComponent extends Object {
             $folders = $Folder->read();$folders = $folders[0];
             $packagePath = isset($folders[0]) && count($folders) === 1 ? CACHE . 'installer' . DS . $data['Package']['data']['name'] . DS . 'unzip' . DS . str_replace(DS, '', $folders[0]) . DS : false;
             $appName = (string)basename($packagePath);
+            
             if (!$packagePath) {
                 $this->errors[] = __d('system', 'Invalid package structure after unzip');
                 return false;
             }
+            
             switch ($this->settings['type']) {
                 case 'module':
                     default:
@@ -220,13 +229,14 @@ class InstallerComponent extends Object {
                     );
                 break;
             }
-            
+
             if (!$this->__process_tests($tests)) {
                 return false;
             }
-            
+
             /** YAML validations **/
             $yaml = Spyc::YAMLLoad($packagePath . "{$appName}.yaml");
+
             switch ($this->settings['type']) {
                 case 'module':
                     default:
@@ -265,8 +275,10 @@ class InstallerComponent extends Object {
                     );
                 break;
             }
+            
             if (!$this->__process_tests($tests)) {
                 $this->errors[] = __d('system', 'Invalid information file (.yaml)');
+                
                 return false;
             }
             
@@ -279,6 +291,7 @@ class InstallerComponent extends Object {
                 case 'module':
                     $core = "core ({$yaml['core']})";
                     $r = $this->checkIncompatibility($this->parseDependency($core), Configure::read('Variable.qa_version'));
+
                     if ($r !== null) {
                         $this->errors[] = __d('system', 'This module is incompatible with your QuickApps version.');
                         return false;
@@ -293,13 +306,16 @@ class InstallerComponent extends Object {
                 case 'theme':
                     $core = "core ({$yaml['info']['core']})";
                     $r = $this->checkIncompatibility($this->parseDependency($core), Configure::read('Variable.qa_version'));
+                    
                     if ($r !== null) {
                         $this->errors[] = __d('system', 'This theme is incompatible with your QuickApps version.');
+                        
                         return false;
                     }
                     
                     if (isset($yaml['info']['dependencies']) && $this->checkDependency($yaml['info'])) {
                         $this->errors[] = __d('system', "This theme depends on other modules that you do not have or doesn't meet the version required: %s", implode('<br/>', $yaml['info']['dependencies']));
+                        
                         return false;
                     }
                 break;
@@ -314,7 +330,7 @@ class InstallerComponent extends Object {
             /*****************/
             $Install =& $this->__loadInstallComponent($packagePath . 'Controller' . DS . 'Component' . DS);
             $r = true;
-            
+
             if (method_exists($Install, 'beforeInstall')) {
                 $r = $Install->beforeInstall($this);
             }
@@ -333,11 +349,13 @@ class InstallerComponent extends Object {
                 'type' => ($this->settings['type'] == 'module' ? 'module' : 'theme' ),
                 'status' => intval($this->settings['status'])
             );
+            
             $this->Controller->Module->save($moduleData); # register module
             
             /** Build ACOS **/
-            if ($this->settings['type'] == 'module' ) # Themes does not support acos feature
+            if ($this->settings['type'] == 'module') { # Themes does not support acos feature
                 $this->buildAcos($appName);
+            }
                 
             /** Delete unziped package **/
             $Folder->delete($workingDir);
@@ -349,8 +367,10 @@ class InstallerComponent extends Object {
             
             $this->afterInstall();
         }
-        return true;
+
         umask($oldMask);
+        
+        return true;
     }
 /*
  * Uninstall plugin by name
@@ -397,12 +417,13 @@ class InstallerComponent extends Object {
         if (!is_object($Install)) {
             return false;
         }
-        
+
         $r = true;
+        
         if (method_exists($Install, 'beforeUninstall')) {
             $r = $Install->beforeUninstall($this);
         }
-        
+
         if ($r === false) {
             return false;
         }
@@ -416,20 +437,22 @@ class InstallerComponent extends Object {
         }
             
         $this->afterUninstall();
+
         return true;
     }
     
     public function beforeInstall() {
         return true;
     }
-    
+
     public function beforeUninstall() {
         return true;
     }
-    
+
     public function afterInstall() {
         Cache::delete('Modules');
         Cache::delete('Variable');
+
         $this->Controller->Quickapps->loadVariables();
         $this->Controller->Quickapps->loadModules();
         
@@ -440,9 +463,10 @@ class InstallerComponent extends Object {
         # delete & regenerate caches
         Cache::delete('Modules');
         Cache::delete('Variable');
+        
         $this->Controller->Quickapps->loadModules();
         $this->Controller->Quickapps->loadVariables();
-           
+ 
         # delete all menus created by module/theme
         ClassRegistry::init('Menu.Menu')->deleteAll(
             array(
@@ -467,6 +491,7 @@ class InstallerComponent extends Object {
                 )
             )
         );
+        
         $this->Controller->Acl->Aco->delete($rootAco['Aco']['id']);
        
         # delete node types
@@ -488,25 +513,37 @@ class InstallerComponent extends Object {
  * @return void
  */
     public function buildAcos($plugin = false, $core = false) {
-        if (!$plugin ) return false;
+        if (!$plugin) {
+            return false;
+        }
+        
         $__folder = new Folder;
         $cPath = $core ? APP . 'Plugin' . DS . $plugin . DS . 'Controller' . DS : ROOT . DS . 'Modules' . DS . $plugin . DS . 'Controller' . DS;
         $__folder->path = $cPath;
         $controllers = $__folder->read(); $controllers = $controllers[1];
+        
         @include_once($cPath . Inflector::camelize($plugin) . 'AppController.php' );
         
         $this->Controller->Acl->Aco->create();
         $this->Controller->Acl->Aco->save(array('alias' => Inflector::camelize($plugin)));
         
         $_parent_id =  $this->Controller->Acl->Aco->getInsertID();
+        
         foreach ($controllers as $c) {
-            if (strpos($c, 'AppController.php') !== false) continue;
+            if (strpos($c, 'AppController.php') !== false) {
+                continue;
+            }
+            
             include_once($cPath .  $c);
+            
             $className = str_replace('.php', '', $c);
             $methods = get_this_class_methods($className);
-            foreach ($methods as $i => $m)
-                if (strpos($m, '__') === 0 || strpos($m, '_') === 0 ) # ignore private methods
+            
+            foreach ($methods as $i => $m) {
+                if (strpos($m, '__') === 0 || strpos($m, '_') === 0) { # ignore private methods
                     unset($methods[$i]);
+                }
+            }
                     
             $this->Controller->Acl->Aco->create();
             $this->Controller->Acl->Aco->save(
@@ -517,6 +554,7 @@ class InstallerComponent extends Object {
             );
             
             $parent_id =  $this->Controller->Acl->Aco->getInsertID();
+            
             foreach ($methods as $m) {
                 $this->Controller->Acl->Aco->create();
                 $this->Controller->Acl->Aco->save(
@@ -559,24 +597,30 @@ class InstallerComponent extends Object {
         $value = array();
         $parts = explode('(', $dependency, 2);
         $value['name'] = trim($parts[0]);
+        
         if (isset($parts[1])) {
             $value['original_version'] = ' (' . $parts[1];
+            
             foreach (explode(',', $parts[1]) as $version) {
                 if (preg_match("/^\s*{$p_op}\s*{$p_core}{$p_major}\.{$p_minor}/", $version, $matches)) {
                     $op = !empty($matches['operation']) ? $matches['operation'] : '=';
+                    
                     if ($matches['minor'] == 'x') {
                         if ($op == '>' || $op == '<=') {
                             $matches['major']++;
                         }
+                        
                         if ($op == '=' || $op == '==') {
                             $value['versions'][] = array('op' => '<', 'version' => ($matches['major'] + 1) . '.x');
                             $op = '>=';
                         }
                     }
+                    
                     $value['versions'][] = array('op' => $op, 'version' => $matches['major'] . '.' . $matches['minor']);
                 }
             }
         }
+        
         return $value;
     }
     
@@ -602,6 +646,7 @@ class InstallerComponent extends Object {
                 }
             }
         }
+        
         return null;
     }
     
@@ -614,15 +659,24 @@ class InstallerComponent extends Object {
  */
     public function checkDependency($plugin = null) {
         $Plugin = !is_null($plugin) && isset($plugin['yaml']) ? $plugin : Configure::read('Modules.' . Inflector::underscore($plugin));
+        
         if (isset($Plugin['yaml']['dependencies']) && is_array($Plugin['yaml']['dependencies'])) {
             foreach ($Plugin['yaml']['dependencies'] as $p) {
                 $check = false;
                 $check = Configure::read('Modules.' . Inflector::underscore($p));
-                if (!$check) return false;
+
+                if (!$check) {
+                    return false;
+                }
+
                 $check = $this->checkIncompatibility($this->parseDependency($p), $check['yaml']['version']);
-                if (!$check) return false;
+                
+                if (!$check) {
+                    return false;
+                }
             }
         }
+
         return true;
     }
     
@@ -641,15 +695,19 @@ class InstallerComponent extends Object {
     function checkReverseDependency($plugin, $returnList = true) {
         $list = array();
         $plugin = Inflector::underscore($plugin);
+        
         foreach (Configure::read('Modules') as $p) {
-            if (
-                isset($p['yaml']['dependencies']) && 
+            if (isset($p['yaml']['dependencies']) && 
                 is_array($p['yaml']['dependencies'])
-           ) {
+            ) {
                 $dependencies = array();
-                foreach ($p['yaml']['dependencies'] as $d)
+                
+                foreach ($p['yaml']['dependencies'] as $d) {
                     $dependencies[] = $this->parseDependency($d);
+                }
+                
                 $dependencies = Set::extract('{n}.name', $dependencies);
+                
                 if (in_array($plugin, $dependencies, true) && $returnList) {
                     $list[] = $p;
                 } elseif (in_array($plugin, $dependencies, true)) {
@@ -657,17 +715,24 @@ class InstallerComponent extends Object {
                 }
             }
         }
-        if ($returnList) return $list;
+
+        if ($returnList) {
+            return $list;
+        }
+
         return false;
     }
     
     private function __process_tests($tests, $header = false) {
         $e = 0;
-        foreach ($tests as $key => $test)
+        
+        foreach ($tests as $key => $test) {
             if (!$test['test']) {
                 $e++;
                 $this->errors[] = $header ? "<b>{$test['header']}</b><br/><p>{$test['msg']}</p>" : "<p>{$test['msg']}</p>";
-            };
+            }
+        }
+
         return ($e == 0);
     }
     
@@ -694,17 +759,21 @@ class InstallerComponent extends Object {
     
     private function __rcopy($src, $dst) {
         $dir = opendir($src);
+        
         @mkdir($dst);
+        
         while(false !== ( $file = readdir($dir))) {
             if (( $file != '.' ) && ( $file != '..' )) {
                 if (is_dir($src . DS . $file)) {
                     $this->__rcopy($src . DS . $file,$dst . DS . $file);
                 } else {
-                    if (!copy($src . DS . $file, $dst . DS . $file)  )
+                    if (!copy($src . DS . $file, $dst . DS . $file)) {
                         return false;
+                    }
                 }
             }
         }
+        
         closedir($dir);
     }
 }

@@ -31,11 +31,13 @@ class SerializedBehavior extends ModelBehavior {
 		if (is_string($config)) {
 			$config = array($config);		
         }
+        
 		$this->fields = array_merge($this->fields, $config);
 	}
 
 	public function afterFind(&$Model, $results, $primary) {
         $_results = $results;
+        
 		if (isset($_results[0][$Model->alias])) {
 			foreach ($_results as $rkey => &$record) {
 				foreach ($this->fields as $field) {
@@ -57,6 +59,7 @@ class SerializedBehavior extends ModelBehavior {
                 }
             }
         }
+        
 		return $_results;
 	}
 	
@@ -67,6 +70,7 @@ class SerializedBehavior extends ModelBehavior {
                     if (!in_array($field, $this->fields)) {
                         continue;
                     }
+                    
                     $data = $this->serialize($data);
                 }
             }
@@ -76,6 +80,7 @@ class SerializedBehavior extends ModelBehavior {
                     if (!in_array($field, $this->fields)) {
                         continue;
                     }
+                    
                     $value = $this->serialize($value);
                 }
             }
@@ -84,9 +89,11 @@ class SerializedBehavior extends ModelBehavior {
                 if (!in_array($field, $this->fields)) {
                     continue;
                 }
+                
                 $data = $this->serialize($data);
             }
         }
+        
         return true;
 	}
     

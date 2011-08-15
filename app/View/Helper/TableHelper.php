@@ -91,6 +91,7 @@ class TableHelper extends AppHelper {
 			$out .= "\t<tbody>\n";
 			foreach ($data as $i => $r_data) {
 				$td = '';
+                
 				foreach ($options['columns'] as $name => $c_data) {
 					$c_data = array_merge($this->_columnDefaults, $c_data);
 					
@@ -103,9 +104,7 @@ class TableHelper extends AppHelper {
 				$out .= $this->Html->useTag('tablerow', $this->Html->_parseAttributes(array('class' => $tr_class)), $td);
 			}
 			
-			
 			$out .= "\t</tbody>\n";
-			
             $print_header_bottom = ($options['headerPosition'] !== false && in_array($options['headerPosition'], array('bottom', 'top&bottom')));
             $print_paginator_bottom = ($options['paginate'] != false && in_array($options['paginate']['position'], array('bottom', 'top&bottom')));
 			
@@ -115,7 +114,6 @@ class TableHelper extends AppHelper {
                     $out .= $print_paginator_bottom ? $this->_renderPaginator($options) : '';
                 $out .= "\n\t</tfoot>\n";
             }
-
 		} else {
 			$td   = $this->Html->useTag('tablecell', $this->Html->_parseAttributes(array('colspan' => $this->_colsCount)), __t($options['noItemsMessage']));
 			$out .= $this->Html->useTag('tablerow', $this->Html->_parseAttributes(array('class' => 'even')), $td);
@@ -152,6 +150,7 @@ class TableHelper extends AppHelper {
 				$value = str_replace($m, $this->_php_eval("<?php {$matches[1][$i]}", $row_data), $value);
 			}
 		}
+        
 		return $value;
 	}
     
@@ -160,6 +159,7 @@ class TableHelper extends AppHelper {
         print eval('?>' . $code);
         $output = ob_get_contents();
         ob_end_clean();
+        
         return $output;
     }    
 	
@@ -175,7 +175,7 @@ class TableHelper extends AppHelper {
 			if ($options['paginate'] !== false && is_string($data['sort'])) {
 				@$name = $this->Paginator->sort($data['sort'], $name);
             }
-				
+
 			$th .= "\t\t". $this->Html->useTag('tableheader', $this->Html->_parseAttributes($data['thOptions']), $name) . "\n";
 		}
 		

@@ -13,5 +13,4 @@ class Dummy extends AppModel {
     public $name = 'Dummy';
 	public $cacheQueries = false;
     public $useTable = false;
-
 }

@@ -10,6 +10,7 @@
  * @link     http://cms.quickapps.es
  */
 App::uses('AppController', 'Controller');
+
 class InstallController extends Controller {
     public $name = 'Install';
     public $uses = array();
@@ -110,6 +111,7 @@ class InstallController extends Controller {
         );
         
         $results = array_unique(Set::extract('{s}.test', $tests));
+
         if (!(count($results) === 1 && $results[0] === true)) {
             $this->set('success', false);
             $this->set('tests', $tests);
@@ -123,13 +125,13 @@ class InstallController extends Controller {
         if (!$this->__stepSuccess(array('license', 'server_test'), true)) {
             $this->redirect('/install/license');
         }
-    
+
         if (!empty($this->data['Database'])) {
             copy(APP . 'Config' . DS . 'database.php.install', APP . 'Config' . DS . 'database.php');
             App::import('Utility', 'File');
+            
             $file = new File(APP . 'Config' . DS . 'database.php', true);
             $dbSettings = $file->read();
-            
             $data = $this->data;
             $data['Database']['datasource'] = 'Database/Mysql';
             $data['Database']['persistent'] = 'false';
@@ -155,38 +157,44 @@ class InstallController extends Controller {
                 ),
                 $dbSettings
             );
-            
+
             $this->__defaultDbConfig = Set::merge($this->__defaultDbConfig, $data['Database']);
-            if ($file->write($dbSettings)) {
             
+            if ($file->write($dbSettings)) {
                 $MySQLConn = @mysql_connect($this->__defaultDbConfig['host'] . ':' . $this->__defaultDbConfig['port'], $this->__defaultDbConfig['login'], $this->__defaultDbConfig['password'], true);
+                
                 if (@mysql_select_db($this->__defaultDbConfig['database'], $MySQLConn)) {
                     @App::import('Model', 'ConnectionManager');
                     @ConnectionManager::create('default');
+                    
                     $db = ConnectionManager::getDataSource('default', $this->__defaultDbConfig);
-                
                     $file =& new File(APP . 'Config' . DS . 'Schema' . DS . 'quickapps.sql');
                     $sql = $file->read();
                     $queries = $this->__splitSql($sql);
                     
                     # dump DB
-                    foreach ($queries as $query)
-                        if (!empty($query) && $query != "--")
+                    foreach ($queries as $query) {
+                        if (!empty($query) && $query != "--") {
                             $db->execute(str_replace('#__', $data['Database']['prefix'], $query));
+                        }
+                    }
                     
                     # random keys values
                     $file =& new File(APP . 'Config' . DS . 'core.php');
+                    
                     App::uses('Security', 'Utility');
                     App::load('Security');
+                    
                     $salt = Security::generateAuthKey();
                     $seed = mt_rand() . mt_rand();
                     $contents = $file->read();
                     $contents = preg_replace('/(?<=Configure::write\(\'Security.salt\', \')([^\' ]+)(?=\'\))/', $salt, $contents);
                     $contents = preg_replace('/(?<=Configure::write\(\'Security.cipherSeed\', \')(\d+)(?=\'\))/', $seed, $contents);
+                    
                     $file->write($contents);
                     
                     Cache::write('QaInstallDatabase', 'success'); # fix: Security keys change
-                    //$this->__stepSuccess('database'); # unneded
+                    
                     $this->redirect('/install/user_account');
                 } else {
                     $file->close();
@@ -201,13 +209,13 @@ class InstallController extends Controller {
 
     /* Step 4: User account */
     public function user_account() {
-        if (
-            Cache::read('QaInstallDatabase') == 'success' || 
+        if (Cache::read('QaInstallDatabase') == 'success' || 
             $this->__stepSuccess(array('license', 'server_test', 'database'), true)
-       ) {
+        ) {
             $this->__stepSuccess('license');
             $this->__stepSuccess('server_test');
             $this->__stepSuccess('database');
+            
             Cache::delete('QaInstallDatabase');
         } else {
             $this->redirect('/install/license');
@@ -218,13 +226,17 @@ class InstallController extends Controller {
             $data = $this->data;
             $data['User']['status'] = 1;
             $data['Role']['Role'] = array(1);
+            
             if ($this->User->save($data)) {
                 $this->__stepSuccess('user_account');
                 $this->redirect('/install/finish');
             } else {
                 $errors = '';
-                foreach ($this->User->invalidFields() as $field => $error)
+                
+                foreach ($this->User->invalidFields() as $field => $error) {
                     $errors .= "<b>{$field}:</b> {$error}<br/>";
+                }
+                
                 $this->Session->setFlash(
                     '<b>' . __t('Could not create new user, please try again.') . "</b><br/>" . 
                     $errors
@@ -240,7 +252,9 @@ class InstallController extends Controller {
         }
             
         App::import('Utility', 'File');
+        
         $file = new File(APP . 'Config' . DS . 'install', true);
+        
         if ($file->write(time())) {
             $this->__stepSuccess('finish');
             $this->Session->delete('QaInstall');
@@ -251,8 +265,10 @@ class InstallController extends Controller {
     }
     
     private function __stepSuccess($step, $check = false) {
-        if (!$check )
+        if (!$check) {
             return $this->Session->write("QaInstall.{$step}", 'success');
+        }
+        
         if (is_array($step)) {
             foreach ($step as $s) {
                 if (!$this->Session->check("QaInstall.{$s}")) {
@@ -264,6 +280,7 @@ class InstallController extends Controller {
         } else {
             return $this->Session->check("QaInstall.{$step}");
         }
+
         return false;
     }
     
@@ -284,17 +301,21 @@ class InstallController extends Controller {
 
             if ($in_string && ($sql[$i] == $in_string) && $buffer[1] != "\\") {
                 $in_string = false;
-            }
-            elseif (!$in_string && ($sql[$i] == '"' || $sql[$i] == "'") && (!isset($buffer[0]) || $buffer[0] != "\\")) {
+            } elseif (!$in_string && ($sql[$i] == '"' || $sql[$i] == "'") && (!isset($buffer[0]) || $buffer[0] != "\\")) {
                 $in_string = $sql[$i];
             }
-            if (isset($buffer[1]))
+
+            if (isset($buffer[1])) {
                 $buffer[0] = $buffer[1];
+            }
+
             $buffer[1] = $sql[$i];
         }
 
-        if (!empty($sql))
+        if (!empty($sql)) {
             $ret[] = $sql;
+        }
+
         return($ret);
     }    
 }

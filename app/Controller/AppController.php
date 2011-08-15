@@ -91,10 +91,12 @@ class AppController extends Controller {
         }
 
         $this->set('Layout', $this->Layout);
+
         if ($this->name == 'CakeError') {
             $this->beforeFilter();
             $this->layout = 'error';
         }
+        
         return true;
     }
 
@@ -183,26 +185,28 @@ class AppController extends Controller {
         // load current theme hooks only
         $_cache = Cache::read('Variable');
         $_themeType = Router::getParam('admin') ? 'admin_theme' : 'site_theme';
+        
         if (!$_cache) {
             if (!isset($this->Variable)) {
                 $this->loadModel('System.Variable');
             }
             $q = $this->Variable->find('first', array('conditions' => array('Variable.name' => $_themeType)));
         }
+        
         $themeToUse = !$_cache ? $q['Variable']['value'] : $_cache[$_themeType];
         $plugins = App::objects('plugin', null, false);
+        
         foreach ($plugins as $plugin) {
             $ppath = CakePlugin::path($plugin);
             $modulesCache = Cache::read('Modules');
             $_plugin = Inflector::underscore($plugin);
+            
             if ((isset($modulesCache[$_plugin]['status']) && $modulesCache[$_plugin]['status'] == 0) || 
-                    (
-                        strpos($ppath, DS . 'View' . DS . 'Themed') !== false && 
-                        strpos($ppath, 'Themed' . DS . $themeToUse . DS . 'Plugin') === false
-                    )
-           ) {
+                (strpos($ppath, DS . 'View' . DS . 'Themed') !== false && strpos($ppath, 'Themed' . DS . $themeToUse . DS . 'Plugin') === false)
+            ) {
                 continue; # Important: skip no active themes
             }
+            
             $paths["{$plugin}_components"] =  $ppath . 'Controller' . DS . 'Component' . DS;
             $paths["{$plugin}_behaviors"] = $ppath . 'Model' . DS . 'Behavior' . DS;
             $paths["{$plugin}_helpers"] = $ppath . 'View' . DS . 'Helper' . DS;
@@ -229,6 +233,7 @@ class AppController extends Controller {
                 $prefix = ($plugin) ? Inflector::camelize($plugin) . '.' : '';
                 $hook = $prefix . Inflector::camelize(str_replace(array('.php'), '', basename($file)));
                 $hook = str_replace(array('Component', 'Behavior', 'Helper'),'', $hook);
+
                 if (strpos($path, 'Helper')) {
                     $h[] = $hook;
                     $this->helpers[] = $hook;
@@ -240,7 +245,9 @@ class AppController extends Controller {
                 }
             }
         }
+        
         $h[] = 'CustomHooks'; # merge custom hooktags helper
+        
         Configure::write('Hook.components', $c);
         Configure::write('Hook.behaviors', $b);
         Configure::write('Hook.helpers', $h);
