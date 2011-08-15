@@ -9,7 +9,7 @@
                     )
                 );
             ?>
-            <?php echo $this->Form->input(__t('Add role'), array('type' => 'submit', 'label' => false ) ); ?>
+            <?php echo $this->Form->input(__t('Add role'), array('type' => 'submit', 'label' => false)); ?>
         </div>
     <?php echo $this->Html->useTag('fieldsetend'); ?>
 <?php echo $this->Form->end(); ?>
@@ -24,7 +24,7 @@ $tSettings = array(
 		__t('Actions') => array(
 			'value' => "
                 <a href='{url}/admin/user/roles/edit/{Role.id}{/url}'>" . __t('edit') . "</a> 
-                {php} return !in_array({Role.id}, array(1, 2, 3) ) ? \" | <a href='{url}/admin/user/roles/delete/{Role.id}{/url}' onClick='return confirm(\\\"" . __t('Are you sure?') . "\\\");'>" . __t('delete') . "</a>\" : \"\"; {/php}",
+                {php} return !in_array({Role.id}, array(1, 2, 3)) ? \" | <a href='{url}/admin/user/roles/delete/{Role.id}{/url}' onClick='return confirm(\\\"" . __t('Are you sure?') . "\\\");'>" . __t('delete') . "</a>\" : \"\"; {/php}",
 			'thOptions' => array('align' => 'right'),
 			'tdOptions' => array('align' => 'right')
 		),

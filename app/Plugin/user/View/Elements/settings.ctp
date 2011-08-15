@@ -45,7 +45,7 @@
         <div style="display:none;">
             <?php
                 # Account Activation
-                echo $this->Form->input('Variable.user_mail_activation_notify', array('checked' => @$variables['user_mail_activation_notify'], 'label' => __d('user', 'Notify user when account is activated.'), 'type' => 'checkbox') );
+                echo $this->Form->input('Variable.user_mail_activation_notify', array('checked' => @$variables['user_mail_activation_notify'], 'label' => __d('user', 'Notify user when account is activated.'), 'type' => 'checkbox'));
                 echo $this->Form->input('Variable.user_mail_activation_subject', 
                     array(
                         'type' => 'text', 
@@ -70,7 +70,7 @@
         <div style="display:none;">
             <?php
                 # Blocking
-                echo $this->Form->input('Variable.user_mail_blocked_notify', array('checked' => @$variables['user_mail_blocked_notify'], 'label' => __d('user', 'Notify user when account is blocked.'), 'type' => 'checkbox') );
+                echo $this->Form->input('Variable.user_mail_blocked_notify', array('checked' => @$variables['user_mail_blocked_notify'], 'label' => __d('user', 'Notify user when account is blocked.'), 'type' => 'checkbox'));
                 echo $this->Form->input('Variable.user_mail_blocked_subject', 
                     array(
                         'type' => 'text', 
@@ -119,7 +119,7 @@
         <div style="display:none;">
         <?php
             # account canceled Recovery
-            echo $this->Form->input('Variable.user_mail_canceled_notify', array('checked' => @$variables['user_mail_canceled_notify'], 'label' => __d('user', 'Notify user when account is canceled.'), 'type' => 'checkbox') );
+            echo $this->Form->input('Variable.user_mail_canceled_notify', array('checked' => @$variables['user_mail_canceled_notify'], 'label' => __d('user', 'Notify user when account is canceled.'), 'type' => 'checkbox'));
             echo $this->Form->input('Variable.user_mail_canceled_subject', 
                 array(
                     'type' => 'text', 

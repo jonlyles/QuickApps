@@ -30,7 +30,7 @@ $tSettings = array(
 );
 ?>
 
-<?php echo $this->Form->create(null, array('onsubmit' => 'return confirm("' . __t('Are you sure ?') . '");') ); ?>
+<?php echo $this->Form->create(null, array('onsubmit' => 'return confirm("' . __t('Are you sure ?') . '");')); ?>
     <!-- Update -->
     <?php echo $this->Html->useTag('fieldsetstart', '<span id="toggle-update_fieldset" style="cursor:pointer;">' . __t('Update Options') . '</span>' ); ?>
         <div id="update_fieldset" class="horizontalLayout" style="<?php echo isset($this->data['Comment']['update']) ? '' : 'display:none;'; ?>">

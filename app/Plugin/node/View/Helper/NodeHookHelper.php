@@ -52,27 +52,27 @@ class NodeHookHelper extends AppHelper {
     public function node_search($data) {
 		return array(
             'title' => __d('node', 'Search'),
-			'body' => $this->_View->element('node_search_block', array('data' => $data), array('plugin' => 'Node') )
+			'body' => $this->_View->element('node_search_block', array('data' => $data), array('plugin' => 'Node'))
 		);
     }
 
     # edit/add form (node type: Basic Page)
     public function node_content_form($data) {
-        return $this->_View->element('node_content_form', array('data' => $data), array('plugin' => 'Node') );
+        return $this->_View->element('node_content_form', array('data' => $data), array('plugin' => 'Node'));
     }
 
     # rendering (node type: Basic Page)
     public function node_content_page($node) {
-        return $this->_View->element('node_content_page', array('node' => $node), array('plugin' => 'Node') );
+        return $this->_View->element('node_content_page', array('node' => $node), array('plugin' => 'Node'));
     }
 
     # edit/add form (node type: Custom types)
     public function node_form($data) {
-        return $this->_View->element('node_content_form', array('data' => $data), array('plugin' => 'Node') );
+        return $this->_View->element('node_content_form', array('data' => $data), array('plugin' => 'Node'));
     }
 
     # rendering (node type: Custom types) /node/details/
     public function node_render($node) {
-        return $this->_View->element('node_content_page', array('node' => $node), array('plugin' => 'Node') );
+        return $this->_View->element('node_content_page', array('node' => $node), array('plugin' => 'Node'));
     }
 }

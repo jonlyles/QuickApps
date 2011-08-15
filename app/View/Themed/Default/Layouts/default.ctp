@@ -18,19 +18,19 @@
                     </a>
                 <?php endif; ?>
                 
-                <?php if (!$this->Layout->emptyRegion('user-menu') ): ?>
+                <?php if (!$this->Layout->emptyRegion('user-menu')): ?>
                 <div id="user-menu">
                     <?php echo $this->Layout->blocks('user-menu'); ?>
                 </div>
                 <?php endif; ?>
                 
-                <?php if (!$this->Layout->emptyRegion('language-switcher') ): ?>
+                <?php if (!$this->Layout->emptyRegion('language-switcher')): ?>
                 <div id="language-switcher">
                     <?php echo $this->Layout->blocks('language-switcher'); ?>
                 </div>
                 <?php endif; ?>
                 
-                <?php if (!$this->Layout->emptyRegion('search') ): ?>
+                <?php if (!$this->Layout->emptyRegion('search')): ?>
                 <div id="search-block">
                     <?php echo $this->Layout->blocks('search'); ?>
                 </div>
@@ -48,7 +48,7 @@
         
         <div id="page">
             <?php if ($this->plugin == 'Node' && $this->params['action'] == 'index'): ?>
-                <?php if (!$this->Layout->emptyRegion('slider') ): ?>
+                <?php if (!$this->Layout->emptyRegion('slider')): ?>
                 <div class="slider">
                     <div class="container clearfix">
                         <?php echo $this->Layout->blocks('slider'); ?>
@@ -69,19 +69,19 @@
                     <div id="services">
                         <div class="container clearfix">
                             <div class="service">
-                                <?php echo $this->Html->image('pen.png', array('class' => 'icon') ); ?>
+                                <?php echo $this->Html->image('pen.png', array('class' => 'icon')); ?>
                                 <?php echo $this->Layout->blocks('services-left'); ?>
                             
                             </div> <!-- end .service -->                    
                         
                             <div class="service">
-                                <?php echo $this->Html->image('gear.png', array('class' => 'icon') ); ?>
+                                <?php echo $this->Html->image('gear.png', array('class' => 'icon')); ?>
                                 <?php echo $this->Layout->blocks('services-center'); ?>
                             
                             </div> <!-- end .service -->                    
                         
                             <div class="service last">
-                                <?php echo $this->Html->image('bubble.png', array('class' => 'icon') ); ?>
+                                <?php echo $this->Html->image('bubble.png', array('class' => 'icon')); ?>
                                 <?php echo $this->Layout->blocks('services-right'); ?>
                             </div> <!-- end .service -->
                         </div>
@@ -93,7 +93,7 @@
                         <?php echo $this->Layout->blocks('help'); ?>
                     </div>
                     
-                    <?php if ($sessionFlash = $this->Layout->sessionFlash() ): ?>
+                    <?php if ($sessionFlash = $this->Layout->sessionFlash()): ?>
                     <div id="sessionFlash">
                         <?php echo $sessionFlash; ?>
                     </div>

@@ -104,14 +104,14 @@
 class FieldableBehavior extends ModelBehavior {
 /**
  * belongsTo: Name of the object that field belongs to. (Commonly Model Name)
- * If no information is given then Model name is used as default. 
+ * If no information is given then Model name is used as default.
  */
     private $__settings = array('belongsTo' => null);
     
 /**
  * Temp holder for afterSave() proccessing
  */    
-    private $fieldData = null;
+    private $__fieldData = array();
 
 /**
  * Initiate Fieldable behavior
@@ -124,7 +124,7 @@ class FieldableBehavior extends ModelBehavior {
 	public function setup($Model, $settings = array()) {
 		$this->__settings = Set::merge($this->__settings, $settings);
 
-        if(empty($this->__settings['belongsTo'])) {
+        if (empty($this->__settings['belongsTo'])) {
             $this->__settings['belongsTo'] = $Model->alias;
         }
 
@@ -182,8 +182,9 @@ class FieldableBehavior extends ModelBehavior {
                 }
             }
         }
-        if(isset($Model->data['FieldData'])) {
-            $this->fieldData = $Model->data['FieldData'];
+
+        if (isset($Model->data['FieldData'])) {
+            $this->__fieldData = $Model->data['FieldData'];
         }
 
         return !in_array(false, $r, true);
@@ -199,8 +200,8 @@ class FieldableBehavior extends ModelBehavior {
  * @return void
  */
     public function afterSave(&$Model, $created) {
-        if (!empty($this->fieldData)) {
-            foreach ($this->fieldData as $field_module => $fields) {
+        if (!empty($this->__fieldData)) {
+            foreach ($this->__fieldData as $field_module => $fields) {
                 foreach ($fields as $field_id => $info) {
                     $info['field_id'] = $field_id;
                     $info['model_name'] = $Model->name;
@@ -235,7 +236,7 @@ class FieldableBehavior extends ModelBehavior {
     private function __beforeAfterDelete(&$Model, $type = 'before') {
         $model_id = $Model->id ? $Model->id : $Model->tmpData[$Model->alias][$Model->primaryKey];
 
-        if($type == 'before') {
+        if ($type == 'before') {
             $result = $Model->find('first',
                 array(
                     'conditions' => array(

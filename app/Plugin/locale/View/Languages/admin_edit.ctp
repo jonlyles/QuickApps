@@ -1,15 +1,15 @@
-<?php echo $this->Form->create('Language', array('url' => "/admin/locale/languages/edit/{$this->data['Language']['id']}") ); ?>
+<?php echo $this->Form->create('Language', array('url' => "/admin/locale/languages/edit/{$this->data['Language']['id']}")); ?>
     <?php echo $this->Html->useTag('fieldsetstart', __t('Editing language')); ?>
-        <?php if (!in_array($this->data['Language']['code'], array('eng', Configure::read('Variable.default_language'))) ): ?>
-            <?php echo $this->Form->input('status', array('type' => 'checkbox', 'label' => __t('Active') ) ); ?>
+        <?php if (!in_array($this->data['Language']['code'], array('eng', Configure::read('Variable.default_language')))): ?>
+            <?php echo $this->Form->input('status', array('type' => 'checkbox', 'label' => __t('Active'))); ?>
         <?php endif; ?>
-        <?php echo $this->Form->input('id', array('type' => 'hidden') ); ?>
-        <?php echo $this->Form->input('code', array('type' => 'hidden') ); ?>
+        <?php echo $this->Form->input('id', array('type' => 'hidden')); ?>
+        <?php echo $this->Form->input('code', array('type' => 'hidden')); ?>
         
-        <?php echo $this->Form->input('name', array('required' => 'required', 'type' => 'text', 'label' => __t('Language name in English *') ) ); ?>
+        <?php echo $this->Form->input('name', array('required' => 'required', 'type' => 'text', 'label' => __t('Language name in English *'))); ?>
         <em><?php echo __t('Name of the language in English. Will be available for translation in all languages.'); ?></em>
         
-        <?php echo $this->Form->input('native', array('required' => 'required', 'type' => 'text', 'label' => __t('Native language name *') ) ); ?>
+        <?php echo $this->Form->input('native', array('required' => 'required', 'type' => 'text', 'label' => __t('Native language name *'))); ?>
         <em><?php echo __t('Name of the language in the language being added.'); ?></em>
         <?php
             echo $this->Form->input('icon', 
@@ -54,7 +54,7 @@
     <?php echo $this->Html->useTag('fieldsetend'); ?>
     
     <!-- Submit -->
-    <?php echo $this->Form->input(__t('Save language'), array('type' => 'submit') ); ?>
+    <?php echo $this->Form->input(__t('Save language'), array('type' => 'submit')); ?>
 <?php echo $this->Form->end(); ?>
 
 <script>

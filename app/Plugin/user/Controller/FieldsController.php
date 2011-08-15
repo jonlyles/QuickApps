@@ -27,7 +27,7 @@ class FieldsController extends UserAppController {
             $this->flashMsg(__t('Field could not be created. Please, try again.'), 'error');
         }
     
-        $fields = $this->Field->find('all', array('conditions' => array('Field.belongsTo' => 'User') ) );
+        $fields = $this->Field->find('all', array('conditions' => array('Field.belongsTo' => 'User')));
         
         /* Available field objects */
         foreach (App::objects('plugins') as $plugin) {
@@ -41,7 +41,7 @@ class FieldsController extends UserAppController {
         $this->set('results', $fields);
         $this->set('field_modules', $field_modules);
 		$this->setCrumb('/admin/user/');
-		$this->setCrumb( array(__t('Manage Fields'), '') );
+		$this->setCrumb( array(__t('Manage Fields'), ''));
 		$this->title(__t('Manage User Fields'));
 	}
     
@@ -55,8 +55,8 @@ class FieldsController extends UserAppController {
         $this->data = $this->Field->findById($id) or  $this->redirect('/admin/node/types');
         
         $this->setCrumb('/admin/user');
-        $this->setCrumb( array(__t('Fields'), '/admin/user/fields') );
-        $this->setCrumb( array(__t('Field settings'), '') );
+        $this->setCrumb( array(__t('Fields'), '/admin/user/fields'));
+        $this->setCrumb( array(__t('Field settings'), ''));
         $this->title(__t('Field Settings'));
         $this->set('result', $this->data);    
     }

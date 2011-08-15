@@ -36,7 +36,7 @@
             $comments .= $this->element('node_details_comments_form');
         }
  
-        echo $this->Html->tag('div', $comments, array('id' => 'comments', 'class' => 'node-comments') ); 
+        echo $this->Html->tag('div', $comments, array('id' => 'comments', 'class' => 'node-comments')); 
         
         $collect = $this->Layout->hook('afterRenderNodeComments', $this, 
             array(

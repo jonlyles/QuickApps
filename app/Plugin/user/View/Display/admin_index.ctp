@@ -30,14 +30,14 @@ $tSettings = array(
 
 <?php if ($view_mode === 'default' && count($result)): ?>
     <p>
-    <?php echo $this->Form->create('User', array('url' => "/admin/user/display/") ); ?>
+    <?php echo $this->Form->create('User', array('url' => "/admin/user/display/")); ?>
         <?php echo $this->Html->useTag('fieldsetstart', '<span id="toggle-viewModes_fieldset" style="cursor:pointer;">' . __t('View Modes') . '</span>'); ?>
             <div id="viewModes_fieldset" class="horizontalLayout" style="display:none;">
                 <em><?php echo __t('Use custom display settings for the following view modes'); ?></em>
-                <?php echo $this->Form->input('User.viewModes', array('type' => 'select', 'multiple' => 'checkbox', 'options' => array('user_account' => __t('User account')), 'label' => false ) ); ?>
+                <?php echo $this->Form->input('User.viewModes', array('type' => 'select', 'multiple' => 'checkbox', 'options' => array('user_account' => __t('User account')), 'label' => false)); ?>
             </div>
         <?php echo $this->Html->useTag('fieldsetend'); ?>
-        <?php echo $this->Form->input(__t('Save'), array('type' => 'submit') ); ?>
+        <?php echo $this->Form->input(__t('Save'), array('type' => 'submit')); ?>
     <?php echo $this->Form->end(); ?>
     </p>
 

@@ -77,7 +77,7 @@ class ManageController extends MenuAppController {
         }
         
 		$this->setCrumb('/admin/system/structure');
-		$this->setCrumb( array(array(__t('Menu'), '/admin/menu/manage'), array(__t('Editing menu'), '')) );
+		$this->setCrumb( array(array(__t('Menu'), '/admin/menu/manage'), array(__t('Editing menu'), '')));
         $this->title(__t('Editing Menu'));
     }
     
@@ -104,7 +104,7 @@ class ManageController extends MenuAppController {
     // add link to menu
     public function admin_add_link($menu_id) {
         $this->Menu->recursive = 1;
-        $this->Menu->unbindModel( array('belongsTo' => array('Block') ) );
+        $this->Menu->unbindModel( array('belongsTo' => array('Block')));
         $menu = $this->Menu->findById($menu_id) or $this->redirect('/admin/menu');
         
         if (isset($this->data['MenuLink'])) {
@@ -135,7 +135,7 @@ class ManageController extends MenuAppController {
             array(
                 array(__t('Menu'), '/admin/menu/manage'),
                 array($menu['Menu']['title'], '/admin/menu/manage/links/' . $menu['Menu']['id'], __t('Menu links list')),
-                array( __t('Add menu link') )
+                array( __t('Add menu link'))
             )
         );
         $this->title(__t('Add menu link'));
@@ -168,7 +168,7 @@ class ManageController extends MenuAppController {
         $this->data = $data;
         
         $this->Menu->recursive = 1;
-        $this->Menu->unbindModel( array('belongsTo' => array('Block') ) );
+        $this->Menu->unbindModel( array('belongsTo' => array('Block')));
         $menu = $this->Menu->findById($this->data['MenuLink']['menu_id']);
         
 		$this->setCrumb('/admin/system/structure');
@@ -187,7 +187,7 @@ class ManageController extends MenuAppController {
     // edit order menu links list
 	public function admin_links($menu_id) {
         $this->Menu->recursive = -1;
-        $this->Menu->unbindModel( array('belongsTo' => array('Block') ) );
+        $this->Menu->unbindModel( array('belongsTo' => array('Block')));
         $menu = $this->Menu->findById($menu_id) or $this->redirect('/admin/menu/manage');
             
         if (isset($this->data['MenuLink'])) {
@@ -231,7 +231,7 @@ class ManageController extends MenuAppController {
 		$this->set('links', $links);
         
         if (empty($links)) {
-            $this->flashMsg(__t('There are no menu links yet. <a href="%s">Add link.</a>', Router::url("/admin/menu/manage/add_link/{$menu_id}") ), 'error');
+            $this->flashMsg(__t('There are no menu links yet. <a href="%s">Add link.</a>', Router::url("/admin/menu/manage/add_link/{$menu_id}")), 'error');
         }
 	}
 }

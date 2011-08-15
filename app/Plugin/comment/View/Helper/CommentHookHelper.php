@@ -15,7 +15,7 @@ class CommentHookHelper extends AppHelper {
         $showOn = (
             isset($this->request->params['admin']) && 
             $this->request->params['plugin'] == 'comment' &&
-            in_array($this->request->params['controller'], array('published', 'unpublished') ) && 
+            in_array($this->request->params['controller'], array('published', 'unpublished')) && 
             $this->request->params['action'] == 'admin_index' 
         );
         
@@ -24,7 +24,7 @@ class CommentHookHelper extends AppHelper {
         $markeItUp_showOn = (
             !isset($this->request->params['admin']) && 
             $this->request->params['plugin'] == 'node' &&
-            in_array($this->request->params['controller'], array('node') ) && 
+            in_array($this->request->params['controller'], array('node')) && 
             $this->request->params['action'] == 'details' 
         );
         

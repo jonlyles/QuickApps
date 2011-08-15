@@ -1,5 +1,5 @@
 <?php
-if (!class_exists('L10n') ) App::import('I18n', 'L10n');
+if (!class_exists('L10n')) App::import('I18n', 'L10n');
 class Locale {
 
     function languages() {

@@ -38,10 +38,10 @@
 <?php echo $this->Html->script('json.js'); ?>
 
 <div id="menu-sortContainer">
-    <?php echo $this->Tree->generate($links, array('class' => 'sortable', 'plugin' => 'menu', 'element' => 'menu_link_node', 'id' => 'menuLinks', 'model' => 'MenuLink', 'alias' => 'link_title') ); ?>
+    <?php echo $this->Tree->generate($links, array('class' => 'sortable', 'plugin' => 'menu', 'element' => 'menu_link_node', 'id' => 'menuLinks', 'model' => 'MenuLink', 'alias' => 'link_title')); ?>
 </div>
 
-<?php echo $this->Form->submit(__t('Save changes'), array('id' => 'saveChanges') ); ?>
+<?php echo $this->Form->submit(__t('Save changes'), array('id' => 'saveChanges')); ?>
 <span id="saveStatus">&nbsp;</span>
 
 <script>

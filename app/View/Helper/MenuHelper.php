@@ -73,7 +73,7 @@ class MenuHelper extends AppHelper {
  * @var array
  * @access public
  */
-    var $helpers = array ('Html' => array('className' => 'QaHtml') );
+    var $helpers = array ('Html' => array('className' => 'QaHtml'));
 /**
  * Tree generation method.
  *
@@ -255,7 +255,7 @@ class MenuHelper extends AppHelper {
             } else {
                 $_url = !empty($result[$model][$external_url]) ? $result[$model][$external_url] : $result[$model][$url];
                 $title = !empty($result[$model][$alt_text]) ? __t($result[$model][$alt_text]) : '';
-                $content = $this->Html->link("<span>" . __t($result[$model][$alias]) . "</span>", $_url, array('escape' => false, 'title' => $title) ); # href
+                $content = $this->Html->link("<span>" . __t($result[$model][$alias]) . "</span>", $_url, array('escape' => false, 'title' => $title)); # href
             }
             if (!$content) {
                 continue;
@@ -530,7 +530,7 @@ class MenuHelper extends AppHelper {
         $remove_ids = array_unique($remove_ids);
       
         foreach ($links as $i => $l) {
-            if (in_array($l[$this->__settings['model']]['id'], $remove_ids) )
+            if (in_array($l[$this->__settings['model']]['id'], $remove_ids))
                 unset($links[$i]);
         }
         

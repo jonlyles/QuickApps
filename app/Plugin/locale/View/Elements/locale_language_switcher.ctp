@@ -5,7 +5,7 @@
         $flag = $block['Block']['settings']['flags'] && !empty($lang['Language']['icon']) ? 
             $this->Html->image(
                 ( strpos($lang['Language']['icon'], '://') !== false ? $lang['Language']['icon'] : "/locale/img/flags/{$lang['Language']['icon']}" ), 
-                array('class' => 'flag-icon') )
+                array('class' => 'flag-icon'))
             : '';
     ?>
     <?php $name = $block['Block']['settings']['name'] ? "<span>{$lang['Language']['native']}</span>" : ''; ?>

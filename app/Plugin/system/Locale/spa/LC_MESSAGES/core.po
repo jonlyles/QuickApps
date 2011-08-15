@@ -96,7 +96,7 @@ msgid "Default avatar"
 msgstr "Avatar por defecto"
 
 msgid "URL of picture to display for users with no custom picture selected or anonymous users."
-msgstr "URL de la imágen a mostrar para usuarios sin avatar personalizado o usaurios anónimos."
+msgstr "URL de la imágen a mostrar para usuarios sin avatar personalizado o usuarios anónimos."
 
 msgid "Help topics"
 msgstr "Temas de ayuda"

@@ -36,7 +36,7 @@ class AppHelper extends Helper {
         foreach ($files as $helper) {
             $helper = str_replace('Helper.php', '', $helper);
             $this->hooks[] = "{$Plugin}.{$helper}";
-            $this->$helper = $this->_View->loadHelper("{$Plugin}.{$helper}" , array('plugin' => $plugin) );
+            $this->$helper = $this->_View->loadHelper("{$Plugin}.{$helper}" , array('plugin' => $plugin));
             if (!is_object($this->{$helper})) {
                 continue;
             }
@@ -109,7 +109,7 @@ class AppHelper extends Helper {
         }
         
 		$collected = array();
-		if (!$this->hook_defined($event) ) {
+		if (!$this->hook_defined($event)) {
             return null;
         }
         

@@ -19,7 +19,7 @@ class Module extends SystemAppModel {
         # merge settings (array treatment):
         if (isset($this->data['Module']['name']) && isset($this->data['Module']['settings'])) {
             $this->validate = false;
-            $settings = $this->field('settings', array('Module.name' => $this->data['Module']['name']) );
+            $settings = $this->field('settings', array('Module.name' => $this->data['Module']['name']));
             $this->data['Module']['settings'] = Set::merge($settings, $this->data['Module']['settings']);
             $this->data['Module']['settings'] = Set::filter($this->data['Module']['settings']);
         } elseif (!isset($this->data['Module']['name'])) { # new module

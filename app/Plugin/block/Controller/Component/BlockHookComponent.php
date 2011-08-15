@@ -18,13 +18,14 @@ class BlockHookComponent extends Component {
 	}
 	
 	public function blocks_list($params = array()) {
-        $params = array_merge($params, array( 'recursive' => 2 ) );
+        $params = array_merge($params, array('recursive' => 2));
         $Block = (isset($this->Controller->Block) &&  is_object($this->Controller->Block)) ? $this->Controller->Block : ClassRegistry::init('Block.Block');
         $Block->Menu->unbindModel(
             array('hasMany' => array('Block'))
         );
         
         $blocks = $Block->find('all', $params);
+        
         return $blocks;
 	}
 }

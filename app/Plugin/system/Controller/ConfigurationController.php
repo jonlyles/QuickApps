@@ -21,12 +21,12 @@ class ConfigurationController extends AppController {
                     $this->Variable->invalidate('site_name', 'Site name can not be blank');
                     $err = true;
                     break;
-                } elseif ($name == 'site_mail' && (empty($value) || !Validation::email($value) )) {
+                } elseif ($name == 'site_mail' && (empty($value) || !Validation::email($value))) {
                     $this->Variable->invalidate('site_mail', 'Invalid site email');
                     $err = true;
                     break;
                 } else {
-                    $this->Variable->save( array('name' => $name, 'value' => $value) );
+                    $this->Variable->save( array('name' => $name, 'value' => $value));
                 }
             }
             

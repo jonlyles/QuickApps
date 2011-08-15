@@ -47,7 +47,7 @@ class Field extends FieldAppModel {
         # merge settings (array treatment): formatter form post
         if (isset($this->data['Field']['id']) && isset($this->data['Field']['settings'])) {
             $this->validate = false;
-            $settings = $this->field('settings', array('Field.id' => $this->data['Field']['id']) );
+            $settings = $this->field('settings', array('Field.id' => $this->data['Field']['id']));
             $this->data['Field']['settings'] = Set::merge($settings, $this->data['Field']['settings']);
         } elseif (!isset($this->data['Field']['id'])) { # new field
             $default_settings = array(
@@ -138,7 +138,7 @@ class Field extends FieldAppModel {
         }
         
         $conditions = (!$conditions || !is_array($conditions)) ? '1 = 1' : $conditions;
-        $fields = $this->find('all', array('conditions' => $conditions) );
+        $fields = $this->find('all', array('conditions' => $conditions));
         
         foreach ($fields as &$field) {
             $actual = array_keys($field['Field']['settings']['display']);

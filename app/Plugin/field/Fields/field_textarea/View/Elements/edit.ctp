@@ -11,7 +11,7 @@
         }
         
         echo $this->Form->input("FieldData.field_textarea.{$data['id']}.data", $options);
-        echo $this->Form->hidden("FieldData.field_textarea.{$data['id']}.id", array('value' => null) );
+        echo $this->Form->hidden("FieldData.field_textarea.{$data['id']}.id", array('value' => null));
     } else { 
         $data['FieldData'] = array_merge(array('id' => null, 'field_id' => null, 'foreignKey' => null, 'belongsTo' => null, 'data' => ''), $data['FieldData']);
         $options = array('type' => 'textarea', 'class' => $class, 'label' => $data['label'], 'value' => $data['FieldData']['data']);
@@ -21,10 +21,10 @@
         }
         
         echo $this->Form->input("FieldData.field_textarea.{$data['id']}.data", $options );
-        echo $this->Form->hidden("FieldData.field_textarea.{$data['id']}.id", array('value' => $data['FieldData']['id']) );
+        echo $this->Form->hidden("FieldData.field_textarea.{$data['id']}.id", array('value' => $data['FieldData']['id']));
     }
     
-    if (!empty($data['description']) ):
+    if (!empty($data['description'])):
 ?>
     <em><?php echo $this->Layout->hookTags($data['description']); ?></em>
 <?php endif; ?>

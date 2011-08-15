@@ -187,7 +187,7 @@ class AppController extends Controller {
             if (!isset($this->Variable)) {
                 $this->loadModel('System.Variable');
             }
-            $q = $this->Variable->find('first', array('conditions' => array('Variable.name' => $_themeType) ) );
+            $q = $this->Variable->find('first', array('conditions' => array('Variable.name' => $_themeType)));
         }
         $themeToUse = !$_cache ? $q['Variable']['value'] : $_cache[$_themeType];
         $plugins = App::objects('plugin', null, false);

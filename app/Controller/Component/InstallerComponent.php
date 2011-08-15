@@ -113,7 +113,7 @@ class InstallerComponent extends Object {
                         $tests = array(
                             'notAlreadyInstalled' => array(
                                 'test' => ( 
-                                    $this->Controller->Module->find('count', array('conditions' => array('Module.name' => $appName, 'Module.type' => 'module') ) ) === 0 && 
+                                    $this->Controller->Module->find('count', array('conditions' => array('Module.name' => $appName, 'Module.type' => 'module'))) === 0 && 
                                     !file_exists(ROOT . DS . 'Modules' . DS . $appName)
                                 ),
                                 'header' => __d('system', 'Already Installed'),
@@ -171,7 +171,7 @@ class InstallerComponent extends Object {
                     $tests = array(
                         'notAlreadyInstalled' => array(
                             'test' => ( 
-                                $this->Controller->Module->find('count', array('conditions' => array('Module.name' => 'theme_' . Inflector::underscore($appName), 'Module.type' => 'theme') ) ) === 0 && 
+                                $this->Controller->Module->find('count', array('conditions' => array('Module.name' => 'theme_' . Inflector::underscore($appName), 'Module.type' => 'theme'))) === 0 && 
                                 !file_exists(APP . 'View' . DS . 'Themed' . DS . $appName)
                             ),
                             'header' => __d('system', 'Already Installed'),
@@ -193,7 +193,7 @@ class InstallerComponent extends Object {
                             'msg' => __d('system', '"Plugin" folder not found')
                         ),
                         'plugin_app' => array(
-                            'test' => file_exists($packagePath . 'Plugin' . DS . 'theme_' . Inflector::underscore($appName) ),
+                            'test' => file_exists($packagePath . 'Plugin' . DS . 'theme_' . Inflector::underscore($appName)),
                             'header' => __d('system', 'Plugin app'),
                             'msg' => __d('system', 'Plugin app ("%s") folder not found', 'theme_' . Inflector::underscore($appName))
                         ),
@@ -221,7 +221,9 @@ class InstallerComponent extends Object {
                 break;
             }
             
-            if (!$this->__process_tests($tests) ) return false;
+            if (!$this->__process_tests($tests)) {
+                return false;
+            }
             
             /** YAML validations **/
             $yaml = Spyc::YAMLLoad($packagePath . "{$appName}.yaml");
@@ -312,9 +314,14 @@ class InstallerComponent extends Object {
             /*****************/
             $Install =& $this->__loadInstallComponent($packagePath . 'Controller' . DS . 'Component' . DS);
             $r = true;
-            if (method_exists($Install, 'beforeInstall') )
+            
+            if (method_exists($Install, 'beforeInstall')) {
                 $r = $Install->beforeInstall($this);
-            if ($r === false) return false;
+            }
+            
+            if ($r === false) {
+                return false;
+            }
             
             /** Copy files **/
             $copyTo = ($this->settings['type'] == 'module') ? ROOT . DS . 'Modules' . DS . $appName : APP . 'View' . DS . 'Themed' . DS . $appName;
@@ -322,7 +329,7 @@ class InstallerComponent extends Object {
             
             /** DB Logics **/
             $moduleData = array(
-                'name' => ($this->settings['type'] == 'module' ? $appName : 'theme_' . Inflector::underscore($appName) ),
+                'name' => ($this->settings['type'] == 'module' ? $appName : 'theme_' . Inflector::underscore($appName)),
                 'type' => ($this->settings['type'] == 'module' ? 'module' : 'theme' ),
                 'status' => intval($this->settings['status'])
             );
@@ -336,8 +343,10 @@ class InstallerComponent extends Object {
             $Folder->delete($workingDir);
             
             /** Finish **/
-            if (method_exists($Install, 'afterInstall') )
+            if (method_exists($Install, 'afterInstall')) {
                 $Install->afterInstall($this);
+            }
+            
             $this->afterInstall();
         }
         return true;
@@ -352,14 +361,18 @@ class InstallerComponent extends Object {
  * @return boolean true on success or false otherwise                           
  */
     public function uninstall($pluginName = false) {
-        if (!$pluginName || !is_string($pluginName) ) return false;
+        if (!$pluginName || !is_string($pluginName)) {
+            return false;
+        }
+
         $this->settings['name'] = $pluginName;
-        
         $name = Inflector::underscore($this->settings['name']);
         $Name = Inflector::camelize($this->settings['name']);
-        
         $pData = $this->Controller->Module->findByName($name);
-        if (!$pData ) return false;
+
+        if (!$pData) {
+            return false;
+        }
         
         /* useful for before/afterUninstall */
         $this->settings['type'] = $pData['Module']['type'];
@@ -369,30 +382,38 @@ class InstallerComponent extends Object {
         $this->settings['__Name'] = $Name;
         
         # core plugins can not be deleted
-        if (
-           in_array($pluginName, array_merge(array('ThemeDefault', 'ThemeAdminDefault'), Configure::read('coreModules') ) )
-        )
+        if (in_array($pluginName, array_merge(array('ThemeDefault', 'ThemeAdminDefault'), Configure::read('coreModules')))) {
             return false;
+        }
         
         $pluginPath = $this->settings['__pluginPath'];
-        if (!file_exists($pluginPath) ) return false;
+        
+        if (!file_exists($pluginPath)) {
+            return false;
+        }
+        
         $Install =& $this->__loadInstallComponent($pluginPath . 'Controller' . DS . 'Component' . DS);
-        if (!is_object($Install) ) return false;
+        
+        if (!is_object($Install)) {
+            return false;
+        }
         
         $r = true;
-        if (method_exists($Install, 'beforeUninstall') )
+        if (method_exists($Install, 'beforeUninstall')) {
             $r = $Install->beforeUninstall($this);
-        if ($r === false) return false;
+        }
+        
+        if ($r === false) {
+            return false;
+        }
        
-        /*********************/
-        if (!$this->Controller->Module->deleteAll(
-            array(
-                'Module.name' => $name
-            )
-        ) ) return false;
-        /*********************/
-        if (method_exists($Install, 'afterUninstall') )
+        if (!$this->Controller->Module->deleteAll(array('Module.name' => $name))) {
+            return false;
+        }
+
+        if (method_exists($Install, 'afterUninstall')) {
             $Install->afterUninstall($this);
+        }
             
         $this->afterUninstall();
         return true;
@@ -651,13 +672,23 @@ class InstallerComponent extends Object {
     }
     
     private function __loadInstallComponent($search = false) {
-        if (!file_exists($search . 'InstallComponent.php') )
+        if (!file_exists($search . 'InstallComponent.php')) {
             return false;
+        }
+        
         include_once($search . 'InstallComponent.php');
+        
         $class = "InstallComponent";
         $component =& new $class($this->Controller->Components);
-        if (method_exists($component, 'initialize')) $component->initialize($this);
-        if (method_exists($component, 'startup')) $component->startup($this);
+        
+        if (method_exists($component, 'initialize')) {
+            $component->initialize($this);
+        }
+        
+        if (method_exists($component, 'startup')) {
+            $component->startup($this);
+        }
+        
         return $component;
     }
     

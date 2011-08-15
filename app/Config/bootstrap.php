@@ -63,27 +63,34 @@ Cache::config('default', array('engine' => 'File'));
     $folder = new Folder;
     $folder->path = APP . 'View' . DS . 'Themed' . DS;
     
-    $__themes = $folder->read(); $__themes = $__themes[0];
-    foreach($__themes as $__tname)
+    $__themes = $folder->read();
+    $__themes = $__themes[0];
+    
+    foreach ($__themes as $__tname) {
         $__searchPath[] = APP . 'View' . DS . 'Themed' . DS . $__tname . DS . 'Plugin' . DS;
+    }
 
     $__searchPath[] = ROOT . DS . 'Modules' . DS;
-    
-    App::build( array('plugins' => $__searchPath) );
-    
+    App::build( array('plugins' => $__searchPath));
     $plugins = App::objects('plugins', null, false);
-    foreach( $plugins as $plugin) {
+    
+    foreach ($plugins as $plugin) {
         CakePlugin::load($plugin, array('bootstrap' => true, 'routes' => true));
         $ppath = CakePlugin::path($plugin);
         $ppath = str_replace(DS . $plugin . DS, DS . Inflector::underscore($plugin) . DS, $ppath);
-        if ( file_exists($ppath . 'Fields' . DS) )
+        
+        if (file_exists($ppath . 'Fields' . DS)) {
             App::build(array('plugins' => array($ppath . 'Fields' . DS)));
+        }
     }
     
     $plugins = App::objects('plugins', null, false);
-    foreach( $plugins as $plugin)
-        if ( !CakePlugin::loaded($plugin) )
+
+    foreach($plugins as $plugin) {
+        if (!CakePlugin::loaded($plugin)) {
             CakePlugin::load($plugin, array('bootstrap' => true, 'routes' => true) );
+        }
+    }
 
     unset($__searchPath, $__themes, $__tname, $folder, $plugins, $plugin);         
 
@@ -95,12 +102,14 @@ Cache::config('default', array('engine' => 'File'));
  */
     function get_this_class_methods($class){
         $array1 = get_class_methods($class);
-        if($parent_class = get_parent_class($class)){
+        
+        if ($parent_class = get_parent_class($class)) {
             $array2 = get_class_methods($parent_class);
             $array3 = array_diff($array1, $array2);
         } else {
             $array3 = $array1;
         }
+        
         return($array3);
     }
     
@@ -112,22 +121,29 @@ Cache::config('default', array('engine' => 'File'));
  * @return string the translated string
  */
     function __t($singular, $args = null) {
-        if (!$singular)
+        if (!$singular) {
             return;
+        }
+        
         App::uses('I18n', 'I18n');
         $route = Router::getParams();
         $translated = I18n::translate($singular, null, $route['plugin']); # look in plugin 
-        if($translated === $singular) # look in default
+
+        if ($translated === $singular) { # look in default
             $translated = I18n::translate($singular, null, 'default');
-        if($translated === $singular){ # TODO: look in i18n cache
+        }
+
+        if ($translated === $singular) { # llok in transtalion db-cache
             $cache = Cache::read(md5($singular) . '_' . Configure::read('Config.language'), 'i18n');
             $translated = $cache ? $cache: $singular;
         }
+        
         if ($args === null) {
             return $translated;
         } elseif (!is_array($args)) {
             $args = array_slice(func_get_args(), 1);
         }
+
         return vsprintf($translated, $args);    
     }
     
@@ -141,10 +157,13 @@ Cache::config('default', array('engine' => 'File'));
     function arrayUnique($array, $preserveKeys = false) {
         $arrayRewrite = array();
         $arrayHashes = array();
-        foreach($array as $key => $item) {
+        
+        foreach ($array as $key => $item) {
             $hash = md5(serialize($item));
+
             if (!isset($arrayHashes[$hash])) {
                 $arrayHashes[$hash] = $hash;
+
                 if ($preserveKeys) {
                     $arrayRewrite[$key] = $item;
                 } else {
@@ -152,6 +171,7 @@ Cache::config('default', array('engine' => 'File'));
                 }
             }
         }
+
         return $arrayRewrite;
     }
 

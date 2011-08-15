@@ -26,12 +26,12 @@ class RolesController extends UserAppController {
         
         $this->set('results', $roles);
 		$this->setCrumb('/admin/user/');
-		$this->setCrumb( array(__t('User roles'), '') );
+		$this->setCrumb( array(__t('User roles'), ''));
 		$this->title(__t('User Roles'));
 	}
 
     public function admin_edit($id) {
-        if (isset($this->data['Role']) ) {
+        if (isset($this->data['Role'])) {
             if ($this->User->Role->save($this->data)) {
                 $this->flashMsg(__t('Role has been saved'), 'success');
                 $this->redirect($this->referer());
@@ -43,8 +43,8 @@ class RolesController extends UserAppController {
         $this->data = $this->User->Role->findById($id) or $this->redirect('/admin/user/roles');
         
 		$this->setCrumb('/admin/user/');
-		$this->setCrumb( array(__t('User roles'), '/admin/user/roles') );
-		$this->setCrumb( array(__t('Editing role'), '') );
+		$this->setCrumb( array(__t('User roles'), '/admin/user/roles'));
+		$this->setCrumb( array(__t('Editing role'), ''));
 		$this->title(__t('Editing Role'));
     }
     

@@ -82,7 +82,7 @@ class TypesController extends NodeAppController {
         
         if (isset($this->data['NodeType']['viewModes'])) { # set available view modes
             $this->loadModel('Field.Field');
-            $this->Field->setViewModes( $this->data['NodeType']['viewModes'], array('Field.belongsTo' => "NodeType-{$typeId}") );
+            $this->Field->setViewModes( $this->data['NodeType']['viewModes'], array('Field.belongsTo' => "NodeType-{$typeId}"));
             $this->redirect($this->referer());
         }
         
@@ -221,8 +221,8 @@ class TypesController extends NodeAppController {
         $this->set('field_modules', $field_modules);
         
 		$this->setCrumb('/admin/node/types');
-		$this->setCrumb( array($nodeType['NodeType']['name'], '/admin/node/types/edit/' . $nodeType['NodeType']['id']) );
-		$this->setCrumb( array(__t('Fields'), '/admin/node/types/fields/' . $nodeType['NodeType']['id']) );
+		$this->setCrumb( array($nodeType['NodeType']['name'], '/admin/node/types/edit/' . $nodeType['NodeType']['id']));
+		$this->setCrumb( array(__t('Fields'), '/admin/node/types/fields/' . $nodeType['NodeType']['id']));
 		$this->title(__t('Fields'));
 	}
     

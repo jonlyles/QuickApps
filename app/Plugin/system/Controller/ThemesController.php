@@ -26,7 +26,7 @@ class ThemesController extends SystemAppController {
         
 		$themes = $this->__availableThemes();
         
-		if (in_array($theme_name, array_keys($themes) )) {
+		if (in_array($theme_name, array_keys($themes))) {
 			$data['Variable']['name'] = strpos($theme_name, 'Admin') !== false ? 'admin_theme' : 'site_theme';
 			$this->Variable->save($data);
             Cache::delete('Variable');
@@ -50,7 +50,7 @@ class ThemesController extends SystemAppController {
             $this->redirect($this->referer());
         }
        
-        $data['Module'] = Configure::read('Modules.' . Inflector::underscore('Theme' . $theme_name) );
+        $data['Module'] = Configure::read('Modules.' . Inflector::underscore('Theme' . $theme_name));
         $this->data = $data;
         
         $this->setCrumb('/admin/system/themes');
@@ -78,7 +78,7 @@ class ThemesController extends SystemAppController {
             $this->redirect('/admin/system/themes');
         }
         
-        if (!$this->Installer->install($this->data, array('type' => 'theme') )) {
+        if (!$this->Installer->install($this->data, array('type' => 'theme'))) {
             $errors = implode('', $this->Installer->errors);
             $this->flashMsg("<b>" . __t('Theme could not been installed') . ":</b><br/>{$errors}", 'error');
         } else {
@@ -108,14 +108,14 @@ class ThemesController extends SystemAppController {
  * Return all available themes (in themed folder)
  */
 	private function __availableThemes() {
-        $_themes = $this->Module->find('all', array('conditions' => array('Module.type' => 'theme') ) );
+        $_themes = $this->Module->find('all', array('conditions' => array('Module.type' => 'theme')));
         $themes = array();
         foreach ($_themes as $theme) {
             $ThemeName = Inflector::camelize($theme['Module']['name']);
             $folder = str_replace('Theme', '', $ThemeName);
             $themes[$folder] = $theme['Module'];
 			$yaml = APP . 'View' . DS . 'Themed' . DS . $folder . DS ."{$folder}.yaml";
-            if (file_exists($yaml) )
+            if (file_exists($yaml))
                 $themes[$folder] = Set::merge($themes[$folder], Spyc::YAMLLoad($yaml));
         }
         

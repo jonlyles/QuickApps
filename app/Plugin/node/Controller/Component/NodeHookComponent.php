@@ -20,7 +20,7 @@ class NodeHookComponent extends Component {
 
 	function get_node_types() {
 		$NodeType = ClassRegistry::init('Node.NodeType');
-		$types = $NodeType->find('all', array('recursive' => -1, 'fields' => array('type', 'name') ) );
+		$types = $NodeType->find('all', array('recursive' => -1, 'fields' => array('type', 'name')));
 		
 		return $types['NodeType'];
 	}

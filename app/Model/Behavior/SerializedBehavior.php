@@ -81,7 +81,7 @@ class SerializedBehavior extends ModelBehavior {
             }
         } else {
             foreach ($Model->data[$Model->alias] as $field => &$data) {
-                if (!in_array($field, $this->fields) ) {
+                if (!in_array($field, $this->fields)) {
                     continue;
                 }
                 $data = $this->serialize($data);

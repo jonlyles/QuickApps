@@ -74,7 +74,7 @@ class Menu extends MenuAppModel {
             $_id = $id;
             $c = '';
             
-            while ( $this->find('count', array('conditions' => array('Menu.id' => $_id) ) ) > 0) {
+            while ( $this->find('count', array('conditions' => array('Menu.id' => $_id))) > 0) {
                 $c = '-' . $i;
                 $_id = $id . $c;
                 $i++;

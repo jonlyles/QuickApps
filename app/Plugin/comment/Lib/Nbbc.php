@@ -1273,7 +1273,7 @@ $output = preg_split("/( (?:
 (?: (?: [a-zA-Z0-9-]{2,} \\. )+
 (?: arpa | com | org | net | edu | gov | mil | int | [a-z]{2}
 | aero | biz | coop | info | museum | name | pro
-| example | invalid | localhost | test | local | onion | swift ) )
+| example | invalid | localhost | test | local | onion | swift))
 | (?: [0-9]{1,3} \\. [0-9]{1,3} \\. [0-9]{1,3} \\. [0-9]{1,3} )
 | (?: [0-9A-Fa-f:]+ : [0-9A-Fa-f]{1,4} )
 )
@@ -1292,7 +1292,7 @@ $output = preg_split("/( (?:
 (?: (?: [a-zA-Z0-9-]{2,} \\. )+
 (?: arpa | com | org | net | edu | gov | mil | int | [a-z]{2}
 | aero | biz | coop | info | museum | name | pro
-| example | invalid | localhost | test | local | onion | swift ) )
+| example | invalid | localhost | test | local | onion | swift))
 | (?: [0-9]{1,3} \\. [0-9]{1,3} \\. [0-9]{1,3} \\. [0-9]{1,3} )
 )
 (?: : [0-9]+ )?
@@ -1311,10 +1311,10 @@ $output = preg_split("/( (?:
 (?: (?: [a-zA-Z0-9-]{2,} \\. )+
 (?: arpa | com | org | net | edu | gov | mil | int | [a-z]{2}
 | aero | biz | coop | info | museum | name | pro
-| example | invalid | localhost | test | local | onion | swift ) )
+| example | invalid | localhost | test | local | onion | swift))
 | (?: [0-9]{1,3} \\. [0-9]{1,3} \\. [0-9]{1,3} \\. [0-9]{1,3} )
 )
-) )/Dx", $string, -1, PREG_SPLIT_DELIM_CAPTURE);
+))/Dx", $string, -1, PREG_SPLIT_DELIM_CAPTURE);
 if (count($output) > 1) {
 $is_a_url = false;
 foreach ($output as $index => $token) {

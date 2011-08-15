@@ -16,7 +16,7 @@ class UnpublishedController extends CommentAppController {
     public function admin_index() {
         if (isset($this->data['Comment']['update'])) {
             if (isset($this->data['Items']['id'])) {
-                $update = ( !in_array($this->data['Comment']['update'], array('delete')) );
+                $update = ( !in_array($this->data['Comment']['update'], array('delete')));
                 switch ($this->data['Comment']['update']) {
                     case 'approve':
                         default:

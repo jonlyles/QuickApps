@@ -25,7 +25,7 @@ class ThemeAdminDefaultHookHelper extends AppHelper {
             break;
 			
 			case 'content':
-				return $this->_View->element('content-menu', array('menu' => $menu), array('plugin' => 'ThemeAdminDefault') );
+				return $this->_View->element('content-menu', array('menu' => $menu), array('plugin' => 'ThemeAdminDefault'));
 			break;
 			
 			default:
@@ -40,9 +40,9 @@ class ThemeAdminDefaultHookHelper extends AppHelper {
 		$out = array();
 		foreach ($b as $node) {
 			$selected = $node['MenuLink']['router_path'] == str_replace($this->_View->base, '', $this->_View->here) ? 'text-decoration:underline;' : '';
-			$out[] = $this->_View->Html->link($node['MenuLink']['link_title'], $node['MenuLink']['router_path'], array('title' => $node['MenuLink']['description'], 'style' => $selected) );
+			$out[] = $this->_View->Html->link($node['MenuLink']['link_title'], $node['MenuLink']['router_path'], array('title' => $node['MenuLink']['description'], 'style' => $selected));
 		}
-		if (empty($out) )
+		if (empty($out))
             return '';
             
 		return implode(' » ', $out) . ' » ';
@@ -79,7 +79,7 @@ class ThemeAdminDefaultHookHelper extends AppHelper {
 			break;
 
 			default:
-				$output = $this->_View->element('default_theme_block', array('block' => $block) );	
+				$output = $this->_View->element('default_theme_block', array('block' => $block));	
 			break;
 		}
 		

@@ -37,7 +37,7 @@ class LayoutHelper extends AppHelper {
         foreach ($stylesheets as $media => $files) {
             foreach ($files as $file) {
                 if ($media !== 'embed') {
-                    $output .= "\n". $this->_View->Html->css($file, 'stylesheet', array('media' => $media ) );
+                    $output .= "\n". $this->_View->Html->css($file, 'stylesheet', array('media' => $media));
                 } else {
                     $embed .= "{$file}\n\n";
                 }
@@ -319,7 +319,7 @@ class LayoutHelper extends AppHelper {
         );
         
         if (!empty($here)) {
-            $subs = $MenuLink->find('all', array('conditions' => array('MenuLink.status' => 1, 'MenuLink.parent_id' => $here['MenuLink']['id']) ) );
+            $subs = $MenuLink->find('all', array('conditions' => array('MenuLink.status' => 1, 'MenuLink.parent_id' => $here['MenuLink']['id'])));
             $_subs['MenuLink']	= Set::extract('{n}.MenuLink', $subs);
             $_subs['region']	= $region; 
             $_subs['id']		= 'no-id';
@@ -360,7 +360,7 @@ class LayoutHelper extends AppHelper {
  * @param array $data formatted block array (see $_block)
  * @param string $region theme region
  * @param boolean $show_on optional, shortcut for 'if (this == that) blockPush()' 
- *         becomes : 'blockPush(, , ( this == that) )'
+ *         becomes : 'blockPush(, , ( this == that))'
  *
  * @return boolean true on success
  */
@@ -492,7 +492,7 @@ class LayoutHelper extends AppHelper {
 
         $t = 0;
         foreach ($blocks_in_region as $key => $block) {
-            if (!empty($block['UserRole']) ) {
+            if (!empty($block['UserRole'])) {
                 $roles_id = Set::extract('/UserRole/id', $block);
                 $allowed = false;
                 foreach ($this->userRoles() as $role) {
@@ -850,7 +850,7 @@ class LayoutHelper extends AppHelper {
         preg_match_all('/\[date\=(.+)\@\@(.+)\]/iUs', $text, $dateMatches);
         foreach ($dateMatches[1] as $key => $format) {
             $stamp = $dateMatches[2][$key];
-            $replace = is_numeric($stamp) ? date($format, $stamp) : date($format, strtotime($stamp) );
+            $replace = is_numeric($stamp) ? date($format, $stamp) : date($format, strtotime($stamp));
             $text = str_replace("[date={$format}@@{$stamp}]", $replace, $text);
         }
             
@@ -872,15 +872,15 @@ class LayoutHelper extends AppHelper {
  * @return string HTML rendered elements
  */	
 	public function default_theme_block($Block) {
-		return $this->_View->element('default_theme_block', array('block' => $Block) );
+		return $this->_View->element('default_theme_block', array('block' => $Block));
 	}
     
     public function default_theme_breadcrumb($crumb) {
-        return $this->_View->element('default_theme_breadcrumb', array('crumbs' => $crumb) );
+        return $this->_View->element('default_theme_breadcrumb', array('crumbs' => $crumb));
     }
 	
     public function default_renderNode($node) {
-        return $this->_View->element('default_renderNode', array('node' => $node) ); #could not render node
+        return $this->_View->element('default_renderNode', array('node' => $node)); #could not render node
     }
 	
 /**

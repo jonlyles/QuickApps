@@ -41,13 +41,13 @@ class ModulesController extends SystemAppController {
         $this->data = $data;
         
         $this->setCrumb('/admin/system/modules');
-        $this->setCrumb( array($data['Module']['yaml']['name']) );
-        $this->setCrumb( array(__t('Settings')) );
+        $this->setCrumb( array($data['Module']['yaml']['name']));
+        $this->setCrumb( array(__t('Settings')));
         $this->title(__t('Configure Module'));
 	}
     
     public function admin_toggle($plugin) {
-        if (!in_array(Inflector::camelize($plugin), Configure::read('coreModules') )) {
+        if (!in_array(Inflector::camelize($plugin), Configure::read('coreModules'))) {
             $to = Configure::read("Modules.{$plugin}.status") == 1 ? 0 : 1;
             $this->Install = $this->Components->load(Inflector::camelize($plugin) . '.Install');
             
@@ -111,7 +111,7 @@ class ModulesController extends SystemAppController {
             $this->redirect('/admin/system/modules');
         }
         
-        if (!$this->Installer->install($this->data, array('type' => 'module') )) {
+        if (!$this->Installer->install($this->data, array('type' => 'module'))) {
             $errors = implode('', $this->Installer->errors);
             $this->flashMsg($errors, 'error');
         } else {

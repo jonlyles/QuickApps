@@ -94,7 +94,7 @@ class ManageController extends BlockAppController {
 	public function admin_add() {
         $this->title(__t('Add new block'));
         $this->setCrumb('/admin/block');
-        $this->setCrumb( array(__t('New block'), '') );
+        $this->setCrumb(array(__t('New block'), ''));
         
         if (isset($this->data['Block'])) {
             $data = $this->data;
@@ -146,7 +146,7 @@ class ManageController extends BlockAppController {
                 $o[] = $r['theme'];
             }
         }
-        return implode("\n", array_unique($o) );
+        return implode("\n", array_unique($o));
     }
     
     private function __themesYaml() {

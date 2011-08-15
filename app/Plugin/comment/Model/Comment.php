@@ -58,7 +58,7 @@ class Comment extends CommentAppModel {
     );
     
     public function beforeValidate() {
-        if (!isset($this->data['Comment']['node_id']) ) return false;
+        if (!isset($this->data['Comment']['node_id'])) return false;
         $this->Node->recursive = 1;
         $this->nodeData = $this->Node->findById($this->data['Comment']['node_id']);
         if (!$this->nodeData ) return false;
@@ -70,7 +70,7 @@ class Comment extends CommentAppModel {
                 #name
                 case 0: #mail not sended, not requierd | name sended but not required
                     unset($this->validate['name'], $this->validate['email']);
-                    if (empty($this->data['Comment']['name']) ) 
+                    if (empty($this->data['Comment']['name'])) 
                         $this->data['Comment']['name'] = __t('Anonymous');
                 break;
                 
@@ -79,7 +79,7 @@ class Comment extends CommentAppModel {
                 #host
                 case 1: #mail optional, can be empty, if it is not -> must be validated | name optional
                    $this->validate['email']['allowEmpty'] = true;
-                    if (empty($this->data['Comment']['name']) ) 
+                    if (empty($this->data['Comment']['name'])) 
                         $this->data['Comment']['name'] = __t('Anonymous');
                 break;
                 

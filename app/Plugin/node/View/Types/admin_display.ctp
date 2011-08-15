@@ -30,14 +30,14 @@ echo $this->Html->table(Set::sort($result, "{n}.Field.settings.display.{$view_mo
 
 <?php if ($view_mode === 'default' && count($result)): ?>
     <p>
-    <?php echo $this->Form->create('NodeType', array('url' => "/admin/node/types/display/{$typeId}") ); ?>
+    <?php echo $this->Form->create('NodeType', array('url' => "/admin/node/types/display/{$typeId}")); ?>
         <?php echo $this->Html->useTag('fieldsetstart', '<span id="toggle-viewModes_fieldset" style="cursor:pointer;">' . __t('View Modes') . '</span>'); ?>
             <div id="viewModes_fieldset" class="horizontalLayout" style="display:none;">
                 <em><?php echo __t('Use custom display settings for the following view modes'); ?></em>
-                <?php echo $this->Form->input('NodeType.viewModes', array('type' => 'select', 'multiple' => 'checkbox', 'options' => array('full' => __t('full'), 'list' => __t('list'), 'rss' => __t('rss'), 'print' => __t('print')), 'label' => false ) ); ?>
+                <?php echo $this->Form->input('NodeType.viewModes', array('type' => 'select', 'multiple' => 'checkbox', 'options' => array('full' => __t('full'), 'list' => __t('list'), 'rss' => __t('rss'), 'print' => __t('print')), 'label' => false)); ?>
             </div>
         <?php echo $this->Html->useTag('fieldsetend'); ?>
-        <?php echo $this->Form->input(__t('Save'), array('type' => 'submit') ); ?>
+        <?php echo $this->Form->input(__t('Save'), array('type' => 'submit')); ?>
     <?php echo $this->Form->end(); ?>
     </p>
 

@@ -47,9 +47,9 @@
         sort($regions);
 
         foreach ($regions as $region) {
-            if (empty($region) ) continue; #unasisgned
+            if (empty($region)) continue; #unasisgned
             $blocks_in_region = Set::extract("/BlockRegion[region={$region}]/..", $blocks_in_theme);
-            if (empty($blocks_in_region) ) continue;
+            if (empty($blocks_in_region)) continue;
             $blocks_in_region = arrayUnique($blocks_in_region);
             foreach ($blocks_in_region as $bkey => $block) {
                 foreach ($block['BlockRegion'] as $rkey => $BlockRegion) {
@@ -58,7 +58,7 @@
                 }
             }
             $blocks_in_region = Set::sort($blocks_in_region, '{n}.BlockRegion.{n}.ordering', 'asc');
-            if (empty($blocks_in_region) ) continue;
+            if (empty($blocks_in_region)) continue;
             foreach ($blocks_in_region as $key => &$b) {
                 $brId = 0;
                 $i = 0;
@@ -95,10 +95,10 @@
         sort($regions);
 
         foreach ($regions as $region) {
-            if (empty($region) ) continue; #unasisgned
+            if (empty($region)) continue; #unasisgned
                 
             $blocks_in_region = Set::extract("/BlockRegion[region={$region}]/..", $blocks_in_theme);
-            if (empty($blocks_in_region) ) continue;
+            if (empty($blocks_in_region)) continue;
             $blocks_in_region = arrayUnique($blocks_in_region);
             foreach ($blocks_in_region as $bkey => $block) {
                 foreach ($block['BlockRegion'] as $rkey => $BlockRegion) {
@@ -107,7 +107,7 @@
                 }
             }
             $blocks_in_region = Set::sort($blocks_in_region, '{n}.BlockRegion.{n}.ordering', 'asc');
-            if (empty($blocks_in_region) ) continue;
+            if (empty($blocks_in_region)) continue;
             foreach ($blocks_in_region as $key => &$b) {
                 $brId = 0;
                 $i = 0;

@@ -16,7 +16,7 @@ class PublishedController extends CommentAppController {
     public function admin_index() {
         if (isset($this->data['Comment']['update'])) {
             if (isset($this->data['Items']['id'])) {
-                $update = ( !in_array($this->data['Comment']['update'], array('delete')) );
+                $update = ( !in_array($this->data['Comment']['update'], array('delete')));
                 switch ($this->data['Comment']['update']) {
                     case 'approve': 
                         default: 
@@ -49,7 +49,7 @@ class PublishedController extends CommentAppController {
         
 		$this->set('results', $results);
         $this->setCrumb('/admin/node/contents');
-        $this->setCrumb( array(__t('Comments')) );
+        $this->setCrumb( array(__t('Comments')));
         $this->title(__t('Published comments'));
     }
 }

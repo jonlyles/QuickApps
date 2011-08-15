@@ -20,7 +20,7 @@ class SystemHookHelper extends AppHelper {
     /* Block */
 	public function system_language_selector($block = array()) {
 		return array(
-			'body' => $this->_View->element('system_language_selector', array('block' => $block) )
+			'body' => $this->_View->element('system_language_selector', array('block' => $block))
 		);
 	}
 	
@@ -32,7 +32,7 @@ class SystemHookHelper extends AppHelper {
 			'title' => __t('Recent Content'),
 			'body' => $this->_View->element(
                 'system_recent_content', 
-                array('block' => $block, 'nodes' => $Node->find('all', array('limit' => 10, 'order' => array('Node.created' => 'DESC')) )) ),
+                array('block' => $block, 'nodes' => $Node->find('all', array('limit' => 10, 'order' => array('Node.created' => 'DESC'))))),
                 array('plugin' => 'system')
 		);
 

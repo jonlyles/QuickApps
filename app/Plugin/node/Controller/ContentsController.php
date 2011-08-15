@@ -14,7 +14,7 @@ class ContentsController extends NodeAppController {
 	public $uses = array('Node.Node');
 	
 	public function admin_index() {
-		$this->title(__t('Contents') );
+		$this->title(__t('Contents'));
         if (isset($this->data['Node']['update'])) {
             if (isset($this->data['Items']['id'])) {
                 $update = (!in_array($this->data['Node']['update'], array('delete', 'clear_cache')));
@@ -121,8 +121,8 @@ class ContentsController extends NodeAppController {
             $this->Node->recursive = 2;
             $this->data = $this->Node->findBySlug($slug);
 
-            $this->set('roles', $this->Role->find('list') );
-            $this->set('vocabularies', $this->__typeTerms($data['NodeType']) );
+            $this->set('roles', $this->Role->find('list'));
+            $this->set('vocabularies', $this->__typeTerms($data['NodeType']));
         }
         
 		$this->setCrumb('/admin/node/contents');
@@ -184,8 +184,8 @@ class ContentsController extends NodeAppController {
         $this->__setLangVar();
         $this->loadModel('User.Role');
         
-        $this->set('roles', $this->Role->find('list') );
-        $this->set('vocabularies', $this->__typeTerms($type) );
+        $this->set('roles', $this->Role->find('list'));
+        $this->set('vocabularies', $this->__typeTerms($type));
         $this->setCrumb('/admin/node/contents');
         $this->title(__t('Add Content'));
     }

@@ -31,7 +31,7 @@ class PermissionsController extends UserAppController {
     
         $this->set('results', $results);
 		$this->setCrumb('/admin/user/');
-		$this->setCrumb( array(__t('User Permissions'), '') );
+		$this->setCrumb( array(__t('User Permissions'), ''));
 		$this->title(__t('User Permissions'));
     }
     

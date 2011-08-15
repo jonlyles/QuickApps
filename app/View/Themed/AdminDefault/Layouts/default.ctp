@@ -25,7 +25,7 @@
         <?php echo $this->Layout->header(); ?>
 	</head>
 	<body>
-        <?php if ($sessionFlash = $this->Layout->sessionFlash() ): ?>
+        <?php if ($sessionFlash = $this->Layout->sessionFlash()): ?>
         <div id="sessionFlash">
             <?php echo $sessionFlash; ?>
         </div>

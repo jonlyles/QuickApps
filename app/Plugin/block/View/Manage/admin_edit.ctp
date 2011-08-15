@@ -1,8 +1,8 @@
-<?php echo $this->Form->create('Block', array('url' => "/admin/block/manage/edit/{$this->data['Block']['id']}") ); ?>
+<?php echo $this->Form->create('Block', array('url' => "/admin/block/manage/edit/{$this->data['Block']['id']}")); ?>
     <!-- Content -->
     <?php echo $this->Html->useTag('fieldsetstart', __t('Content')); ?>
         <?php echo $this->Form->hidden('id'); ?>
-        <?php echo $this->Form->input('status', array('type' => 'checkbox') ) . "\n"; ?>
+        <?php echo $this->Form->input('status', array('type' => 'checkbox')) . "\n"; ?>
         <?php echo $this->Form->input('title', array('required' => 'required', 'label' => 'Block title')); ?>
         <em><?php echo __t('The title of the block as shown to the user.'); ?></em>
         
@@ -16,7 +16,7 @@
     <?php if ($this->data['Block']['module'] !== 'block'): ?>
         <?php $this->Layout->attachModuleHooks($this->data['Block']['module']); ?>
         <?php $data = $this->data; ?>
-        <?php if ($wg = $this->Layout->hook("{$this->data['Block']['module']}_{$this->data['Block']['delta']}_settings", $data, array('alter' => false, 'collectReturn' => false) ) ): # widget ?>
+        <?php if ($wg = $this->Layout->hook("{$this->data['Block']['module']}_{$this->data['Block']['delta']}_settings", $data, array('alter' => false, 'collectReturn' => false))): # widget ?>
             <?php echo $this->Html->useTag('fieldsetstart', 'Widget settings'); ?>
                 <?php echo $wg; ?>
             <?php echo $this->Html->useTag('fieldsetend'); ?>
@@ -31,7 +31,7 @@
                 $langs = array();
                 foreach (Configure::read('Variable.languages') as $lang) $langs[$lang['Language']['code']] = $lang['Language']['name'];
             ?>
-            <?php echo $this->Form->input('locale', array('options' => $langs, 'type' => 'select', 'selected' => Set::extract('/Block/locale', $this->data), 'multiple' => 'checkbox', 'label' => __t('Show this block for these languages') ) ); ?>
+            <?php echo $this->Form->input('locale', array('options' => $langs, 'type' => 'select', 'selected' => Set::extract('/Block/locale', $this->data), 'multiple' => 'checkbox', 'label' => __t('Show this block for these languages'))); ?>
             <em><?php echo __t('If no language is selected, block will show regardless of language.'); ?></em>
         <?php echo $this->Html->useTag('fieldsetend'); ?>
     <?php echo $this->Html->useTag('fieldsetend'); ?>
@@ -47,28 +47,28 @@
                     $selected = Set::extract("/BlockRegion[theme={$theme[1]}]/region", $this->data);
                     $selected = !empty($selected) && isset($selected[0]) ? $selected[0] : null; 
                 ?>
-                <?php echo $this->Form->select("BlockRegion.{$i}.region", $_regions, array('value' => $selected, 'empty' => __t('--None--')) ) . "\n"; ?>
-                <?php echo $this->Form->hidden("BlockRegion.{$i}.theme", array('value' => $theme[1]) ) . "\n"; ?>
-                <?php echo $this->Form->hidden("BlockRegion.{$i}.block_id", array('value' => $this->data['Block']['id']) ) . "\n"; ?>
+                <?php echo $this->Form->select("BlockRegion.{$i}.region", $_regions, array('value' => $selected, 'empty' => __t('--None--'))) . "\n"; ?>
+                <?php echo $this->Form->hidden("BlockRegion.{$i}.theme", array('value' => $theme[1])) . "\n"; ?>
+                <?php echo $this->Form->hidden("BlockRegion.{$i}.block_id", array('value' => $this->data['Block']['id'])) . "\n"; ?>
                 <?php if ($selected !== null ): ?>
                     <?php $brId = Set::extract("/BlockRegion[theme={$theme[1]}]/id", $this->data); ?>
-                    <?php echo $this->Form->hidden("BlockRegion.{$i}.id", array('value' => $brId[0]) )  . "\n"; ?>
+                    <?php echo $this->Form->hidden("BlockRegion.{$i}.id", array('value' => $brId[0]))  . "\n"; ?>
                 <?php endif; ?>
             <?php $i++; endforeach; ?>
         <?php echo $this->Html->useTag('fieldsetend'); ?>
         
         <?php echo $this->Html->useTag('fieldsetstart', __t('Pages')); ?>
-            <?php echo $this->Form->input('visibility', array('type' => 'radio', 'legend' => false, 'separator' => '<br>', 'options' => array(0 => __t('All pages except those listed'), 1 => __t('Only the listed pages')) ) ); ?>
+            <?php echo $this->Form->input('visibility', array('type' => 'radio', 'legend' => false, 'separator' => '<br>', 'options' => array(0 => __t('All pages except those listed'), 1 => __t('Only the listed pages')))); ?>
             <?php echo $this->Form->input('pages', array('type' => 'textarea', 'class' => 'plain', 'label' => false)); ?>
             <em><?php echo __t("Specify pages by using their paths. Enter one path per line. The '*' character is a wildcard. Example paths are blog for the blog page and blog/* for every blog entry. '/' is the front page."); ?></em>
         <?php echo $this->Html->useTag('fieldsetend'); ?>
         
         <?php echo $this->Html->useTag('fieldsetstart', __t('Roles')); ?>
-            <?php echo $this->Form->input('Role', array('options' => $roles, 'type' => 'select', 'selected' => Set::extract('/Role/id', $this->data), 'multiple' => 'checkbox', 'label' => __t('Show block for specific roles') ) ); ?>
+            <?php echo $this->Form->input('Role', array('options' => $roles, 'type' => 'select', 'selected' => Set::extract('/Role/id', $this->data), 'multiple' => 'checkbox', 'label' => __t('Show block for specific roles'))); ?>
             <em><?php echo __t("Show this block only for the selected role(s). If you select no roles, the block will be visible to all users."); ?></em>
         <?php echo $this->Html->useTag('fieldsetend'); ?>
     <?php echo $this->Html->useTag('fieldsetend'); ?>
     
     <!-- Submit -->
-    <?php echo $this->Form->input(__t('Save block'), array('type' => 'submit') ); ?>
+    <?php echo $this->Form->input(__t('Save block'), array('type' => 'submit')); ?>
 <?php echo $this->Form->end(); ?>

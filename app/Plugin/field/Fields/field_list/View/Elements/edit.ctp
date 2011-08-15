@@ -25,7 +25,7 @@
         echo $this->Form->input("FieldData.field_list.{$data['id']}.data", array('type' => 'radio', 'separator' => '<br/>', 'options' => $options, 'legend' => $data['label'], 'value' => @$selected[0]));
     }
     
-    echo $this->Form->hidden("FieldData.field_list.{$data['id']}.id", array('value' => $data['FieldData']['id']) );
+    echo $this->Form->hidden("FieldData.field_list.{$data['id']}.id", array('value' => $data['FieldData']['id']));
 ?>
 
 <?php if (!empty($data['description'])): ?>

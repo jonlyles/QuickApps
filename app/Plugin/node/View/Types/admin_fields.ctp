@@ -71,7 +71,7 @@ $tSettings = array(
                 );
             ?>        
         
-            <?php echo $this->Form->input(__t('Add'), array('type' => 'submit', 'label' => false ) ); ?>
+            <?php echo $this->Form->input(__t('Add'), array('type' => 'submit', 'label' => false)); ?>
         </div>
     <?php echo $this->Html->useTag('fieldsetend'); ?>
 <?php echo $this->Form->end(); ?>

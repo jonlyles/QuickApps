@@ -47,7 +47,7 @@ class PackagesController extends LocaleAppController {
         $this->set('languages', $this->__languageList());
         $this->set('packages', $poFolders);
         $this->setCrumb('/admin/locale');
-        $this->setCrumb( array(__t('Translation packages'), '') );
+        $this->setCrumb( array(__t('Translation packages'), ''));
         $this->title(__t('Translation Packages'));       
     }
     
@@ -76,7 +76,7 @@ class PackagesController extends LocaleAppController {
         }
         
         if ($err) {
-            throw new NotFoundException(__t('Package not found') );
+            throw new NotFoundException(__t('Package not found'));
         }
     }
     

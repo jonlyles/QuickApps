@@ -1,11 +1,11 @@
 <?php
 class FieldTextareaHookHelper extends AppHelper {
     function field_textarea_view($data) {
-        return $this->_View->element('view', array('data' => $data), array('plugin' => 'FieldTextarea') );
+        return $this->_View->element('view', array('data' => $data), array('plugin' => 'FieldTextarea'));
     }
     
     function field_textarea_edit($data) {
-        return $this->_View->element('edit', array('data' => $data), array('plugin' => 'FieldTextarea') );
+        return $this->_View->element('edit', array('data' => $data), array('plugin' => 'FieldTextarea'));
     }
     
     function field_textarea_formatter($data) {

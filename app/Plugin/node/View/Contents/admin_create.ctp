@@ -1,5 +1,5 @@
 <?php
-    if (!empty($types) ): 
+    if (!empty($types)): 
         $links = array();
         foreach ($types as $type) {
             $links[] = array(

@@ -5,6 +5,6 @@ class SettingsController extends AppController {
     
     function admin_index() {
         $this->setCrumb('/admin/system/themes');
-        $this->set('title_for_layout', __t('Theme Settings') );
+        $this->set('title_for_layout', __t('Theme Settings'));
     }
 }

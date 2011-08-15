@@ -1,11 +1,11 @@
 <?php
 class FieldTermsHookHelper extends AppHelper {
     function field_terms_view($data) {
-        return $this->_View->element('view', array('data' => $data), array('plugin' => 'FieldTerms') );
+        return $this->_View->element('view', array('data' => $data), array('plugin' => 'FieldTerms'));
     }
 
     function field_terms_edit($data) {
-        return $this->_View->element('edit', array('data' => $data), array('plugin' => 'FieldTerms') );
+        return $this->_View->element('edit', array('data' => $data), array('plugin' => 'FieldTerms'));
     }
 
     function field_terms_formatter($data) {
@@ -16,8 +16,8 @@ class FieldTermsHookHelper extends AppHelper {
                 )
             )
         );
-        
-        if(isset($data['format']['type']) && $data['format']['type'] == 'hidden') {
+
+        if (isset($data['format']['type']) && $data['format']['type'] == 'hidden') {
             $data['content'] = '';
             return;
         }

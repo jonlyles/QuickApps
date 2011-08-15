@@ -34,9 +34,9 @@ class InstallController extends Controller {
         $this->layout    = 'install';
 
         # already installed ?
-        if (file_exists(APP . DS . 'Config' . DS . 'database.php') &&  
-             file_exists(APP . DS . 'Config' . DS . 'install') )
+        if (file_exists(APP . DS . 'Config' . DS . 'database.php') && file_exists(APP . DS . 'Config' . DS . 'install')) {
             $this->redirect('/');
+        }
     }
     
     public function index() {
@@ -53,8 +53,9 @@ class InstallController extends Controller {
 
     /* Step 2: Server test */
     public function server_test() {
-        if (!$this->__stepSuccess('license', true) )
+        if (!$this->__stepSuccess('license', true)) {
             $this->redirect('/install/license');
+        }
             
         if (!empty($this->data['Test'])) {
             $this->__stepSuccess('server_test');
@@ -119,8 +120,9 @@ class InstallController extends Controller {
 
     /* Step 3: Database  */
     public function database() {
-        if (!$this->__stepSuccess(array('license', 'server_test'), true) )
+        if (!$this->__stepSuccess(array('license', 'server_test'), true)) {
             $this->redirect('/install/license');
+        }
     
         if (!empty($this->data['Database'])) {
             copy(APP . 'Config' . DS . 'database.php.install', APP . 'Config' . DS . 'database.php');
@@ -233,8 +235,9 @@ class InstallController extends Controller {
     
     /* Step 5: Finish */
     public function finish() {
-        if (!$this->__stepSuccess(array('license', 'server_test', 'database', 'user_account'), true) )
+        if (!$this->__stepSuccess(array('license', 'server_test', 'database', 'user_account'), true)) {
             $this->redirect('/install/license');
+        }
             
         App::import('Utility', 'File');
         $file = new File(APP . 'Config' . DS . 'install', true);
@@ -251,9 +254,12 @@ class InstallController extends Controller {
         if (!$check )
             return $this->Session->write("QaInstall.{$step}", 'success');
         if (is_array($step)) {
-            foreach ($step as $s )
-                if (!$this->Session->check("QaInstall.{$s}") )
+            foreach ($step as $s) {
+                if (!$this->Session->check("QaInstall.{$s}")) {
                     return false;
+                }
+            }
+            
             return true;
         } else {
             return $this->Session->check("QaInstall.{$step}");

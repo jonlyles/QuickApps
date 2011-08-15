@@ -30,7 +30,7 @@ class NodeController extends NodeAppController {
         $fp = Configure::read('Variable.site_frontpage');
         
         if (!empty($fp)) {
-            $this->set('front_page', $this->requestAction($fp, array('return') ) );
+            $this->set('front_page', $this->requestAction($fp, array('return')));
         } else {
             # USE Node.roles_cache
             $this->Node->unbindModel(array('hasAndBelongsToMany' => array('Role'))); 
@@ -126,7 +126,7 @@ class NodeController extends NodeAppController {
 		}
         
         if (!$result) {
-            throw new NotFoundException(__t('Page not found') );
+            throw new NotFoundException(__t('Page not found'));
         }
         
         if (isset($result['Node']['description']) && !empty($result['Node']['description'])) {
@@ -249,7 +249,7 @@ class NodeController extends NodeAppController {
                 
                 foreach ($negative[0] as $n) {
                     $n = trim(str_replace('-', '', $n));
-                    if (empty($n) ) continue;
+                    if (empty($n)) continue;
                     $scope['NOT']['OR'][] = array('Node.title LIKE' => "%{$n}%");
                     $scope['NOT']['OR'][] = array('Node.slug LIKE' => "%{$n}%");
                     $scope['NOT']['OR'][] = array('Node.description' => "%{$n}%");
@@ -285,7 +285,7 @@ class NodeController extends NodeAppController {
         } elseif (isset($this->data['Search'])) {
             # node types
             if (isset($this->data['Search']['type']) && !empty($this->data['Search']['type'])) {
-                $keys['type'] = $this->__search_expression($keys['type'], 'type', implode(',', $this->data['Search']['type']) );
+                $keys['type'] = $this->__search_expression($keys['type'], 'type', implode(',', $this->data['Search']['type']));
             }
 
             # taxonomy terms
@@ -348,7 +348,7 @@ class NodeController extends NodeAppController {
         # prepare content
         if (isset($scope)) {
             $scope['Node.status'] = 1; # only published content!
-            $this->paginate = array('order' => array('Node.sticky' => 'DESC', 'Node.modified' => 'DESC') );
+            $this->paginate = array('order' => array('Node.sticky' => 'DESC', 'Node.modified' => 'DESC'));
             $this->Layout['node'] = $this->paginate('Node', $scope);
             $this->Layout['feed'] = "/s/{$data['Search']['criteria']}/feed";
         } else {

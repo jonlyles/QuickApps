@@ -108,11 +108,11 @@ jQuery.extend(QuickApps.settings, {
 } );
 ';
         
-        $this->Controller->hook('javascripts_alter', $this->Controller->Layout['javascripts']);    # pass js to modules
-        $this->Controller->paginate = array('limit' => Configure::read('Variable.rows_per_page') );
-        Configure::write('Variable.qa_version', Configure::read('Modules.system.yaml.version') );
-        
+        $this->Controller->hook('javascripts_alter', $this->Controller->Layout['javascripts']); # pass js to modules
+        $this->Controller->paginate = array('limit' => Configure::read('Variable.rows_per_page'));
+        Configure::write('Variable.qa_version', Configure::read('Modules.system.yaml.version'));
         $defaultMetaDescription = Configure::read('Variable.site_description');
+        
         if (!empty($defaultMetaDescription)){
             $this->Controller->Layout['meta']['description'] = $defaultMetaDescription;
         }
@@ -147,7 +147,7 @@ jQuery.extend(QuickApps.settings, {
         
         Configure::write('Variable.language', $_lang[0]['Language']);
         Configure::write('Variable.languages', $langs);
-        Configure::write('Config.language', Configure::read('Variable.language.code') );
+        Configure::write('Config.language', Configure::read('Variable.language.code'));
     }
     
     public function accessCheck() {
@@ -464,8 +464,10 @@ jQuery.extend(QuickApps.settings, {
     
     public function loadModules() {
         $modules = Cache::read('Modules');
+        
         if ($modules === false) {
-            $modules = $this->Controller->Module->find('all', array('recursive' => -1) );
+            $modules = $this->Controller->Module->find('all', array('recursive' => -1));
+            
             foreach ($modules as $m) {
                 $v = $m['Module'];
                 CakePlugin::load($m['Module']['name']);
@@ -474,7 +476,8 @@ jQuery.extend(QuickApps.settings, {
                 $v['yaml'] = file_exists($yamlFile) ? Spyc::YAMLLoad($yamlFile) : array();   
                 Configure::write('Modules.' . $m['Module']['name'], $v);
             }
-            Cache::write('Modules', Configure::read('Modules') );
+            
+            Cache::write('Modules', Configure::read('Modules'));
         } else {
             Configure::write('Modules', $modules);
         }

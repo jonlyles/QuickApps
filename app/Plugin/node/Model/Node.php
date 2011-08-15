@@ -76,7 +76,7 @@ class Node extends NodeAppModel {
                 foreach ($_terms_ids as $key => $ids) { $terms_ids = array_merge($terms_ids, $ids); }
             }
             
-            $terms = $this->Term->find('all', array('fields' => array('slug', 'id'), 'conditions' => array('Term.id' => $terms_ids) ) );
+            $terms = $this->Term->find('all', array('fields' => array('slug', 'id'), 'conditions' => array('Term.id' => $terms_ids)));
             $terms_cache = array();
 
             foreach ($terms as $term) {
@@ -87,7 +87,7 @@ class Node extends NodeAppModel {
             $this->data['Term']['Term'] = $terms_ids;
         }
         
-        $roles = implode("|", Set::extract('/Role/Role', $this->data) );
+        $roles = implode("|", Set::extract('/Role/Role', $this->data));
         $this->data['Node']['roles_cache'] = !empty($roles) ? "|" . $roles . "|" : '';;
         
         if (isset($this->data['Node']['node_type_base'])) {

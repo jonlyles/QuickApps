@@ -78,8 +78,8 @@ class TableHelper extends AppHelper {
 		
 		if (count($data) > 0) {
         
-            $print_header_top = ($options['headerPosition'] !== false && in_array($options['headerPosition'], array('top', 'top&bottom') ));
-            $print_paginator_top = ($options['paginate'] !== false && in_array($options['paginate']['position'], array('top', 'top&bottom') ));
+            $print_header_top = ($options['headerPosition'] !== false && in_array($options['headerPosition'], array('top', 'top&bottom')));
+            $print_paginator_top = ($options['paginate'] !== false && in_array($options['paginate']['position'], array('top', 'top&bottom')));
         
 			if ($print_header_top ||  $print_paginator_top) {
                 $out .= "\t<thead>\n";
@@ -95,7 +95,7 @@ class TableHelper extends AppHelper {
 					$c_data = array_merge($this->_columnDefaults, $c_data);
 					
 					$td .= "\n\t";
-					$td .= $this->Html->useTag('tablecell', $this->Html->_parseAttributes($c_data['tdOptions']),$this->_renderCell($c_data['value'], $data[$i]) );
+					$td .= $this->Html->useTag('tablecell', $this->Html->_parseAttributes($c_data['tdOptions']),$this->_renderCell($c_data['value'], $data[$i]));
 					$td .= "\t";
 				}
 				
@@ -106,8 +106,8 @@ class TableHelper extends AppHelper {
 			
 			$out .= "\t</tbody>\n";
 			
-            $print_header_bottom = ($options['headerPosition'] !== false && in_array($options['headerPosition'], array('bottom', 'top&bottom') ));
-            $print_paginator_bottom = ($options['paginate'] != false && in_array($options['paginate']['position'], array('bottom', 'top&bottom') ));
+            $print_header_bottom = ($options['headerPosition'] !== false && in_array($options['headerPosition'], array('bottom', 'top&bottom')));
+            $print_paginator_bottom = ($options['paginate'] != false && in_array($options['paginate']['position'], array('bottom', 'top&bottom')));
 			
             if ($print_header_bottom || $print_paginator_bottom) {
                 $out .= "\t<tfoot>\n";

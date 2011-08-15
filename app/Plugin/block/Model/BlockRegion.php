@@ -20,7 +20,7 @@ class BlockRegion extends BlockAppModel {
         if (!isset($this->data['BlockRegion']['id'])) {
             $r = $this->data['BlockRegion']['region'];
             $t = $this->data['BlockRegion']['theme'];
-            $c = $this->find('count', array('conditions' => array('BlockRegion.theme' => $t, 'BlockRegion.region' => $r) ) );
+            $c = $this->find('count', array('conditions' => array('BlockRegion.theme' => $t, 'BlockRegion.region' => $r)));
             $this->data['BlockRegion']['ordering'] = $c+1;
         }
         return true;

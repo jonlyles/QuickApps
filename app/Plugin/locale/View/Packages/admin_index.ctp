@@ -29,7 +29,7 @@
             ?>
             
             <p>
-                <?php echo $this->Form->input(__t('Upload'), array('type' => 'submit', 'label' => false ) ); ?>
+                <?php echo $this->Form->input(__t('Upload'), array('type' => 'submit', 'label' => false)); ?>
             </p>
         </div>
     <?php echo $this->Html->useTag('fieldsetend'); ?>
@@ -58,7 +58,7 @@
 
 <script>
     function checkPackage() {
-        var ext = $('#PackageData').val().substr( ($('#PackageData').val().lastIndexOf('.') +1) );
+        var ext = $('#PackageData').val().substr( ($('#PackageData').val().lastIndexOf('.') +1));
         if (ext != 'po') {
             alert('<?php echo __t('Invalid package'); ?>');
             return false;

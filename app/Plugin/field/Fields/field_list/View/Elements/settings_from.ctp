@@ -2,7 +2,7 @@
     echo $this->Form->input("Field.settings.type", 
         array(
             'type' => 'select', 
-            'options' => array('radio' => __d('field_list', 'Radio buttons'), 'checkbox' => __d('field_list', 'Checkboxes') ), 
+            'options' => array('radio' => __d('field_list', 'Radio buttons'), 'checkbox' => __d('field_list', 'Checkboxes')), 
             'empty' => false,
             'label' => __d('field_list', 'List Type')
         )

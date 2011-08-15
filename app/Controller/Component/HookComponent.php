@@ -163,7 +163,7 @@ class HookComponent extends Component {
         preg_match_all('/\[date\=(.+)\@\@(.+)\]/iUs', $text, $dateMatches);
         foreach ($dateMatches[1] as $key => $format) {
             $stamp = $dateMatches[2][$key];
-            $replace = is_numeric($stamp) ? date($format, $stamp) : date($format, strtotime($stamp) );
+            $replace = is_numeric($stamp) ? date($format, $stamp) : date($format, strtotime($stamp));
             $text = str_replace("[date={$format}@@{$stamp}]", $replace, $text);
         }
             
@@ -226,7 +226,10 @@ class HookComponent extends Component {
         if (!$options['alter']) $_data = $data;
         
 		$collected = array();
-		if (!$this->hook_defined($event) ) return null;
+        
+		if (!$this->hook_defined($event)) {
+            return null;
+        }
         
 		foreach ($this->listeners as $component => $methods) {
 			foreach ($methods as $method) {

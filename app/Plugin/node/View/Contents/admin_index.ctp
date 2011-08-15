@@ -107,14 +107,14 @@ $tSettings = array(
                 );
             ?>
             
-            <?php echo $this->Form->input(__t('Filter'), array('type' => 'submit', 'label' => false ) ); ?>
+            <?php echo $this->Form->input(__t('Filter'), array('type' => 'submit', 'label' => false)); ?>
         </div>
     <?php echo $this->Html->useTag('fieldsetend'); ?>
 <?php echo $this->Form->end(); ?>
 
 
 
-<?php echo $this->Form->create(null, array('onsubmit' => 'return confirm("' . __t('Are you sure about this changes ?') . '");') ); ?>
+<?php echo $this->Form->create(null, array('onsubmit' => 'return confirm("' . __t('Are you sure about this changes ?') . '");')); ?>
     <!-- Update -->
     <?php echo $this->Html->useTag('fieldsetstart', '<span id="toggle-update_fieldset" style="cursor:pointer;">' . __t('Update Options') . '</span>' ); ?>
         <div id="update_fieldset" class="horizontalLayout" style="<?php echo isset($this->data['Node']['update']) ? '' : 'display:none;'; ?>">

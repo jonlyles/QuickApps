@@ -10,7 +10,7 @@
                 );
             ?>
             <p>
-                <?php echo $this->Form->input(__t('Install'), array('type' => 'submit', 'label' => false ) ); ?>
+                <?php echo $this->Form->input(__t('Install'), array('type' => 'submit', 'label' => false)); ?>
             </p>
         </div>
     <?php echo $this->Html->useTag('fieldsetend'); ?>
@@ -39,7 +39,7 @@
                 </p>
                 <?php if (Configure::read('Variable.site_theme') != $name) : ?>
                     <a href="<?php echo $this->Html->url('/admin/system/themes/set_theme/' . $name); ?>" style="float:right;" onclick="return confirm('<?php echo __t('Change site theme, are you sure ?'); ?>');"><?php echo __t('Set as default'); ?></a>
-                    <?php if (!in_array($name, array('Default', 'AdminDefault') ) ): ?>
+                    <?php if (!in_array($name, array('Default', 'AdminDefault'))): ?>
                     <a href="<?php echo $this->Html->url('/admin/system/themes/uninstall/' . $name); ?>" style="float:right;" onclick="return confirm('<?php echo __t('Delete selected theme ?\nThis operation can be undone!'); ?>');"><?php echo __t('Uninstall'); ?>&nbsp;</a>
                     <?php endif; ?>
                 <?php else: ?>
@@ -86,7 +86,7 @@
 
 <script>
     function checkPackage() {
-        var ext = $('#PackageData').val().substr( ($('#PackageData').val().lastIndexOf('.') +1) );
+        var ext = $('#PackageData').val().substr( ($('#PackageData').val().lastIndexOf('.') +1));
         if (ext != 'app') {
             alert('<?php echo __t('Invalid package'); ?>');
             return false;

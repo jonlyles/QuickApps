@@ -47,7 +47,7 @@ $(document).ready(function() {
  */
     function theme_default_slider($block) {
 		return array(
-			'body' => $this->_View->element('theme_default_slider', array('block' => $block), array('plugin' => 'ThemeDefault') )
+			'body' => $this->_View->element('theme_default_slider', array('block' => $block), array('plugin' => 'ThemeDefault'))
 		);
     }
     
@@ -56,7 +56,7 @@ $(document).ready(function() {
  *
  */
     function theme_default_slider_settings($data) {
-        return $this->_View->element('theme_default_slider_settings', array('block' => $data), array('plugin' => 'ThemeDefault') );
+        return $this->_View->element('theme_default_slider_settings', array('block' => $data), array('plugin' => 'ThemeDefault'));
     }
     
 /**
@@ -83,9 +83,9 @@ $(document).ready(function() {
         $out = array();
         foreach ($b as $node) {
             $selected = $node['MenuLink']['router_path'] == str_replace($this->_View->base, '', $this->_View->here) ? 'text-decoration:underline;' : '';
-            $out[] = $this->_View->Html->link($node['MenuLink']['link_title'], $node['MenuLink']['router_path'], array('style' => $selected) );
+            $out[] = $this->_View->Html->link($node['MenuLink']['link_title'], $node['MenuLink']['router_path'], array('style' => $selected));
         }
-        if (empty($out) )
+        if (empty($out))
             return '';
             
         return implode(' » ', $out) . ' » ';
@@ -132,7 +132,7 @@ $(document).ready(function() {
             break;
 
             default:
-                $output = $this->_View->element('default_theme_block', array('block' => $block) );    
+                $output = $this->_View->element('default_theme_block', array('block' => $block));    
             break;
         }
         return $output;    

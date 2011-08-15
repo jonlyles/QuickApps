@@ -1,11 +1,11 @@
 <?php
 class FieldListHookHelper extends AppHelper {
     function field_list_view($data) {
-        return $this->_View->element('view', array('data' => $data), array('plugin' => 'FieldList') );
+        return $this->_View->element('view', array('data' => $data), array('plugin' => 'FieldList'));
     }
     
     function field_list_edit($data) {
-        return $this->_View->element('edit', array('data' => $data), array('plugin' => 'FieldList') );
+        return $this->_View->element('edit', array('data' => $data), array('plugin' => 'FieldList'));
     }
     
     function field_list_formatter($data) {

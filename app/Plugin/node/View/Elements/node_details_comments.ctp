@@ -7,9 +7,9 @@
     <h2><?php echo __d('comment', 'Comments'); ?></h2>
     <div id="comments-list">
         <div class="comments-pagination paginator top">
-            <?php $this->Paginator->options( array( 'url'=> $this->passedArgs ) ); ?>
-            <?php echo $this->Paginator->prev(__d('comment', '«'), null, null, array('class' => 'disabled') ); ?>
-            <?php echo $this->Paginator->numbers( array('separator' => ' ') ); ?>
+            <?php $this->Paginator->options( array( 'url'=> $this->passedArgs)); ?>
+            <?php echo $this->Paginator->prev(__d('comment', '«'), null, null, array('class' => 'disabled')); ?>
+            <?php echo $this->Paginator->numbers( array('separator' => ' ')); ?>
             <?php echo $this->Paginator->next(__d('comment', '»'), null, null, array('class' => 'disabled')); ?>
         </div>
         
@@ -22,7 +22,7 @@
                             <p class="commenter-name">
                                 <?php
                                     if (
-                                        ( isset($comment['User']['avatar']) && !empty($comment['User']['avatar']) ) || 
+                                        ( isset($comment['User']['avatar']) && !empty($comment['User']['avatar'])) || 
                                         ( !isset($comment['User']['avatar']) && Configure::read('Variable.user_default_avatar') != '' )   
                                 
                                     ): ?>
@@ -38,7 +38,7 @@
                                 </a>
                             </p>
                             <p class="comment-time"><span><?php echo __d('comment', 'said on %s', $this->Time->format(__t('M d, Y H:i'), $comment['Comment']['created'], null, $comment_time_zone)); ?></span></p>
-                            <p class="comment-permalink"><?php echo $this->Html->link(__d('comment', 'Permalink'), "/d/{$Layout['node']['Node']['slug']}#comment-{$comment['Comment']['id']}", array('id' => "comment-{$comment['Comment']['id']}", 'class' => 'permalink') ); ?></p>
+                            <p class="comment-permalink"><?php echo $this->Html->link(__d('comment', 'Permalink'), "/d/{$Layout['node']['Node']['slug']}#comment-{$comment['Comment']['id']}", array('id' => "comment-{$comment['Comment']['id']}", 'class' => 'permalink')); ?></p>
                         </div>
                     </div>
                     <div class="comment-body">
@@ -50,7 +50,7 @@
                                 <?php endif; ?>
                             </div>
                             <?php if ($Layout['node']['NodeType']['comments_subject_field']): ?>
-                                <h3><?php echo $this->Html->link($comment['Comment']['subject'], "/d/{$Layout['node']['Node']['slug']}#comment-{$comment['Comment']['id']}", array('class' => 'permalink') ); ?></h3>
+                                <h3><?php echo $this->Html->link($comment['Comment']['subject'], "/d/{$Layout['node']['Node']['slug']}#comment-{$comment['Comment']['id']}", array('class' => 'permalink')); ?></h3>
                             <?php endif; ?>
                             <p><?php echo $comment['Comment']['body']; ?></p>
                             <p id="raw-comment-<?php echo $comment['Comment']['id']; ?>" style="display:none;"><?php echo $comment['Comment']['raw_body']; ?></p>
@@ -61,9 +61,9 @@
         <?php endforeach; ?>
         
         <div class="comments-pagination paginator bottom">
-            <?php $this->Paginator->options( array( 'url'=> $this->passedArgs ) ); ?>
-            <?php echo $this->Paginator->prev(__d('comment', '«'), null, null, array('class' => 'disabled') ); ?>
-            <?php echo $this->Paginator->numbers( array('separator' => ' ') ); ?>
+            <?php $this->Paginator->options( array( 'url'=> $this->passedArgs)); ?>
+            <?php echo $this->Paginator->prev(__d('comment', '«'), null, null, array('class' => 'disabled')); ?>
+            <?php echo $this->Paginator->numbers( array('separator' => ' ')); ?>
             <?php echo $this->Paginator->next(__d('comment', '»'), null, null, array('class' => 'disabled')); ?>
         </div>
     </div>

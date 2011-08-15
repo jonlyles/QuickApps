@@ -27,19 +27,19 @@ class UserHookHelper extends AppHelper {
     public function user_new($block) {
         return array(
             'title' => __d('user', "Who's New"),
-			'body' => $this->_View->element('user_new_block', array('block' => $block), array('plugin' => 'User') )
+			'body' => $this->_View->element('user_new_block', array('block' => $block), array('plugin' => 'User'))
 		);
     }
     
     public function user_new_settings() {
-        return $this->_View->element('user_new_block_settings', array(), array('plugin' => 'User') );
+        return $this->_View->element('user_new_block_settings', array(), array('plugin' => 'User'));
     }
     
     // Block
     public function user_login() {
         return array(
             'title' => __d('user', 'Login'),
-			'body' => $this->_View->element('user_login_block', array(), array('plugin' => 'User') )
+			'body' => $this->_View->element('user_login_block', array(), array('plugin' => 'User'))
 		);
     }
 }

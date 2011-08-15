@@ -10,7 +10,7 @@ $tSettings = array(
 			'value' => '
                 {Language.name} 
                 {php} return ("{Language.icon}" != "" ? $this->_View->Html->image(\'/locale/img/flags/{Language.icon}\') : ""); {/php}
-                {php} return ("{Language.code}" == "' . Configure::read('Variable.default_language') . '" ? $this->_View->Html->image(\'/locale/img/default.png\', array(\'title\' => \'' . __t('Default language') . '\') ) : ""); {/php}
+                {php} return ("{Language.code}" == "' . Configure::read('Variable.default_language') . '" ? $this->_View->Html->image(\'/locale/img/default.png\', array(\'title\' => \'' . __t('Default language') . '\')) : ""); {/php}
                 ',
             'sort' => 'Language.name'
 		),
@@ -47,27 +47,27 @@ $tSettings = array(
 );
 ?>
 <!-- Add form -->
-<?php echo $this->Form->create('Language', array('url' => '/admin/locale/languages/add') ); ?>
+<?php echo $this->Form->create('Language', array('url' => '/admin/locale/languages/add')); ?>
     
     <?php echo $this->Html->useTag('fieldsetstart', '<span id="toggle-add_fieldset" style="cursor:pointer;">' . __t('Add New Language') . '</span>' ); ?>
         <div id="add_fieldset" class="horizontalLayout" style="display:none;">
             <div id="predefinedList">
-                <?php echo $this->Form->input('code', array('type' => 'select', 'options' => $languages, 'label' => __t('Language name') ) ); ?>
+                <?php echo $this->Form->input('code', array('type' => 'select', 'options' => $languages, 'label' => __t('Language name'))); ?>
                 <p>
-                    <?php echo $this->Form->input(__t('Add'), array('type' => 'submit', 'label' => false ) ); ?>
+                    <?php echo $this->Form->input(__t('Add'), array('type' => 'submit', 'label' => false)); ?>
                 </p>
             </div>
             <?php echo $this->Html->useTag('fieldsetstart', '<span id="toggle-addCustom_fieldset" style="cursor:pointer;">' . __t('Custom Language') . '</span>' ); ?>
                 <div id="addCustom_fieldset" class="verticalLayout" style="display:none;">
-                    <?php echo $this->Form->input('status', array('type' => 'hidden', 'value' => 1) ); ?>
+                    <?php echo $this->Form->input('status', array('type' => 'hidden', 'value' => 1)); ?>
                     
-                    <?php echo $this->Form->input('custom_code', array('required' => 'required', 'maxlength' => 3, 'style' => 'width:50px;', 'type' => 'text', 'label' => __t('Language code *') ) ); ?>
+                    <?php echo $this->Form->input('custom_code', array('required' => 'required', 'maxlength' => 3, 'style' => 'width:50px;', 'type' => 'text', 'label' => __t('Language code *'))); ?>
                     <em><?php echo __t('<a href="%s" target="_blank">ISO 639-3</a> compliant language identifier.', 'http://www.sil.org/iso639-3/codes.asp'); ?></em>
                     
-                    <?php echo $this->Form->input('name', array('required' => 'required', 'type' => 'text', 'label' => __t('Language name in English *') ) ); ?>
+                    <?php echo $this->Form->input('name', array('required' => 'required', 'type' => 'text', 'label' => __t('Language name in English *'))); ?>
                     <em><?php echo __t('Name of the language in English. Will be available for translation in all languages.'); ?></em>
                     
-                    <?php echo $this->Form->input('native', array('required' => 'required', 'type' => 'text', 'label' => __t('Native language name *') ) ); ?>
+                    <?php echo $this->Form->input('native', array('required' => 'required', 'type' => 'text', 'label' => __t('Native language name *'))); ?>
                     <em><?php echo __t('Name of the language in the language being added.'); ?></em>
 
                     <?php 
@@ -87,7 +87,7 @@ $tSettings = array(
                         );
                     ?>
                     <p>
-                        <?php echo $this->Form->input(__t('Add'), array('name' => 'data[Language][addCustom]', 'type' => 'submit', 'label' => false ) ); ?>
+                        <?php echo $this->Form->input(__t('Add'), array('name' => 'data[Language][addCustom]', 'type' => 'submit', 'label' => false)); ?>
                     </p>
                 </div>
             <?php echo $this->Html->useTag('fieldsetend'); ?>
@@ -96,7 +96,7 @@ $tSettings = array(
     <?php echo $this->Html->useTag('fieldsetend'); ?>
 <?php echo $this->Form->end(); ?>
 
-<?php echo $this->Form->create('Language', array('onsubmit' => 'return confirm("' . __t('Are you sure ?') . '");') ); ?>
+<?php echo $this->Form->create('Language', array('onsubmit' => 'return confirm("' . __t('Are you sure ?') . '");')); ?>
     <!-- Update -->
     <?php echo $this->Html->useTag('fieldsetstart', '<span id="toggle-update_fieldset" style="cursor:pointer;">' . __t('Update Options') . '</span>' ); ?>
         <div id="update_fieldset" class="horizontalLayout" style="<?php echo isset($this->data['Comment']['update']) ? '' : 'display:none;'; ?>">

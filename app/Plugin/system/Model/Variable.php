@@ -29,7 +29,7 @@ class Variable extends SystemAppModel {
                 );
             }
             
-            return $this->saveAll($rows['Variable'], array('validate' => $validate) );
+            return $this->saveAll($rows['Variable'], array('validate' => $validate));
         } else {
             return parent::save($data, $validate, $fieldList);
         }
@@ -43,12 +43,12 @@ class Variable extends SystemAppModel {
 	}    
     
     public function writeCache() {
-        $variables = $this->find('all', array('fields' => array('name', 'value') ) );
+        $variables = $this->find('all', array('fields' => array('name', 'value')));
         
         foreach ($variables as $v) {
             Configure::write('Variable.' . $v['Variable']['name'] , $v['Variable']['value']);
         }
         
-        Cache::write('Variable', Configure::read('Variable') );
+        Cache::write('Variable', Configure::read('Variable'));
     }
 }

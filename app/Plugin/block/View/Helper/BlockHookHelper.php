@@ -13,7 +13,7 @@ class BlockHookHelper extends AppHelper {
     // toolbar
     public function beforeLayout($layoutFile) {
         $show_on = (isset($this->request->params['plugin']) &&  $this->request->params['plugin'] == 'block' && $this->request->params['action'] != 'admin_add');
-        $this->_View->Layout->blockPush(array('body' => $this->_View->element('toolbar') ), 'toolbar', $show_on);
+        $this->_View->Layout->blockPush(array('body' => $this->_View->element('toolbar')), 'toolbar', $show_on);
         return true;
     }
     
@@ -42,7 +42,7 @@ class BlockHookHelper extends AppHelper {
         $region = isset($region) ? $region : false;
         $title = isset($title) ? int_val($title) : false;
         
-        return $this->_View->Layout->block($block, array('title' => $title, 'region' => $region) );
+        return $this->_View->Layout->block($block, array('title' => $title, 'region' => $region));
     }
     
     # hooktag

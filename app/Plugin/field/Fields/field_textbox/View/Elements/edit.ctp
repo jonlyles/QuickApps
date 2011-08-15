@@ -13,7 +13,7 @@
         }
 
         echo $this->Form->input("FieldData.field_textbox.{$data['id']}.data", $options);
-        echo $this->Form->hidden("FieldData.field_textbox.{$data['id']}.id", array('value' => null) );
+        echo $this->Form->hidden("FieldData.field_textbox.{$data['id']}.id", array('value' => null));
     } else {
         $options = array(
             'type' => 'text', 
@@ -27,7 +27,7 @@
         
         $data['FieldData'] = array_merge(array('id' => null, 'field_id' => null, 'foreignKey' => null, 'belongsTo' => null, 'data' => ''), $data['FieldData']);
         echo $this->Form->input("FieldData.field_textbox.{$data['id']}.data", $options);
-        echo $this->Form->hidden("FieldData.field_textbox.{$data['id']}.id", array('value' => $data['FieldData']['id']) );
+        echo $this->Form->hidden("FieldData.field_textbox.{$data['id']}.id", array('value' => $data['FieldData']['id']));
     }
 
     if (!empty($data['description'])):

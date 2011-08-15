@@ -25,7 +25,7 @@ class HelpController extends SystemAppController {
             $this->redirect('/admin/system/help/');
         }
             
-        $this->setCrumb( array($modules[$name]['yaml']['name'], '') );
+        $this->setCrumb( array($modules[$name]['yaml']['name'], ''));
         $this->title(__t('Help') . ' ' . $modules[$name]['yaml']['name']);
         $this->set('module', $modules[$name]);
         $this->set('name', $name);

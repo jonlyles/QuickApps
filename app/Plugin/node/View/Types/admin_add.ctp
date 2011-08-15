@@ -1,4 +1,4 @@
-<?php echo $this->Form->create('NodeType', array('url' => '/admin/node/types/add/') ); ?>
+<?php echo $this->Form->create('NodeType', array('url' => '/admin/node/types/add/')); ?>
     <?php echo $this->Html->useTag('fieldsetstart', __t('Type')  ); ?>
         <?php echo $this->Form->input('NodeType.name', array('required' => 'required', 'type' => 'text', 'label' => __t('Name *'))); ?>
         <em><?php echo __t('This text will be displayed as part of the list on the Add new content page'); ?></em>
@@ -36,18 +36,18 @@
     -->
     <?php echo $this->Html->useTag('fieldsetstart', __t('Default options')  ); ?>
         <?php echo $this->Html->useTag('fieldsetstart', __t('Comments')  ); ?>
-            <?php echo $this->Form->input('default_comment', array('value' => 0, 'type' => 'radio', 'legend' => false, 'separator' => '<br>', 'options' => array(2 => __t('Open'), 0 => __t('Closed'), 1 => __t('Read Only')) ) ); ?>
+            <?php echo $this->Form->input('default_comment', array('value' => 0, 'type' => 'radio', 'legend' => false, 'separator' => '<br>', 'options' => array(2 => __t('Open'), 0 => __t('Closed'), 1 => __t('Read Only')))); ?>
             <em><?php echo __t('Default comment setting for new content'); ?></em>
         <?php echo $this->Html->useTag('fieldsetend'); ?>
         
         <?php echo $this->Html->useTag('fieldsetstart', __t('Language')  ); ?>
-            <?php echo $this->Form->input('default_language', array('empty' => __t('-- Any --'), 'type' => 'select', 'label' => 'Language', 'options' => $languages ) ); ?>
+            <?php echo $this->Form->input('default_language', array('empty' => __t('-- Any --'), 'type' => 'select', 'label' => 'Language', 'options' => $languages)); ?>
         <?php echo $this->Html->useTag('fieldsetend'); ?>
         
         <?php echo $this->Html->useTag('fieldsetstart', __t('Publishing')  ); ?>
-            <?php echo $this->Form->input('default_status', array('type' => 'checkbox', 'label' => __t('Published'), 'value' => 1 ) ); ?>
-            <?php echo $this->Form->input('default_promote', array('type' => 'checkbox', 'label' => __t('Promoted to front page'), 'value' => 1 ) ); ?>
-            <?php echo $this->Form->input('default_sticky', array('type' => 'checkbox', 'label' => __t('Sticky at top of lists '), 'value' => 1 ) ); ?>
+            <?php echo $this->Form->input('default_status', array('type' => 'checkbox', 'label' => __t('Published'), 'value' => 1)); ?>
+            <?php echo $this->Form->input('default_promote', array('type' => 'checkbox', 'label' => __t('Promoted to front page'), 'value' => 1)); ?>
+            <?php echo $this->Form->input('default_sticky', array('type' => 'checkbox', 'label' => __t('Sticky at top of lists '), 'value' => 1)); ?>
         <?php echo $this->Html->useTag('fieldsetend'); ?>
         
     <?php echo $this->Html->useTag('fieldsetend'); ?>

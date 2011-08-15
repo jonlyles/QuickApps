@@ -32,13 +32,13 @@ class TranslationsController extends LocaleAppController {
         
         $this->set('results', $results);
         $this->setCrumb('/admin/locale');
-        $this->setCrumb( array(__t('Translations entries'), '') );
+        $this->setCrumb( array(__t('Translations entries'), ''));
         $this->title(__t('Translations entries'));
     }
     
     public function admin_edit($id) {
         if (isset($this->data['Translation'])) {
-            if ($this->Translation->saveAll($this->data, array('validate' => false) )) {
+            if ($this->Translation->saveAll($this->data, array('validate' => false))) {
                 $this->flashMsg(__t('Entry has been saved'), 'success');
                 $this->redirect($this->referer());
             } else {
@@ -48,7 +48,7 @@ class TranslationsController extends LocaleAppController {
         
         $this->data = $this->Translation->findById($id);
         $this->setCrumb('/admin/locale');
-        $this->setCrumb( array(__t('Translations entries'), '') );
+        $this->setCrumb( array(__t('Translations entries'), ''));
         $this->title(__t('Editing entry'));
     }
     
@@ -63,7 +63,7 @@ class TranslationsController extends LocaleAppController {
         }
         
         $this->setCrumb('/admin/locale');
-        $this->setCrumb( array(__t('Translations entries'), '/admin/locale/translations') );
+        $this->setCrumb( array(__t('Translations entries'), '/admin/locale/translations'));
         $this->title(__t('Add new entry'));
 	}
     
