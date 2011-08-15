@@ -108,6 +108,7 @@ Cache::config('default', array('engine' => 'File'));
  * Translation function, domain search order: current plugin, default (global)
  *
  * @param string $singular String to translate
+ *
  * @return string the translated string
  */
     function __t($singular, $args = null) {
@@ -134,6 +135,7 @@ Cache::config('default', array('engine' => 'File'));
  * Create Unique Arrays using an md5 hash
  *
  * @param array $array
+ *
  * @return array
  */
     function arrayUnique($array, $preserveKeys = false) {
@@ -151,4 +153,21 @@ Cache::config('default', array('engine' => 'File'));
             }
         }
         return $arrayRewrite;
+    }
+
+/**
+ * replace the first ocurrence only
+ *
+ * @param string $str_pattern what to find for
+ * @param string $str_replacement the replacement for $str_pattern
+ * @param string $string the original to find and replace
+ *
+ * @return string
+ */    
+    function str_replace_once($str_pattern, $str_replacement, $string) {
+        if (strpos($string, $str_pattern) !== false) {
+            $occurrence = strpos($string, $str_pattern);
+            return substr_replace($string, $str_replacement, strpos($string, $str_pattern), strlen($str_pattern));
+        }
+        return $string;
     }
