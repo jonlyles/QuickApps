@@ -40,7 +40,7 @@ class NodeController extends NodeAppController {
                 'limit' => Configure::read('Variable.default_nodes_main'), 
                 'order' => array(
                     'Node.sticky' => 'DESC', 
-                    'Node.modified' => 'DESC'
+                    'Node.created' => 'DESC'
                 )
             );
             
@@ -348,7 +348,12 @@ class NodeController extends NodeAppController {
         # prepare content
         if (isset($scope)) {
             $scope['Node.status'] = 1; # only published content!
-            $this->paginate = array('order' => array('Node.sticky' => 'DESC', 'Node.modified' => 'DESC'));
+            $this->paginate = array(
+                'order' => array(
+                    'Node.sticky' => 'DESC', 
+                    'Node.created' => 'DESC'
+                )
+            );
             $this->Layout['node'] = $this->paginate('Node', $scope);
             $this->Layout['feed'] = "/s/{$data['Search']['criteria']}/feed";
         } else {
