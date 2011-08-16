@@ -22,7 +22,7 @@ class Field extends FieldAppModel {
         ),
         'field_module' => array('required' => true, 'allowEmpty' => false, 'rule' => 'notEmpty', 'message' => 'Select a field type.')
 	);
-    
+
     public function beforeDelete() {
         $this->data = $this->read(); # tmp holder (before/afterDelete)
         $r = $this->hook("{$this->field['Field']['field_module']}_beforeDelete", $this, array('collectReturn' => false));
@@ -42,7 +42,7 @@ class Field extends FieldAppModel {
             )
         ) === 0;
     }
-    
+
     public function beforeValidate() {
         # merge settings (array treatment): formatter form post
         if (isset($this->data['Field']['id']) && isset($this->data['Field']['settings'])) {

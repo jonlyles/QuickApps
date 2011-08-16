@@ -106,7 +106,7 @@ class FieldableBehavior extends ModelBehavior {
  * belongsTo: Name of the object that field belongs to. (Commonly Model Name)
  * If no information is given then Model name is used as default.
  */
-    private $__settings = array('belongsTo' => null);
+    private $__settings = array();
     
 /**
  * Temp holder for afterSave() proccessing
@@ -121,14 +121,14 @@ class FieldableBehavior extends ModelBehavior {
  * 
  * @return void
  */
-	public function setup($Model, $settings = array()) {
-		$this->__settings = Set::merge($this->__settings, $settings);
+	public function setup(&$Model, $settings = array()) {
+        # keep a setings array for each model
+        $this->__settings[$Model->alias] = array();
+		$this->__settings[$Model->alias] = Set::merge($this->__settings[$Model->alias], $settings);
 
-        if (empty($this->__settings['belongsTo'])) {
-            $this->__settings['belongsTo'] = $Model->alias;
+        if (empty($this->__settings[$Model->alias]['belongsTo'])) {
+            $this->__settings[$Model->alias]['belongsTo'] = $Model->alias;
         }
-
-        return;
     }
 
 /**
@@ -140,7 +140,7 @@ class FieldableBehavior extends ModelBehavior {
  */
     public function beforeFind(&$Model, $query) {
         if ((isset($Model->fieldsNoFetch) && $Model->fieldsNoFetch) || 
-            (isset($query['recursive']) && $query['recursive'] == -1)
+            (isset($query['recursive']) && $query['recursive'] <= 0)
         ) {
             $Model->unbindModel(
                 array(
@@ -225,55 +225,6 @@ class FieldableBehavior extends ModelBehavior {
     }
 
 /**
- * Makes a beforeDelete() or afterDelete().
- * Invoke each field before/afterDelte event.
- * 
- * @param object $Model instance of model
- * @param string $type callback to execute, possible values: 'before' or 'after'
- * 
- * @return boolean False if any of the fields has returned false. True otherwhise
- */    
-    private function __beforeAfterDelete(&$Model, $type = 'before') {
-        $model_id = $Model->id ? $Model->id : $Model->tmpData[$Model->alias][$Model->primaryKey];
-
-        if ($type == 'before') {
-            $result = $Model->find('first',
-                array(
-                    'conditions' => array(
-                        "{$Model->alias}.{$Model->primaryKey}" => $model_id
-                    ),
-                    'recursive' => -1
-                )
-            );
-
-            $Model->tmpBelongsTo = $belongsTo = $this->__parseBelongsTo($this->__settings['belongsTo'], $result);
-            $Model->tmpData = $result;
-        } else {
-            $belongsTo = $Model->tmpBelongsTo;
-        }
-
-        $fields = ClassRegistry::init('Field.Field')->find('all',
-            array(
-                'conditions' => array(
-                    'belongsTo' => $belongsTo
-                )
-            )
-        );
-
-        $r = array();
-
-        foreach ($fields as $field) {
-            $info['field_id'] = $field['Field']['id'];
-            $info['model_name'] = $Model->name;
-            $info['model_id'] = $model_id;
-            $info['Model'] =& $Model;
-            $r[] = $Model->hook("{$field['Field']['field_module']}_{$type}Delete", $info, array('collectReturn' => false));
-        }
-
-        return !in_array(false, $r, true);
-    }
-
-/**
  * Invoke each field's beforeSave()
  * If any of the fields return 'false' then the Model's save proccess is interrupted
  * Note:
@@ -329,7 +280,7 @@ class FieldableBehavior extends ModelBehavior {
                 continue;
             }
 
-            $belongsTo = $this->__parseBelongsTo($this->__settings['belongsTo'], $result);
+            $belongsTo = $this->__parseBelongsTo($this->__settings[$Model->alias]['belongsTo'], $result);
 
             $result['Field'] = array();
             $modelFields = ClassRegistry::init('Field.Field')->find('all', 
@@ -358,17 +309,65 @@ class FieldableBehavior extends ModelBehavior {
         return $results;
     }
     
+    public function attachFieldInstance(&$Model, $data) {
+        $data = isset($data['Field']) ? $data['Field'] : $data;
+        $data = array_merge(
+            array(
+                'label' => '',
+                'name' => '',
+                'field_module' => ''
+            ),
+            $data
+        );
+
+        extract($data);
+    
+        $field_module = Inflector::underscore($field_module);
+        $field_info = $Model->hook('field_info', $field_module, array('alter' => false, 'collectReturn' => false));
+        
+        if (isset($field_info[$field_module])) {
+            if (isset($field_info[$field_module]['max_instances']) && is_numeric($field_info[$field_module]['max_instances']) && $field_info[$field_module]['max_instances'] > 0) {
+                $count = ClassRegistry::init('Field.Field')->find('count', 
+                    array(
+                        'Field.belongsTo' => $this->__settings[$Model->alias]['belongsTo'],
+                        'Field.field_module' => $field_module
+                    )
+                );
+                
+                if ($count > $field_info[$field_module]['max_instances']) {
+                    return false;
+                }
+            }
+        }
+
+        $newField = array(
+            'Field' => array(
+                'belongsTo' => $this->__settings[$Model->alias]['belongsTo'],
+                'label' => $label,
+                'name' => $name,
+                'field_module' => $field_module
+            )
+        );
+        $Field = ClassRegistry::init('Field.Field');
+        
+        if ($Field->save($newField)) {
+            return $Field->id;
+        }
+        
+        return false;
+    }
+
 /**
  * Return all fields instantces attached to the current model.
  * Useful when rendering forms.
  * 
  * @return array List array of all attached fields
  */
-    public function fieldInstances() {
+    public function fieldInstances(&$Model) {
         $results = ClassRegistry::init('Field.Field')->find('all', 
             array(
                 'conditions' => array(
-                    'Field.belongsTo' => $this->__settings['belongsTo']
+                    'Field.belongsTo' => $this->__settings[$Model->alias]['belongsTo']
                 ),
                 'order' => array('Field.ordering' => 'ASC')
             )
@@ -377,6 +376,65 @@ class FieldableBehavior extends ModelBehavior {
         return $results = Set::extract('/Field/.', $results);
     }
     
+/**
+ * Makes a beforeDelete() or afterDelete().
+ * Invoke each field before/afterDelte event.
+ * 
+ * @param object $Model instance of model
+ * @param string $type callback to execute, possible values: 'before' or 'after'
+ * 
+ * @return boolean False if any of the fields has returned false. True otherwhise
+ */    
+    private function __beforeAfterDelete(&$Model, $type = 'before') {
+        $model_id = $Model->id ? $Model->id : $Model->tmpData[$Model->alias][$Model->primaryKey];
+
+        if ($type == 'before') {
+            $result = $Model->find('first',
+                array(
+                    'conditions' => array(
+                        "{$Model->alias}.{$Model->primaryKey}" => $model_id
+                    ),
+                    'recursive' => -1
+                )
+            );
+
+            $Model->tmpBelongsTo = $belongsTo = $this->__parseBelongsTo($this->__settings[$Model->alias]['belongsTo'], $result);
+            $Model->tmpData = $result;
+        } else {
+            $belongsTo = $Model->tmpBelongsTo;
+        }
+
+        $fields = ClassRegistry::init('Field.Field')->find('all',
+            array(
+                'conditions' => array(
+                    'belongsTo' => $belongsTo
+                )
+            )
+        );
+
+        $r = array();
+
+        foreach ($fields as $field) {
+            $info['field_id'] = $field['Field']['id'];
+            $info['model_name'] = $Model->name;
+            $info['model_id'] = $model_id;
+            $info['Model'] =& $Model;
+            $r[] = $Model->hook("{$field['Field']['field_module']}_{$type}Delete", $info, array('collectReturn' => false));
+        }
+
+        return !in_array(false, $r, true);
+    }
+
+/**
+ * Parses 'belongsTo' parameter looking for array paths.
+ * This functionality is used only (and should be used only) by Nodes. That is so because, 
+ * Nodes may have diferent fields attached depending in NodeType (bridge association).
+ *
+ * @param string $belongsTo string to parse
+ * @param array $result a Node model row
+ *
+ * @return string
+ */
     private function __parseBelongsTo($belongsTo, $result = array()){
          # look for dynamic belongsTo
 		preg_match_all('/\{([\{\}0-9a-zA-Z_\.]+)\}/iUs', $belongsTo, $matches);

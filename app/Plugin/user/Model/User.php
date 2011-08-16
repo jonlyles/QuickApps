@@ -12,7 +12,7 @@
 class User extends UserAppModel {
     public $name = 'User';
     public $useTable = "users";
-    public $actsAs = array('Field.Fieldable');
+    public $actsAs = array('Field.Fieldable' => array('belongsTo' => 'User'));
     public $validate = array(
         'username' => array(
             'alphanumeric' => array(

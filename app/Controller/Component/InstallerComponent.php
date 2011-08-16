@@ -9,7 +9,7 @@
  * @author   Christopher Castro <chris@quickapps.es>
  * @link     http://cms.quickapps.es
  */
-class InstallerComponent extends Object {
+class InstallerComponent extends Component {
     public $errors = array();
     public $Controller;
     public $settings = array(
@@ -101,7 +101,7 @@ class InstallerComponent extends Object {
         $PclZip = new PclZip($Upload->file_dst_pathname);
         
         if (($v_result_list = $PclZip->extract(PCLZIP_OPT_PATH, $workingDir . 'unzip')) == 0 ) {
-            $this->errors[] = __d('system', 'Unzip error.') . "<br/><p>{$PclZip->errorInfo(true)}</p>";
+            $this->errors[] = __d('system', 'Unzip error.') . "<br/><p>" . $PclZip->errorInfo(true) . "</p>";
             
             return false;
         } else {
@@ -113,6 +113,7 @@ class InstallerComponent extends Object {
             
             if (!$packagePath) {
                 $this->errors[] = __d('system', 'Invalid package structure after unzip');
+                
                 return false;
             }
             
@@ -254,7 +255,7 @@ class InstallerComponent extends Object {
                             )
                         );
                 break;
-                
+
                 case 'theme':
                     $tests = array(
                         'yaml' => array( 
@@ -281,12 +282,10 @@ class InstallerComponent extends Object {
                 
                 return false;
             }
-            
-            #################################################
-            ## validate dependencies and versions required ##
-            #################################################
-            
-            #1 check core version
+
+            /**
+             * validate dependencies and required core version
+             */ 
             switch ($this->settings['type']) {
                 case 'module':
                     $core = "core ({$yaml['core']})";
@@ -294,25 +293,27 @@ class InstallerComponent extends Object {
 
                     if ($r !== null) {
                         $this->errors[] = __d('system', 'This module is incompatible with your QuickApps version.');
+                        
                         return false;
                     }
-                    
+
                     if (isset($yaml['dependencies']) && $this->checkDependency($yaml)) {
                         $this->errors[] = __d('system', "This module depends on other modules that you do not have or doesn't meet the version required: %s", implode('<br/>', $yaml['dependencies']));
+                        
                         return false;
                     }
                 break;
-                
+
                 case 'theme':
                     $core = "core ({$yaml['info']['core']})";
                     $r = $this->checkIncompatibility($this->parseDependency($core), Configure::read('Variable.qa_version'));
-                    
+
                     if ($r !== null) {
                         $this->errors[] = __d('system', 'This theme is incompatible with your QuickApps version.');
                         
                         return false;
                     }
-                    
+
                     if (isset($yaml['info']['dependencies']) && $this->checkDependency($yaml['info'])) {
                         $this->errors[] = __d('system', "This theme depends on other modules that you do not have or doesn't meet the version required: %s", implode('<br/>', $yaml['info']['dependencies']));
                         
@@ -320,11 +321,41 @@ class InstallerComponent extends Object {
                     }
                 break;
             }
-            
+
+            /**
+             * validate custom fields
+             * Only modules are allowed to define fields.
+             */
+            if ($this->settings['type'] == 'module' && file_exists($packagePath . 'Fields')) {
+                $Folder = new Folder($packagePath . 'Fields');
+                $fields = $Folder->read();
+                $fieldErrors = false;
+
+                if (isset($fields[0])) {
+                    $fields = $fields[0];
+
+                    foreach ($fields as $field) {
+                        if (file_exists($packagePath . 'Fields' . DS . $field . DS . "{$field}.yaml")) {
+                            $yaml = Spyc::YAMLLoad($packagePath . 'Fields' . DS . $field . DS . "{$field}.yaml");
+
+                            if (!isset($yaml['name']) || !isset($yaml['description'])) {
+                                $fieldErrors = true;  
+                                $this->errors[] = __d('system', 'invalid information file (.yaml). Field "%s"', $field);  
+                            }
+                        } else {
+                            $fieldErrors = true;
+                            $this->errors[] = __d('system', 'Invalid field "%s". Information file (.yaml) not found.', $field);
+                        }
+                    }
+                }
+
+                if ($fieldErrors) {
+                    return false;
+                }
+            }
             ### End of validations ###
-            
-            
-            
+
+
             /*****************/
             /**** INSTALL ****/
             /*****************/
@@ -334,15 +365,15 @@ class InstallerComponent extends Object {
             if (method_exists($Install, 'beforeInstall')) {
                 $r = $Install->beforeInstall($this);
             }
-            
+
             if ($r === false) {
                 return false;
             }
-            
+
             /** Copy files **/
             $copyTo = ($this->settings['type'] == 'module') ? ROOT . DS . 'Modules' . DS . $appName : APP . 'View' . DS . 'Themed' . DS . $appName;
             $this->__rcopy($packagePath, $copyTo);
-            
+
             /** DB Logics **/
             $moduleData = array(
                 'name' => ($this->settings['type'] == 'module' ? $appName : 'theme_' . Inflector::underscore($appName)),
@@ -356,15 +387,15 @@ class InstallerComponent extends Object {
             if ($this->settings['type'] == 'module') { # Themes does not support acos feature
                 $this->buildAcos($appName);
             }
-                
+ 
             /** Delete unziped package **/
             $Folder->delete($workingDir);
-            
+
             /** Finish **/
             if (method_exists($Install, 'afterInstall')) {
                 $Install->afterInstall($this);
             }
-            
+
             $this->afterInstall();
         }
 
@@ -372,12 +403,14 @@ class InstallerComponent extends Object {
         
         return true;
     }
+
 /*
  * Uninstall plugin by name
  * 
  * @param string $pluginName name of the plugin to uninstall, it could be a theme plugin
  *                           (ThemeMyThemeName or theme_my_theme_name) or module plugin 
  *                           (MyModuleName or my_module_name)
+ *
  * @return boolean true on success or false otherwise                           
  */
     public function uninstall($pluginName = false) {
@@ -480,7 +513,7 @@ class InstallerComponent extends Object {
                 'Block.module' => $this->settings['__name']
             )
         );
-        
+
         # delete acos branch
         
         $rootAco = $this->Controller->Acl->Aco->find('first', 
@@ -740,16 +773,16 @@ class InstallerComponent extends Object {
         if (!file_exists($search . 'InstallComponent.php')) {
             return false;
         }
-        
+
         include_once($search . 'InstallComponent.php');
         
         $class = "InstallComponent";
-        $component =& new $class($this->Controller->Components);
-        
+        $component = new $class($this->Controller->Components);
+
         if (method_exists($component, 'initialize')) {
             $component->initialize($this);
         }
-        
+
         if (method_exists($component, 'startup')) {
             $component->startup($this);
         }

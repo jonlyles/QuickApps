@@ -192,34 +192,24 @@ class TypesController extends NodeAppController {
                 'hasAndBelongsToMany' => array('Vocabulary')
             )
         );
-        
+
         $nodeType = $this->NodeType->findById($typeId) or $this->redirect('/admin/node/types');
-            
+
         if (isset($this->data['Field'])) {
             $data = $this->data;
             $data['Field']['name'] = !empty($data['Field']['name']) ? 'field_' . $data['Field']['name'] : '';
-            $data['Field']['belongsTo'] = "NodeType-{$typeId}";
-            $Field = ClassRegistry::init('Field.Field');
-            
-            if ($Field->save($data)) {
-                $this->redirect("/admin/node/types/field_settings/{$Field->id}");
+
+            $this->NodeType->Behaviors->attach('Field.Fieldable', array('belongsTo' => "NodeType-{$typeId}"));
+
+            if ($field_id = $this->NodeType->attachFieldInstance($data)) {
+                $this->redirect("/admin/node/types/field_settings/{$field_id}");
             }
-            
+
             $this->flashMsg(__t('Field could not be created. Please, try again.'), 'error');
         }
-        
-        /* Available field objects */
-        foreach (App::objects('plugins') as $plugin) {
-            $_plugin = Inflector::underscore($plugin);
-            
-            if (strpos(App::pluginPath($plugin), DS . 'Fields' . DS . $_plugin . DS) !== false) {
-                $field_modules[$_plugin] = $plugin;
-            }
-        }
-        
+
         $this->set('result', $nodeType);
-        $this->set('field_modules', $field_modules);
-        
+        $this->set('field_modules', $this->hook('field_info', $this, array('alter' => false, 'collectReturn' => false)));
 		$this->setCrumb('/admin/node/types');
 		$this->setCrumb( array($nodeType['NodeType']['name'], '/admin/node/types/edit/' . $nodeType['NodeType']['id']));
 		$this->setCrumb( array(__t('Fields'), '/admin/node/types/fields/' . $nodeType['NodeType']['id']));

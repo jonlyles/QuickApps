@@ -11,40 +11,29 @@
  */
 class FieldsController extends UserAppController {
 	public $name = 'Fields';
-	public $uses = array('Field.Field');
-	
+	public $uses = array('Field.Field', 'User.User');
+
 	public function admin_index() {
         if (isset($this->data['Field'])) {
             $data = $this->data;
             $data['Field']['name'] = !empty($data['Field']['name']) ? 'field_' . $data['Field']['name'] : '';
-            $data['Field']['belongsTo'] = "User";
-            $Field = ClassRegistry::init('Field.Field');
             
-            if ($Field->save($data)) {
-                $this->redirect("/admin/user/fields/field_settings/{$Field->id}");
+            if ($field_id = $this->User->attachFieldInstance($data)) {
+                $this->redirect("/admin/user/fields/field_settings/{$field_id}");
             }
-            
+
             $this->flashMsg(__t('Field could not be created. Please, try again.'), 'error');
         }
-    
+
         $fields = $this->Field->find('all', array('conditions' => array('Field.belongsTo' => 'User')));
-        
-        /* Available field objects */
-        foreach (App::objects('plugins') as $plugin) {
-            $_plugin = Inflector::underscore($plugin);
-            
-            if (strpos(App::pluginPath($plugin), DS . 'Fields' . DS . $_plugin . DS) !== false) {
-                $field_modules[$_plugin] = $plugin;
-            }
-        }
-        
+
         $this->set('results', $fields);
-        $this->set('field_modules', $field_modules);
+        $this->set('field_modules', $this->hook('field_info', $this, array('alter' => false, 'collectReturn' => false)));
 		$this->setCrumb('/admin/user/');
 		$this->setCrumb( array(__t('Manage Fields'), ''));
 		$this->title(__t('Manage User Fields'));
 	}
-    
+
     public function admin_field_settings($id) {
         if (isset($this->data['Field'])) {
             if ($this->Field->save($this->data)) {

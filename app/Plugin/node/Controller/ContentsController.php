@@ -98,7 +98,7 @@ class ContentsController extends NodeAppController {
         // attach fieldable behavior based on nodetype
         $this->Node->recursive = 0;
         $data = $this->Node->findBySlug($slug) or $this->redirect('/admin/node/contents');
-      
+
         if (!empty($this->data)) {
             $data = $this->data;
             if ($this->Node->saveAll($data)) {
@@ -124,7 +124,7 @@ class ContentsController extends NodeAppController {
             $this->set('roles', $this->Role->find('list'));
             $this->set('vocabularies', $this->__typeTerms($data['NodeType']));
         }
-        
+
 		$this->setCrumb('/admin/node/contents');
 		$this->title(__t('Editing Content'));
 	}

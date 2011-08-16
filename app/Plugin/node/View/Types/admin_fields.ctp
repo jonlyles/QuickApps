@@ -61,16 +61,29 @@ $tSettings = array(
                 );
             ?>        
         
-            <?php echo $this->Form->input('Field.field_module',
+            <?php 
+                $fieldsOptions = array();
+
+                foreach($field_modules as $plugin => $data) {
+                    $fieldsOptions['list'][$plugin] = $data['name'];
+                    $fieldsOptions['description'][$plugin] = $data['description'];
+                }
+
+                echo $this->Form->input('Field.field_module',
                     array(
                         'type' => 'select',
-                        'label' => __t('Type *'),
+                        'label' => __t('Type'),
                         'empty' => true,
-                        'options' => $field_modules
+                        'options' => $fieldsOptions['list'],
+                        'onChange' => 'showDescription(this.value);'
                     )
                 );
-            ?>        
-        
+            ?>      
+            
+            <p>
+                <em id="field_description"></em>
+            </p>
+            
             <?php echo $this->Form->input(__t('Add'), array('type' => 'submit', 'label' => false)); ?>
         </div>
     <?php echo $this->Html->useTag('fieldsetend'); ?>
@@ -83,4 +96,15 @@ $tSettings = array(
     $("#toggle-addfield_fieldset").click(function () {
         $("#addfield_fieldset").toggle('fast', 'linear');
     }); 
+    
+    var field_descriptions = new Array();
+    
+    <?php foreach($fieldsOptions['description'] as $plugin => $desc): ?>
+        field_descriptions['<?php echo $plugin; ?>'] = '<?php echo __d($plugin, $desc); ?>';
+    <?php endforeach; ?>
+    
+    function showDescription(field) {
+        desc = field ? field_descriptions[field] : '';
+        $('em#field_description').html(desc);
+    }    
 </script>

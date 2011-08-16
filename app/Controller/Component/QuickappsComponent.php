@@ -73,11 +73,11 @@ class QuickAppsComponent extends Component {
                 }
             }
         }
-        
+
         if (Configure::read('Theme.layout')) {
             $this->Controller->layout = Configure::read('Theme.layout');
         }
-        
+
         $this->Controller->hook('stylesheets_alter', $this->Controller->Layout['stylesheets']);    # pass css list to modules if they need to alter them (add/remove)
     }
     
