@@ -247,6 +247,7 @@ class MenuHelper extends AppHelper {
                 'hasVisibleChildren' => $hasVisibleChildren
             );
             $this->__settings = array_merge($this->__settings, $elementData);
+            
             /* Main Content */
             if ($element) {
                 $content = $view->element($element, $elementData, $elementOptions);
@@ -255,12 +256,15 @@ class MenuHelper extends AppHelper {
             } else {
                 $_url = !empty($result[$model][$external_url]) ? $result[$model][$external_url] : $result[$model][$url];
                 $title = !empty($result[$model][$alt_text]) ? __t($result[$model][$alt_text]) : '';
-                $content = $this->Html->link("<span>" . __t($result[$model][$alias]) . "</span>", $_url, array('escape' => false, 'title' => $title)); # href
+                $content = $this->Html->link("<span>" . __t($result[$model][$alias]) . "</span>", __t($_url), array('escape' => false, 'title' => $title)); # href
             }
+            
             if (!$content) {
                 continue;
             }
+            
             $whiteSpace = str_repeat("\t", $depth);
+            
             if ($indent && strpos($content, "\r\n", 1)) {
                 $content = str_replace("\r\n", "\n" . $whiteSpace . "\t", $content);
             }
@@ -279,11 +283,13 @@ class MenuHelper extends AppHelper {
                 $return .= "\r\n" . $whiteSpace . "\t";
             }
             
-            if ($count===1)
+            if ($count===1) {
                 $this->addItemAttribute('class', 'first');
+            }
             
-            if ($count===$total)
+            if ($count===$total) {
                 $this->addItemAttribute('class', 'last');
+            }
 
             if ($itemType) {
                 $itemAttributes = $this->__attributes($itemType, $elementData);
