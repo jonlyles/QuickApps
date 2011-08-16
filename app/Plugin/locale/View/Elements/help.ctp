@@ -10,14 +10,14 @@
     <dt>Translating interface text</dt>
     <dd>
         Translations of text in the QuickApps interface may be provided by:
-        <ul>
+        <ul style="list-style:circle;">
             <li>
                 Translating within your site, using the Locale module's integrated 
-                <a href="<?php echo $this->Html->url('/admin/locale/translate'); ?>">translation interface</a>.
+                <a href="<?php echo $this->Html->url('/admin/locale/translations'); ?>">translation interface</a>.
             </li>
             
             <li>
-                Importing files from a set of existing translations, 
+                <a href="<?php echo $this->Html->url('/admin/locale/packages'); ?>">Importing</a> files from a set of existing translations, 
                 known as a translation package files in the Gettext Portable Object (<em>.po</em>) format.
             </li>
             
