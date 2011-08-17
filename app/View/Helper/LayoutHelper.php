@@ -34,7 +34,7 @@ class LayoutHelper extends AppHelper {
 		$output = $embed = '';
 		$stylesheets = !$stylesheets ? $this->_View->viewVars['Layout']['stylesheets'] : $stylesheets;
         $this->hook('stylesheets_alter', $stylesheets);	# pass css list array to modules
-        
+
         foreach ($stylesheets as $media => $files) {
             foreach ($files as $file) {
                 if ($media !== 'embed') {
@@ -44,7 +44,7 @@ class LayoutHelper extends AppHelper {
                 }
             }
         }
-        
+
         $output = !empty($embed) ? $output . "\n<style>\t\n {$embed} \n</style>\n" : $output;
         
         return $output;
@@ -62,7 +62,6 @@ class LayoutHelper extends AppHelper {
  * @return string
  */
     public function javascripts($javascripts = false) {
-	
 		$output = '';
 		$javascripts = !$javascripts ? $this->_View->viewVars['Layout']['javascripts'] : $javascripts;
 		
@@ -97,14 +96,15 @@ class LayoutHelper extends AppHelper {
         if (is_string($this->_View->viewVars['Layout']['header'])) {
             return $this->_View->viewVars['Layout']['header'];
         }
-        
+
         if (is_array($this->_View->viewVars['Layout']['header'])) {
             $out = '';
-            
+
             foreach ($this->_View->viewVars['Layout']['header'] as $code) {
                 $out .= "{$code}\n";
             }
         }
+
         return "\n" . $out;
     }
     
@@ -117,7 +117,7 @@ class LayoutHelper extends AppHelper {
         $title = isset($this->_View->viewVars['Layout']['node']['Node']['title']) ? __t($this->_View->viewVars['Layout']['node']['Node']['title']) : Configure::read('Variable.site_name');
 		$title = $this->_View->viewVars['title_for_layout'] != Inflector::camelize($this->_View->params['controller']) || Router::getParam('admin') ? $this->_View->viewVars['title_for_layout'] : $title;
         $this->hook('title_for_layout_alter', $title);	# pass title_for_layout to modules
-		
+
         return $this->hookTags(__t($title));
 	}
         
@@ -129,7 +129,7 @@ class LayoutHelper extends AppHelper {
 	public function content() {
 		$content = $this->_View->viewVars['content_for_layout'];
 		$this->hook('content_for_layout_alter', $content);	# pass content_for_layout to modules
-        
+
 		return $content;
 	}    
     
@@ -142,18 +142,18 @@ class LayoutHelper extends AppHelper {
         if (is_string($this->_View->viewVars['Layout']['footer'])) {
             return $this->_View->viewVars['Layout']['header'];
         }
-        
+
         if (is_array($this->_View->viewVars['Layout']['footer'])) {
             $out = '';
-            
+
             foreach ($this->_View->viewVars['Layout']['footer'] as $code) {
                 $out .= "{$code}\n";
             }
         }
-        
+
         return "\n" . $out;
     }
-	
+
 /**
  * return rendered meta tags
  *
@@ -165,13 +165,13 @@ class LayoutHelper extends AppHelper {
 		if (!is_array($metaForLayout) || empty($metaForLayout)) {
 			$metaForLayout = Set::merge($this->_View->viewVars['Layout']['meta'], $metaForLayout);
         }
-        
+
         $output = '';
-        
+
         foreach ($metaForLayout as $name => $content) {
             $output .= $this->_View->Html->meta($name, $content) . "\n";
         }
-        
+
         return $output;
     }
     
@@ -185,7 +185,7 @@ class LayoutHelper extends AppHelper {
         if (!isset($this->_View->viewVars['Layout']['node']['NodeType']['id'])) {
             return false;
         }
-        
+
         return $this->_View->viewVars['Layout']['node']['NodeType']['id'];
     }
 
@@ -200,41 +200,41 @@ class LayoutHelper extends AppHelper {
  */
     public function renderNode($node = false) {
         $node = !$node ? $this->_View->viewVars['Layout']['node'] : $node;
-        
+
         if (empty($node)) {
             return '';
         }
-        
+
         $content = '';
-        
+
         $view_mode = $this->_View->viewVars['Layout']['viewMode'];
-        
+
         foreach ($node['Field'] as $key => &$data) { # no viewMode defined -> use default
             if (!isset($data['settings']['display'][$view_mode]) && isset($data['settings']['display']['default'])) {
                 $data['settings']['display'][$view_mode] = $data['settings']['display']['default'];
             }
         }
-        
+
         $node['Field'] = Set::sort($node['Field'], "{n}.settings.display.{$view_mode}.ordering", 'asc');
         $sufix = $node['NodeType']['module'] == 'node' ? 'render' : $node['NodeType']['id'];
         $callback = "{$node['NodeType']['base']}_{$sufix}";
         $content .= implode('', (array)$this->hook('beforeRenderNode', $node, array('alter' => true, 'collectReturn' => true))); 
         $content .= $this->hook($callback, $node, array('collectReturn' => false));
-        
+
         if (empty($content)) {
             $content = $this->default_renderNode($node);
         }
-        
+
         $content = $this->hookTags($content);
         $content .= implode('', (array)$this->hook('afterRenderNode', $node, array('alter' => true, 'collectReturn' => true))); 
-        
+
         $nodeClasses = array();
         $nodeClasses[] = 'node';
         $nodeClasses[] = "node-{$node['NodeType']['id']}";
         $nodeClasses[] = "node-" . ($node['Node']['promote'] ? "promoted" : "demote");
         $nodeClasses[] = "node-" . ($node['Node']['sticky'] ? "sticky" : "nosticky");
         $nodeClasses[] = "node-{$this->_View->viewVars['Layout']['viewMode']}";
-        
+
         return "\n<div id=\"node-{$node['Node']['id']}\" class=\"" . implode(' ', $nodeClasses) . "\">\n\t" . $this->hookTags($content). "\n</div>\n";
     }
     
@@ -249,7 +249,7 @@ class LayoutHelper extends AppHelper {
     public function removeHookTags($string) {
         $string = $this->specialTags($string);
         $tags = implode('|', $this->events);
-        
+
         return preg_replace('/(.?)\[(' . $tags . ')\b(.*?)(?:(\/))?\](?:(.+?)\[\/\2\])?(.?)/s', '', $string);
     }
     
@@ -264,7 +264,7 @@ class LayoutHelper extends AppHelper {
         if (isset($this->_View->viewVars['Layout']['node']['Node'][$field])) {
             return $this->_View->viewVars['Layout']['node']['Node'][$field];
         }
-        
+
         return false;
     }
     
@@ -287,19 +287,19 @@ class LayoutHelper extends AppHelper {
  */
     public function sessionFlash() {
         $messages = $this->Session->read('Message');
-        
+
         if (is_array($messages)) {
             $out = '';
             
             foreach (array_keys($messages) as $key) {
                 $out .= $this->Session->flash($key);
             }
-            
+
             return $out;
         } elseif (is_string($messages)) {
             return $messages;
         }
-        
+
         return false;
     }
     
@@ -313,7 +313,7 @@ class LayoutHelper extends AppHelper {
 		$b = $this->_View->viewVars['breadCrumb'];
         $crumbs = $this->hook('theme_breadcrumb', $b, array('collectReturn' => false));
         $crumbs = empty($crumbs) ? $this->default_theme_breadcrumb($b) : $crumbs;
-        
+
 		return $crumbs;
 	}
     
@@ -327,7 +327,7 @@ class LayoutHelper extends AppHelper {
  */
     public function menuNodeChildren($path = false, $region = 'content') {
         $output = '';
-        
+
         if (!$path) {
             $base = Router::url('/');
             $path = '/';
@@ -344,21 +344,21 @@ class LayoutHelper extends AppHelper {
                 )
             )
         );
-        
+
         if (!empty($here)) {
             $subs = $MenuLink->find('all', array('conditions' => array('MenuLink.status' => 1, 'MenuLink.parent_id' => $here['MenuLink']['id'])));
             $_subs['MenuLink'] = Set::extract('{n}.MenuLink', $subs);
             $_subs['region'] = $region; 
             $_subs['id'] = 'no-id';
-            
+
             foreach ($_subs['MenuLink'] as &$node) {
                 $node['link_title'] = __t($node['link_title']);
                 $node['description'] = __t($node['description']);
             }
-            
+
             $output = $this->hook('theme_menu', $_subs, array('collectReturn' => false));
         }
-        
+
         return $output;        
     }
 	
@@ -369,7 +369,7 @@ class LayoutHelper extends AppHelper {
  */
     public function getRoleId() {
         $roleId = $this->isLoggedIn() ? $this->Session->read('Auth.User.role_id') : 3;
-        
+
         return $roleId;
     }
     
@@ -399,7 +399,7 @@ class LayoutHelper extends AppHelper {
         if (!$show_on) {
             return;
         }
-            
+
         $_block = array(
             'title' => '', 
             'pages' => '',
@@ -409,28 +409,28 @@ class LayoutHelper extends AppHelper {
             'theme' => null, 
             'format' => null #
         );
-        
+
         $block = array_merge($_block, $block);
         $block['module'] = null;
         $block['id'] = null;
         $block['delta'] = null;
-        
+
         if (!empty($region)) {
             $block['region'] = $region;
         }
-        
+
         if (is_null($block['theme'])) {
             $block['theme'] =  $this->themeName();
         }
-        
+
         if (empty($block['region']) || empty($block['body'])) {
             return false;
         }
-            
+ 
         $__block  = $block;
-        
+
         unset($__block['format'], $__block['body'], $__block['region'], $__block['theme']);
-        
+
         $Block = array(
             'Block' => $__block,
             'BlockCustom' => array(
@@ -444,9 +444,9 @@ class LayoutHelper extends AppHelper {
                 )
             )
         );
-        
+
         $this->_View->viewVars['Layout']['blocks'][] = $Block;
-        
+
         return true;
     }
     
@@ -465,24 +465,24 @@ class LayoutHelper extends AppHelper {
         /* Hook */
         $data = array('links' => $links, 'options' => $options);
         $this->hook('toolbar_alter', $data, array('alter' => true, 'collectReturn' => true));
-        
+
         extract($data);
-        
+
         $_options = array(
             'id' => null,
             'type' => 'ul',
             'itemType' => 'li',
             'selectedClass' => 'selected'
         );
-        
+
         $options = array_merge($_options, $options);
-        
+
         extract($options);
-        
+
         $id = !is_null($id) ? " id=\"{$id}\" " : '';
         $o = "<{$type}{$id}>\n";
         $here = preg_replace("/\/{2,}/i", '/', str_replace($this->_View->base, '', $this->_View->here) . "/");
-        
+
         foreach ($links as $link) {
             $link[1] = preg_replace("/\/{2,}/i", '/', "{$link[1]}/");
             $selected =   strpos($here, $link[1]) !== false  ? " class=\"{$selectedClass}\" " : '';
@@ -491,10 +491,10 @@ class LayoutHelper extends AppHelper {
         }
         
         $o .= "\n</{$type}>";
-        
+
         return $o;
     }
-    
+
 /**
  * gives current theme name
  *
@@ -503,7 +503,7 @@ class LayoutHelper extends AppHelper {
     public function themeName() {
         return Configure::read('Theme.info.folder');
     }
-    
+
 /**
  * Region is empty ?
  * returns true if Region has no Blocks.
@@ -514,7 +514,7 @@ class LayoutHelper extends AppHelper {
     public function emptyRegion($region) {
         return ($this->blocksInRegion($region) == 0);
     }
-    
+
 /**
  * Returns the numbers of blocks in a region
  *
@@ -537,7 +537,7 @@ class LayoutHelper extends AppHelper {
                     }
                 }
             }
-            
+
             switch ( $block['Block']['visibility']) {
                 case 0:
                     $allowed = $this->__matchPath($block['Block']['pages']) ? false : true;
@@ -551,21 +551,21 @@ class LayoutHelper extends AppHelper {
                     $allowed = $this->__php_eval($block['Block']['pages']);
                 break;
             }
-            
+
             if (!$allowed) {
                 continue;
             }
-            
+
             if (!isset($this->tmp['blocksInRegion'][$region]['blocks_ids']) || 
                 !in_array($block['Block']['id'], $this->tmp['blocksInRegion'][$region]['blocks_ids']) 
             ) {
                 $this->tmp['blocksInRegion'][$region][] = $block;                              # Cache improve
                 $this->tmp['blocksInRegion'][$region]['blocks_ids'][] = $block['Block']['id'];   # Cache improve
             }
-            
+
             $t++;
         }
-        
+
         return ($t > 0);
     }
     
@@ -577,7 +577,7 @@ class LayoutHelper extends AppHelper {
     public function loggedIn() {
         return $this->Session->check('Auth.User.id');
     }
-    
+
 /**
  * Retuns current user roles
  *
@@ -594,7 +594,7 @@ class LayoutHelper extends AppHelper {
         
         return $roles;
     }
-    
+
 /**
  * Render all blocks for a particular Region
  *

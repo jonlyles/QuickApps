@@ -1,7 +1,7 @@
 <?php
     $links = array(
         array(__t('List'), '/admin/locale/languages', array('title' => __t('Configure languages for content and the user interface.'))),
-        array(__t('Translations entries'), '/admin/locale/translations/list', array('title' => __t('Translate interface'))),
+        array(__t('Translatable entries'), '/admin/locale/translations/list', array('title' => __t('Translate interface'))),
         array(__t('Translation packages'), '/admin/locale/packages', array('title' => __t('Manage translation files packages')))
     );
     

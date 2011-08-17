@@ -32,8 +32,8 @@ class TranslationsController extends LocaleAppController {
         
         $this->set('results', $results);
         $this->setCrumb('/admin/locale');
-        $this->setCrumb( array(__t('Translations entries'), ''));
-        $this->title(__t('Translations entries'));
+        $this->setCrumb( array(__t('Translatable entries'), ''));
+        $this->title(__t('Translatable Entries'));
     }
     
     public function admin_edit($id) {

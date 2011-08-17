@@ -7,7 +7,6 @@
         <?php echo $this->Form->input('code', array('type' => 'hidden')); ?>
         
         <?php echo $this->Form->input('name', array('required' => 'required', 'type' => 'text', 'label' => __t('Language name in English *'))); ?>
-        <em><?php echo __t('Name of the language in English. Will be available for translation in all languages.'); ?></em>
         
         <?php echo $this->Form->input('native', array('required' => 'required', 'type' => 'text', 'label' => __t('Native language name *'))); ?>
         <em><?php echo __t('Name of the language in the language being added.'); ?></em>

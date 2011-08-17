@@ -39,7 +39,7 @@ class QuickAppsComponent extends Component {
             }
         }
     }
-    
+
     public function setTheme() {
         if (isset($this->Controller->request->params['admin']) && $this->Controller->request->params['admin'] == 1) {
             $this->Controller->theme =  Configure::read('Variable.admin_theme') ? Configure::read('Variable.admin_theme') : 'admin_default';
@@ -80,7 +80,7 @@ class QuickAppsComponent extends Component {
 
         $this->Controller->hook('stylesheets_alter', $this->Controller->Layout['stylesheets']);    # pass css list to modules if they need to alter them (add/remove)
     }
-    
+
     public function prepareContent() {
         $theme = Router::getParam('admin') ? Configure::read('Variable.admin_theme') : Configure::read('Variable.site_theme');
         $options = array( 
@@ -107,7 +107,7 @@ jQuery.extend(QuickApps.settings, {
     "locale": {"code": "' . Configure::read('Variable.language.code') . '"}
 } );
 ';
-        
+
         $this->Controller->hook('javascripts_alter', $this->Controller->Layout['javascripts']); # pass js to modules
         $this->Controller->paginate = array('limit' => Configure::read('Variable.rows_per_page'));
         
@@ -118,14 +118,14 @@ jQuery.extend(QuickApps.settings, {
         if (!empty($defaultMetaDescription)){
             $this->Controller->Layout['meta']['description'] = $defaultMetaDescription;
         }
-  
+
         #auto favicon meta
         if (Configure::read('Theme.settings.site_favicon')) {
             $faviconURL = Configure::read('Theme.settings.site_favicon_url');
             $this->Controller->Layout['meta']['icon'] = $faviconURL && !empty($faviconURL) ? Router::url($faviconURL) : '/favicon.ico';
         }
     }
-    
+
     public function setLanguage() {
         $urlBefore = $this->__getUrl();
         $urlBefore = isset($urlBefore[0]) ? $urlBefore[0] : '';
@@ -134,11 +134,11 @@ jQuery.extend(QuickApps.settings, {
         $langs = $this->Controller->Language->find('all', array('conditions' => array('status' => 1), 'order' => array('ordering' => 'ASC')));
         $installed_codes = Set::extract('/Language/code', $langs);
         $lang = $this->Controller->Session->read('language');
-        
+
         Configure::write('Config.language', $lang);
-        
+
         $last_i18n_urlT = __t($this->Controller->Session->read('last_i18n_url'));
-        
+
         $lang = isset($this->Controller->request->params['named']['lang']) ? $this->Controller->request->params['named']['lang'] : $lang;
         $lang = isset($this->Controller->request->query['lang']) && !empty($this->Controller->request->query['lang']) ? $this->Controller->request->query['lang'] : $lang;
         $lang = empty($lang) ? Configure::read('Variable.default_language') : $lang;
@@ -159,7 +159,7 @@ jQuery.extend(QuickApps.settings, {
         Configure::write('Variable.language', $_lang[0]['Language']);
         Configure::write('Variable.languages', $langs);
         Configure::write('Config.language', Configure::read('Variable.language.code'));
-        
+
         $urlAfter = $this->__getUrl();
         $urlAfter = isset($urlAfter[0]) ? $urlAfter[0] : '';
         $urlAfterT = __t($urlAfter);
@@ -223,21 +223,21 @@ jQuery.extend(QuickApps.settings, {
             if ($user) {
                 $this->Controller->loadModel('UsersRole');
                 $session = $user['User'];
-                
+
                 $session['role_id'] = $this->Controller->UsersRole->find('all', 
                     array(
                         'conditions' => array('UsersRole.user_id' => $user['User']['id']),
                         'fields' => array('role_id', 'user_id')
                     )
                 );
-                
+
                 $session['role_id'] = Set::extract('/UsersRole/role_id', $session['role_id']);
                 $session['role_id'][] = 2; #role: authenticated user
                 $this->Controller->Auth->login($session);
                 return true;
             }
         }
-        
+
         if ($this->isAdmin()) {
             $this->Controller->Auth->allowedActions = array('*');
         } else {
@@ -252,7 +252,7 @@ jQuery.extend(QuickApps.settings, {
                 )
             );
             $aroId = $aro['Aro']['id'];
-            
+
             # get current plugin ACO
             $pluginNode = $this->Controller->Acl->Aco->find('first', 
                 array(
@@ -263,7 +263,7 @@ jQuery.extend(QuickApps.settings, {
                     'fields' => array('alias', 'id')
                 )
             );
-            
+
             # get plugin controllers ACOs
             $thisControllerNode = $this->Controller->Acl->Aco->find('first', 
                 array(
@@ -273,7 +273,7 @@ jQuery.extend(QuickApps.settings, {
                     )
                 )
             );
-            
+
             if ($thisControllerNode) {
                 $thisControllerActions = $this->Controller->Acl->Aco->find('list', 
                     array(
@@ -304,23 +304,23 @@ jQuery.extend(QuickApps.settings, {
                 );
                 $allowedActionsIds = array_values($allowedActions);
             }
-            
+
             $allow = array();
-            
+
             if (isset($allowedActionsIds) && is_array($allowedActionsIds) && count($allowedActionsIds) > 0) {
                 foreach ($allowedActionsIds as $i => $aId){
                     $allow[] = $thisControllerActions[$aId];
                 }
             }
-            
+
             $this->Controller->Auth->allowedActions = array_merge($this->Controller->Auth->allowedActions, $allow);    
        }
     }
-    
+
     public function setTimeZone() {
         return date_default_timezone_set(Configure::read('Variable.date_default_timezone'));
     }
-    
+
     public function loadVariables() {
         $variables = Cache::read('Variable');
 

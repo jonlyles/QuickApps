@@ -68,7 +68,7 @@ class LanguagesController extends LocaleAppController {
     }
     
     public function admin_add() {
-        if (isset($this->data['Language']['addCustom'])) {
+        if (isset($this->data['Language']) && isset($this->data['Language']['custom_code'])) {
             $data = $this->data;
             $data['Language']['code'] = $data['Language']['custom_code'];
             if ($this->Language->save($data)) {

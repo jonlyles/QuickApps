@@ -39,7 +39,7 @@ class Language extends LocaleAppModel {
                 if (!isset($this->data['Language']['name'])) {
                     $this->data['Language']['name'] = @$l[$this->data['Language']['code']];
                 }
-                
+
                 if (!isset($this->data['Language']['native'])) {
                     $this->data['Language']['native'] = @$l[$this->data['Language']['code']];
                 }
@@ -49,6 +49,24 @@ class Language extends LocaleAppModel {
                 }
             }
         } 
+
+        return true;
+    }
+    
+    public function beforeSave() {
+        if (isset($this->data['Language']['custom_icon']) && trim($this->data['Language']['custom_icon']) !== '') {
+            $this->data['Language']['icon'] = $this->data['Language']['custom_icon'];
+        }
+
+        if (!isset($this->data['Language']['code'])) {
+            return true;
+        }
+
+        if ($this->data['Language']['code'] == Configure::read('Variable.default_language') ||
+            (isset($this->data['Language']['id']) && $this->data['Language']['id'] == 1) #id=1=eng
+        ) {
+            $this->data['Language']['status'] = 1; # prevent desactivation
+        }
 
         return true;
     }
@@ -66,24 +84,6 @@ class Language extends LocaleAppModel {
                 'model' => 'Locale.Translation'
             )
         );
-
-        return true;
-    }
-    
-    public function beforeSave() {
-        if (trim($this->data['Language']['custom_icon']) !== "") {
-            $this->data['Language']['icon'] = $this->data['Language']['custom_icon'];
-        }
-
-        if (!isset($this->data['Language']['code'])) {
-            return true;
-        }
-
-        if ($this->data['Language']['code'] == Configure::read('Variable.default_language') ||
-            (isset($this->data['Language']['id']) && $this->data['Language']['id'] == 1) #id=1=eng
-        ) {
-            $this->data['Language']['status'] = 1; # prevent desactivation
-        }
 
         return true;
     }

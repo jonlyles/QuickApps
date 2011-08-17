@@ -47,54 +47,54 @@ $tSettings = array(
 );
 ?>
 <!-- Add form -->
-<?php echo $this->Form->create('Language', array('url' => '/admin/locale/languages/add')); ?>
-    
     <?php echo $this->Html->useTag('fieldsetstart', '<span id="toggle-add_fieldset" style="cursor:pointer;">' . __t('Add New Language') . '</span>' ); ?>
         <div id="add_fieldset" class="horizontalLayout" style="display:none;">
-            <div id="predefinedList">
-                <?php echo $this->Form->input('code', array('type' => 'select', 'options' => $languages, 'label' => __t('Language name'))); ?>
-                <p>
-                    <?php echo $this->Form->input(__t('Add'), array('type' => 'submit', 'label' => false)); ?>
-                </p>
-            </div>
-            <?php echo $this->Html->useTag('fieldsetstart', '<span id="toggle-addCustom_fieldset" style="cursor:pointer;">' . __t('Custom Language') . '</span>' ); ?>
-                <div id="addCustom_fieldset" class="verticalLayout" style="display:none;">
-                    <?php echo $this->Form->input('status', array('type' => 'hidden', 'value' => 1)); ?>
-                    
-                    <?php echo $this->Form->input('custom_code', array('required' => 'required', 'maxlength' => 3, 'style' => 'width:50px;', 'type' => 'text', 'label' => __t('Language code *'))); ?>
-                    <em><?php echo __t('<a href="%s" target="_blank">ISO 639-3</a> compliant language identifier.', 'http://www.sil.org/iso639-3/codes.asp'); ?></em>
-                    
-                    <?php echo $this->Form->input('name', array('required' => 'required', 'type' => 'text', 'label' => __t('Language name in English *'))); ?>
-                    <em><?php echo __t('Name of the language in English. Will be available for translation in all languages.'); ?></em>
-                    
-                    <?php echo $this->Form->input('native', array('required' => 'required', 'type' => 'text', 'label' => __t('Native language name *'))); ?>
-                    <em><?php echo __t('Name of the language in the language being added.'); ?></em>
-
-                    <?php 
-                        echo $this->Form->input('direction', 
-                            array(
-                                'required' => 'required', 
-                                'type' => 'radio', 
-                                'separator' => '<br/>', 
-                                'options' => array(
-                                    'ltr' => __t('Left to Right'),
-                                    'rtl' => __t('Right to Left')
-                                ), 
-                                'label' => true,
-                                'legend' => __t('Direction *'),
-                                'after' => __t('Direction that text in this language is presented.')
-                            ) 
-                        );
-                    ?>
+            <?php echo $this->Form->create('Language', array('url' => '/admin/locale/languages/add')); ?>
+                <div id="predefinedList">
+                    <?php echo $this->Form->input('code', array('type' => 'select', 'options' => $languages, 'label' => __t('Language name'))); ?>
                     <p>
-                        <?php echo $this->Form->input(__t('Add'), array('name' => 'data[Language][addCustom]', 'type' => 'submit', 'label' => false)); ?>
+                        <?php echo $this->Form->input(__t('Add'), array('type' => 'submit', 'label' => false)); ?>
                     </p>
                 </div>
-            <?php echo $this->Html->useTag('fieldsetend'); ?>
+            <?php echo $this->Form->end(); ?>
             
+            <?php echo $this->Form->create('Language', array('url' => '/admin/locale/languages/add')); ?>
+                <?php echo $this->Html->useTag('fieldsetstart', '<span id="toggle-addCustom_fieldset" style="cursor:pointer;">' . __t('Custom Language') . '</span>' ); ?>
+                    <div id="addCustom_fieldset" class="verticalLayout" style="display:none;">
+                        <?php echo $this->Form->input('status', array('type' => 'hidden', 'value' => 1)); ?>
+                        
+                        <?php echo $this->Form->input('custom_code', array('required' => 'required', 'maxlength' => 3, 'style' => 'width:50px;', 'type' => 'text', 'label' => __t('Language code *'))); ?>
+                        <em><?php echo __t('<a href="%s" target="_blank">ISO 639-3</a> compliant language identifier.', 'http://www.sil.org/iso639-3/codes.asp'); ?></em>
+                        
+                        <?php echo $this->Form->input('name', array('required' => 'required', 'type' => 'text', 'label' => __t('Language name in English *'))); ?>
+                        
+                        <?php echo $this->Form->input('native', array('required' => 'required', 'type' => 'text', 'label' => __t('Native language name *'))); ?>
+                        <em><?php echo __t('Name of the language in the language being added.'); ?></em>
+
+                        <?php 
+                            echo $this->Form->input('direction', 
+                                array(
+                                    'required' => 'required', 
+                                    'type' => 'radio', 
+                                    'separator' => '<br/>', 
+                                    'options' => array(
+                                        'ltr' => __t('Left to Right'),
+                                        'rtl' => __t('Right to Left')
+                                    ), 
+                                    'label' => true,
+                                    'legend' => __t('Direction *'),
+                                    'after' => __t('Direction that text in this language is presented.')
+                                ) 
+                            );
+                        ?>
+                        <p>
+                            <?php echo $this->Form->input(__t('Add'), array('name' => 'data[Language][addCustom]', 'type' => 'submit', 'label' => false)); ?>
+                        </p>
+                    </div>
+                <?php echo $this->Html->useTag('fieldsetend'); ?>
+            <?php echo $this->Form->end(); ?>
         </div>
     <?php echo $this->Html->useTag('fieldsetend'); ?>
-<?php echo $this->Form->end(); ?>
 
 <?php echo $this->Form->create('Language', array('onsubmit' => 'return confirm("' . __t('Are you sure ?') . '");')); ?>
     <!-- Update -->
