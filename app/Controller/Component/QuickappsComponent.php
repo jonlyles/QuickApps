@@ -49,12 +49,12 @@ class QuickAppsComponent extends Component {
 
         $this->Controller->layout    ='default';
         $this->Controller->viewClass= 'Theme';
-        
+
         if (file_exists(APP . 'View' . DS . 'Themed' . DS . $this->Controller->theme . DS . "{$this->Controller->theme}.yaml")) {
             $yaml = Spyc::YAMLLoad(APP . 'View' . DS . 'Themed' . DS . $this->Controller->theme . DS . "{$this->Controller->theme}.yaml");
             $yaml['info']['folder'] = $this->Controller->theme;
             $yaml['settings'] = Configure::read('Modules.' . Inflector::underscore("Theme{$this->Controller->theme}") . '.settings');
-            
+
             # set custom or default logo
             $yaml['settings']['site_logo_url'] = isset($yaml['settings']['site_logo_url']) && !empty($yaml['settings']['site_logo_url']) ? $yaml['settings']['site_logo_url'] : '/img/logo.png';
             
@@ -499,10 +499,13 @@ jQuery.extend(QuickApps.settings, {
             
             foreach ($modules as $m) {
                 $v = $m['Module'];
+
                 CakePlugin::load($m['Module']['name']);
+
                 $v['path'] = App::pluginPath($m['Module']['name']);
                 $yamlFile = (strpos($m['Module']['name'], 'theme_') !== false) ? dirname(dirname($v['path'])) . DS . basename(dirname(dirname($v['path']))) . '.yaml' : $v['path'] . "{$m['Module']['name']}.yaml";
                 $v['yaml'] = file_exists($yamlFile) ? Spyc::YAMLLoad($yamlFile) : array();   
+                
                 Configure::write('Modules.' . $m['Module']['name'], $v);
             }
             

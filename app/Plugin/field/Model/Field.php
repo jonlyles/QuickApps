@@ -85,7 +85,7 @@ class Field extends FieldAppModel {
                     'Field.belongsTo ' => $record['Field']['belongsTo']
                 ),
                 'order' => array("Field.ordering" => 'ASC'),
-                'fields' => array('id', 'ordering', 'settings'),
+                'fields' => array('id', 'ordering', 'settings', 'label'),
                 'recursive' => -1
             )
         );
@@ -107,26 +107,27 @@ class Field extends FieldAppModel {
         $tmp = $ids[$key];
         $ids[$key] = $ids[$position];
         $ids[$position] = $tmp;
-        
         $i = 1;
         $prev_id = $this->id;
+        
         foreach ($ids as $id) {
             $this->id = $id;
+            
             if (is_string($view_mode)) {
-                $p = array_search($id, $ids);
-                
-                if (!isset($nodes[$p]['Field']['settings']['display'][$view_mode])) {
-                    continue;
+                $node = Set::extract("/Field[id={$id}]", $nodes);
+
+                if (isset($node[0]['Field']['settings']['display'][$view_mode])) {
+                    $node[0]['Field']['settings']['display'][$view_mode]['ordering'] = $i;
+
+                    $this->saveField('settings', $node[0]['Field']['settings'], false);
                 }
-                
-                $nodes[$p]['Field']['settings']['display'][$view_mode]['ordering'] = $i;
-                $this->saveField('settings', $nodes[$p]['Field']['settings'], false);
             } else {
                 $this->saveField('ordering', $i, false);
             }
+            
             $i++;
         }
-        
+
         $this->id = $prev_id;
         
         return true;

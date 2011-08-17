@@ -5,7 +5,6 @@ class AppHelper extends Helper {
     public $events = array();
     public $listeners = array();
     public $eventMap = array(); # function_name => Helper, useful for hookTags() searching
-
 	public $helpers = array(
 		'Layout',	
 		'Menu',		# menu helper
@@ -14,8 +13,8 @@ class AppHelper extends Helper {
         'Session',
 		'Js'
     );
-	
-   public function __construct(View $View, $settings = array()) {
+
+    public function __construct(View $View, $settings = array()) {
         $this->__loadHooks();
         parent::__construct($View, $settings = array());
     }

@@ -373,7 +373,7 @@ class FieldableBehavior extends ModelBehavior {
             )
         );
 
-        return $results = Set::extract('/Field/.', $results);
+        return $results;
     }
     
 /**
