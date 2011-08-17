@@ -505,7 +505,7 @@ CREATE TABLE IF NOT EXISTS `#__languages` (
 --
 
 INSERT INTO `#__languages` (`id`, `code`, `name`, `native`, `direction`, `icon`, `status`, `ordering`) VALUES
-(1, 'eng', 'English', 'English', 'rtl', 'us.gif', 1, 0),
+(1, 'eng', 'English', 'English', 'ltr', 'us.gif', 1, 0),
 (2, 'spa', 'Spanish', 'Español', 'ltr', 'es.gif', 1, 0);
 
 -- --------------------------------------------------------

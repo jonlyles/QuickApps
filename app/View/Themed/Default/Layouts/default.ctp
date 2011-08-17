@@ -1,5 +1,5 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?php echo Configure::read('Variable.language.code'); ?>" version="XHTML+RDFa 1.0" dir="<?php echo Configure::read('Variable.language.direction'); ?>">
 	<head>
 		<title><?php echo $this->Layout->title(); ?></title>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -8,7 +8,7 @@
 		<?php echo $this->Layout->javascripts();?>
         <?php echo $this->Layout->header();?>
 	</head>
-    
+
 	<body>                                                                      
         <div id="header-top">
             <div class="container">
@@ -45,7 +45,7 @@
             </div>
         </div>
         <!--<div id="top-shadow"></div>-->
-        
+
         <div id="page">
             <?php if ($this->plugin == 'Node' && $this->params['action'] == 'index'): ?>
                 <?php if (!$this->Layout->emptyRegion('slider')): ?>
@@ -123,7 +123,7 @@
                 &nbsp;
             </div>
         </div>
-        
+
         <?php echo $this->Html->script('cufon-yui.js'); ?>
         <?php echo $this->Html->script('Colaborate-Thin_400.font.js'); ?>
         <script type="text/javascript">

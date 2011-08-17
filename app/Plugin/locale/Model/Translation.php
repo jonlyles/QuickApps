@@ -48,7 +48,6 @@ class Translation extends LocaleAppModel {
                     'recursive' => -1
                 )
             );
-            
             $original = $original['Translation']['original'];
         } else {
             $original = $this->data['Translation']['original'];

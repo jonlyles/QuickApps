@@ -92,7 +92,7 @@ class LanguagesController extends LocaleAppController {
         if (isset($this->data['Language']['id'])) {
             $data = $this->data;
             if ($this->Language->save($data)) {
-                $this->flashMsg(__t('Language has been saved'), 'default', 'success');
+                $this->flashMsg(__t('Language has been saved'), 'success');
                 $this->redirect($this->referer());
             } else {
                 $this->flashMsg(__t('Language could not be saved. Please, try again.'), 'error');
