@@ -9,6 +9,10 @@
             <?php echo $this->Form->input('Node.title', array('required' => 'required', 'label' => __t($this->data['NodeType']['title_label']) . ' *' )); ?>
             <em><?php echo __t('Slug: %s', $this->data['Node']['slug']); ?></em>
             
+            <p>
+                <?php echo $this->Form->input('regenerate_slug', array('type' => 'checkbox', 'label' => __t('Regenerate slug'))); ?>
+                <em><?php echo __t('If this option is checked and title has changed then a new slug is generated.'); ?></em>
+            </p>
             <?php echo $this->Form->input('Node.description', array('type' => 'textarea', 'label' => __t('Description'), 'rows' => 2)); ?>
             <em><?php echo __t('A short description (255 chars. max.) about this content. Will be used as page meta-description when rendering this content node.'); ?></em>
         <?php echo $this->Html->useTag('fieldsetend'); ?>

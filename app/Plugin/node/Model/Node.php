@@ -60,6 +60,11 @@ class Node extends NodeAppModel {
     }
 
     public function beforeValidate() {
+        if (!isset($this->data['Node']['regenerate_slug']) || !$this->data['Node']['regenerate_slug']) {
+            $this->Behaviors->detach('Sluggable');
+            $this->Behaviors->attach('Sluggable', array('overwrite' => false));
+        }    
+    
         $r = isset($this->data['Node']['node_type_base']) ? $this->hook("{$this->data['Node']['node_type_base']}_beforeValidate", $this) : null;
         
         return ($r === null ? true : $r);
@@ -86,7 +91,7 @@ class Node extends NodeAppModel {
             $this->data['Node']['terms_cache'] = implode('|', $terms_cache);
             $this->data['Term']['Term'] = $terms_ids;
         }
-        
+
         $roles = implode("|", Set::extract('/Role/Role', $this->data));
         $this->data['Node']['roles_cache'] = !empty($roles) ? "|" . $roles . "|" : '';;
         
