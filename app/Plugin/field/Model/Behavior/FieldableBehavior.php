@@ -87,12 +87,12 @@
  * ### Fields, capturing POST and saving the data
  * 
  * All field objects (modules) may/must have the following Model hooks:
- *  - {field_module}_beforeSave() [optional]
- *  - {field_module}_afterSave() [required]         # save() logic here.
- *  - {field_module}_deleteInstance() [required]    # delete an instance an all related data
- *  - {field_module}_beforeValidate() [optional]
- *  - {field_module}_beforeDelete() [optional]
- *  - {field_module}_afterDelete() [optional]
+ *  - {field_module}_beforeSave() [optional]        # before save the Model record
+ *  - {field_module}_afterSave() [required]         # after Model record has been saved
+ *  - {field_module}_deleteInstance() [required]    # delete an instance an all related data (~delete table column)
+ *  - {field_module}_beforeValidate() [optional]    # before validate Model record being saved
+ *  - {field_module}_beforeDelete() [optional]      # before Model record delete
+ *  - {field_module}_afterDelete() [optional]       # after Model record has been deleted
  * 
  * ### NOTE:
  * 
@@ -156,13 +156,13 @@ class FieldableBehavior extends ModelBehavior {
  * Invoke each field's beforeSave() event and proceed with the Model's save proccess
  * if all the fields has returned 'true'.
  * 
- * If Model->id is not set means that a new record will be saved, in that case all field's data 
- * set in Model is stored in a temporaly variable (fieldData) in order to save it
- * after the new Model-record has been saved. That is, in afterSave() callback.
+ * Fields data is stored in a temporaly variable (__fieldData) in order to save it
+ * after the new Model record has been saved. That is, in afterSave() callback.
+ * Remember: Field's storing process must always be executed after Model's save()
  * 
  * @param object $Model instance of model
  * 
- * @return boolean False if any of the fields has returned false. True otherwhise
+ * @return boolean False if any of the fields has returned false. True otherwise
  */    
     public function beforeSave(&$Model) {
         $r = array();
@@ -191,7 +191,7 @@ class FieldableBehavior extends ModelBehavior {
     }
 
 /**
- * If a new Model-record has been saved, then proceed to save related field's data.
+ * Save field information after Model record has been saved.
  * 
  * @param object $Model instance of model
  * @param boolean $created wich indicate if a new record has been inserted
@@ -208,6 +208,7 @@ class FieldableBehavior extends ModelBehavior {
                     $info['model_id'] = $Model->id;
                     $info['Model'] =& $Model;
                     $info['created'] = $created;
+
                     $Model->hook("{$field_module}_afterSave", $info);
                 }
             }
@@ -216,17 +217,32 @@ class FieldableBehavior extends ModelBehavior {
         return;
     }
 
+/**
+ * Call each Model's field instances callback
+ * 
+ * @param object $Model instance of model
+ * 
+ * @return boolean False if any of the fields has returned false. True otherwise.
+ */
     public function beforeDelete(&$Model) {
        return $this->__beforeAfterDelete(&$Model, 'before');
     }
-
+    
+/**
+ * Call each Model's field instances callback
+ * 
+ * @param object $Model instance of model
+ * 
+ * @return boolean False if any of the fields has returned false. True otherwise.
+ */
     public function afterDelete(&$Model) {
         return $this->__beforeAfterDelete(&$Model, 'after');
     }
 
 /**
- * Invoke each field's beforeSave()
- * If any of the fields return 'false' then the Model's save proccess is interrupted
+ * Invoke each field's beforeValidate()
+ * If any of the fields return 'false' then Model's save() proccess is interrupted
+ *
  * Note:
  *  The hook chain does not stop if in chain any of the fields returns a false value.
  *  All fields response for the event are collected, this is so because fields 
@@ -234,7 +250,7 @@ class FieldableBehavior extends ModelBehavior {
  * 
  * @param object $Model instance of model
  * 
- * @return boolean True if all the fields are valid, false otherwhise
+ * @return boolean True if all the fields are valid, false otherwise
  */
     public function beforeValidate(&$Model) {
         if (!isset($Model->data['FieldData'])) {
@@ -308,7 +324,19 @@ class FieldableBehavior extends ModelBehavior {
 
         return $results;
     }
-    
+
+/**
+ * Attach a new field instance to Model.
+ * (Would like to add a new column to your table)
+ * 
+ * @param object $Model instance of model
+ * @param array $data Field instance information:
+ *  - label: Field input label. i.e.: 'Article Body' for a textarea
+ *  - name: Filed unique name. underscored and alphanumeric characters only. i.e.: 'field_article_body'
+ *  - field_module: Name of the module that handle this instance. i.e.: 'filed_textarea'
+ * 
+ * @return mixed Return (int) Field instance ID if it was added correctly. False otherwise.
+ */
     public function attachFieldInstance(&$Model, $data) {
         $data = isset($data['Field']) ? $data['Field'] : $data;
         $data = array_merge(
@@ -324,7 +352,7 @@ class FieldableBehavior extends ModelBehavior {
     
         $field_module = Inflector::underscore($field_module);
         $field_info = $Model->hook('field_info', $field_module, array('alter' => false, 'collectReturn' => false));
-        
+
         if (isset($field_info[$field_module])) {
             if (isset($field_info[$field_module]['max_instances']) && is_numeric($field_info[$field_module]['max_instances']) && $field_info[$field_module]['max_instances'] > 0) {
                 $count = ClassRegistry::init('Field.Field')->find('count', 
@@ -353,13 +381,15 @@ class FieldableBehavior extends ModelBehavior {
         if ($Field->save($newField)) {
             return $Field->id;
         }
-        
+
         return false;
     }
 
 /**
- * Return all fields instantces attached to the current model.
+ * Return all fields instantces attached to Model.
  * Useful when rendering forms.
+ * 
+ * @param object $Model instance of model
  * 
  * @return array List array of all attached fields
  */
@@ -375,7 +405,7 @@ class FieldableBehavior extends ModelBehavior {
 
         return $results;
     }
-    
+
 /**
  * Makes a beforeDelete() or afterDelete().
  * Invoke each field before/afterDelte event.
@@ -383,7 +413,7 @@ class FieldableBehavior extends ModelBehavior {
  * @param object $Model instance of model
  * @param string $type callback to execute, possible values: 'before' or 'after'
  * 
- * @return boolean False if any of the fields has returned false. True otherwhise
+ * @return boolean False if any of the fields has returned false. True otherwise
  */    
     private function __beforeAfterDelete(&$Model, $type = 'before') {
         $model_id = $Model->id ? $Model->id : $Model->tmpData[$Model->alias][$Model->primaryKey];
@@ -428,7 +458,8 @@ class FieldableBehavior extends ModelBehavior {
 /**
  * Parses 'belongsTo' parameter looking for array paths.
  * This functionality is used only (and should be used only) by Nodes. That is so because, 
- * Nodes may have diferent fields attached depending in NodeType (bridge association).
+ * Nodes may have diferent fields attached depending in NodeType (bridge association), so nodes
+ * uses a 'belongsTo' like: 'NodeType-{Node.node_type_id}'
  *
  * @param string $belongsTo string to parse
  * @param array $result a Node model row
@@ -446,9 +477,11 @@ class FieldableBehavior extends ModelBehavior {
 
         return $belongsTo;
     }
-    
+
 /**
  * Do not fetch fields instances on Model->find()
+ * 
+ * @param object $Model instance of model
  * 
  * @return void
  */    
@@ -458,6 +491,8 @@ class FieldableBehavior extends ModelBehavior {
 
 /**
  * Fetch all field instances on Model->find()
+ * 
+ * @param object $Model instance of model
  * 
  * @return void
  */    
