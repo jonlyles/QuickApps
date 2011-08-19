@@ -148,7 +148,7 @@ class AppHelper extends Helper {
                     if (!$options['alter']) {
                         $result = call_user_func(array($this->{$object}, $event), $_data);
                     } else {
-                        $result = call_user_func(array($this->{$object}, $event), $data);
+                        $result = call_user_func(array($this->{$object}, $event), &$data);
                     }
 
                     if ($options['collectReturn'] === true) {

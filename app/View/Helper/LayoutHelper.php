@@ -64,7 +64,7 @@ class LayoutHelper extends AppHelper {
 		$javascripts = Set::merge($this->_View->viewVars['Layout']['javascripts'], $javascripts);
 		
 		$this->hook('javascripts_alter', $javascripts);	# pass javascripts list to modules if they need to alter them
-		
+
 		# js files first
         $javascripts['file'] = array_unique($javascripts['file']);
         
@@ -79,7 +79,7 @@ class LayoutHelper extends AppHelper {
 		foreach ($javascripts['embed'] as $block) {
 			$c_blocks .=  $block . "\n\n";
         }
-		
+
 		$output .= "\n" . $this->_View->Html->scriptBlock($c_blocks);
         
         return "\n" . $output . "\n";

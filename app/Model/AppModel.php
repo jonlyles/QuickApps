@@ -114,7 +114,7 @@ class AppModel extends Model {
                     if (!$options['alter']) {
                         $result = call_user_func(array($this->Behaviors->{$object}, $event), $_data);
                     } else {
-                        $result = call_user_func(array($this->Behaviors->{$object}, $event), $data);
+                        $result = call_user_func(array($this->Behaviors->{$object}, $event), &$data);
                     }
                     
                     if ($options['collectReturn'] === true) {

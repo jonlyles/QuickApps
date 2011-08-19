@@ -25,6 +25,7 @@ class ThemeDefaultHookHelper extends AppHelper {
             background-image: -moz-linear-gradient(-90deg, {$ht}, {$hb});
         }";
     }
+
 /* Adding toggle effect to advanced search form */
     function javascripts_alter($js) {
         if (
