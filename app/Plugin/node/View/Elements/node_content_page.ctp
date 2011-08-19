@@ -17,6 +17,7 @@
 <?php
     $links = array();
     $tags = '';
+
     if (!empty($node['Term'])) {
         foreach ($node['Term'] as $term) {
             $links[] = $this->Html->link("<span>{$term['name']}</span>", "/s/term:{$term['slug']}", array('escape' => false, 'id' => 'term-' . $term['id'], 'class' => 'term'));

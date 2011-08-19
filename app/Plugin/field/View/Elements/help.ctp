@@ -14,7 +14,7 @@
         The Field module provides the infrastructure for fields and field attachment; 
         the field types and input are provided by additional modules. 
         Some of the modules are required; the optional modules can be enabled from the 
-        <a href="<?php echo $this->Html->url('/admin/modules'); ?>">Modules administration page</a>.
+        <a href="<?php echo $this->Html->url('/admin/system/modules'); ?>">Modules administration page</a>.
         QuickApps core includes the following field type modules: 
         Text box, Text area, List and Terms.
         Additional fields may be provided by contributed modules.
