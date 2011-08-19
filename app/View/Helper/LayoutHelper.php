@@ -11,28 +11,27 @@
  */
 App::uses('AppHelper', 'View/Helper'); 
 class LayoutHelper extends AppHelper {
-
 /*
  * Used by some methods to cache data in order to improve 
  * comunication between them, for example see blocksInRegion()
  */
     private $tmp = array(); 
-    
+
 /**
  * Render css files links
  *
- * @param array $stylesheets Asociative array:
+ * @param array $stylesheets Asociative array of extra css elements to merge
  * 	array(
  *		'print' => array(file1, file2),
  *		'all' => array(file3, file4),
  *      ....
  *	);
- *
  * @return string HTML style tags
  */
-    public function stylesheets($stylesheets = false) {
+    public function stylesheets($stylesheets = array()) {
 		$output = $embed = '';
-		$stylesheets = !$stylesheets ? $this->_View->viewVars['Layout']['stylesheets'] : $stylesheets;
+		$stylesheets = Set::merge($this->_View->viewVars['Layout']['stylesheets'], $stylesheets);
+
         $this->hook('stylesheets_alter', $stylesheets);	# pass css list array to modules
 
         foreach ($stylesheets as $media => $files) {
@@ -53,17 +52,16 @@ class LayoutHelper extends AppHelper {
 /**
  * Render js files links
  *
- * @param array $javascripts Asociative array:
+ * @param array $javascripts Asociative array of extra js elements to merge:
  * 	array(
  *		'code' => array("code1", "code2"),
  *		'files' => array("path_to_file1", "path_to_file2")
  *	) 
- *
  * @return string
  */
-    public function javascripts($javascripts = false) {
+    public function javascripts($javascripts = array()) {
 		$output = '';
-		$javascripts = !$javascripts ? $this->_View->viewVars['Layout']['javascripts'] : $javascripts;
+		$javascripts = Set::merge($this->_View->viewVars['Layout']['javascripts'], $javascripts);
 		
 		$this->hook('javascripts_alter', $javascripts);	# pass javascripts list to modules if they need to alter them
 		
@@ -107,7 +105,7 @@ class LayoutHelper extends AppHelper {
 
         return "\n" . $out;
     }
-    
+
 /**
  * Return title_for_layout
  *
@@ -132,7 +130,7 @@ class LayoutHelper extends AppHelper {
 
 		return $content;
 	}    
-    
+
 /**
  * Render extra code for footer (just before </body>)
  *
@@ -155,10 +153,9 @@ class LayoutHelper extends AppHelper {
     }
 
 /**
- * return rendered meta tags
+ * Return rendered meta tags
  *
- * @param array $metaForLayout optional asociative array of aditional metas to merge with Layout metas meta_name => content.
- *
+ * @param array $metaForLayout Optional asociative array of aditional metas to merge with Layout metas meta_name => content.
  * @return string HTML formatted meta tags
  */
     public function meta($metaForLayout = array()) {
@@ -174,7 +171,7 @@ class LayoutHelper extends AppHelper {
 
         return $output;
     }
-    
+
 /**
  * Returns node type of the current node's page
  * (Valid only when rendering a single node)
@@ -193,9 +190,8 @@ class LayoutHelper extends AppHelper {
  * Returns content of current node for content_for_layout, render based on NodeType
  * This function must be used only from Node Module
  *
- * @param array $node optional node's asociative array to render. 
+ * @param array $node Optional node's asociative array to render. 
  *                             If no data is pass current node will be rendered
- *
  * @return string HTML formatted node
  */
     public function renderNode($node = false) {
@@ -206,7 +202,6 @@ class LayoutHelper extends AppHelper {
         }
 
         $content = '';
-
         $view_mode = $this->_View->viewVars['Layout']['viewMode'];
 
         foreach ($node['Field'] as $key => &$data) { # no viewMode defined -> use default
@@ -243,7 +238,6 @@ class LayoutHelper extends AppHelper {
  * Useful for plain text converting
  *
  * @param string $string Text where to remove all tags
- *
  * @return string
  */
     public function removeHookTags($string) {
@@ -256,8 +250,7 @@ class LayoutHelper extends AppHelper {
 /**
  * Get value of Node's field
  *
- * @param string $field name of the field to get from Node
- *
+ * @param string $field Name of the field to get from Node
  * @return string
  */
     public function nodeField($field = 'id') {
@@ -271,6 +264,7 @@ class LayoutHelper extends AppHelper {
 /**
  * Wrapper for field rendering hook
  *
+ * @param array $field Field information array
  * @return string HTML formatted field
  */
     public function renderField($field) {
@@ -322,8 +316,7 @@ class LayoutHelper extends AppHelper {
  *
  * @param mixed $path String path of the father node or boolen false to use current path 
  * @param string $region Theme region where the child nodes will be rendered, 'content' by default
- *
- * @return string Html menu
+ * @return string Html rendered menu
  */
     public function menuNodeChildren($path = false, $region = 'content') {
         $output = '';
@@ -365,7 +358,7 @@ class LayoutHelper extends AppHelper {
 /**
  * Get Role ID of the current loged in user
  *
- * @return array of all roles that user belongs to
+ * @return array Array of all roles that user belongs to
  */
     public function getRoleId() {
         $roleId = $this->isLoggedIn() ? $this->Session->read('Auth.User.role_id') : 3;
@@ -377,7 +370,6 @@ class LayoutHelper extends AppHelper {
  * TODO: Verify if the given URL is allowed to user
  *
  * @param string $url URL to check permissions if nothing is given then current url will be checked
- *
  * @return boolean
  */   
     public function isAllowed($url = false) {
@@ -388,12 +380,11 @@ class LayoutHelper extends AppHelper {
 /**
  * Insert custom block to stack
  *
- * @param array $data formatted block array (see $_block)
- * @param string $region theme region
- * @param boolean $show_on optional, shortcut for 'if (this == that) blockPush()' 
+ * @param array $data Formatted block array (see $_block)
+ * @param string $region Theme region
+ * @param boolean $show_on Optional, shortcut for 'if (this == that) blockPush()' 
  *         becomes : 'blockPush(, , ( this == that))'
- *
- * @return boolean true on success
+ * @return boolean True on success
  */
     public function blockPush($block = array(), $region = '', $show_on = true) {
         if (!$show_on) {
@@ -798,68 +789,18 @@ class LayoutHelper extends AppHelper {
         
         return preg_replace_callback('/(.?)\[(' . $tags . ')\b(.*?)(?:(\/))?\](?:(.+?)\[\/\2\])?(.?)/s', array($this, '__doHookTag'), $text);
     }
-    
-    private function __doHookTag($m) {
-        // allow [[foo]] syntax for escaping a tag
-        if ($m[1] == '[' && $m[6] == ']') {
-            return substr($m[0], 1, -1);
-        }
 
-        $tag = $m[2];
-        $attr = $this->__hookTagParseAtts( $m[3] );
-        $hook = isset($this->eventMap[$tag]) ? $this->eventMap[$tag] : false;
-        
-        if ($hook) {
-            $hook =& $this->{$hook};
-            if (isset( $m[5] )) {
-                // enclosing tag - extra parameter
-                return $m[1] . call_user_func(array($hook, $tag), $attr, $m[5], $tag) . $m[6];
-            } else {
-                // self-closing tag
-                return $m[1] . call_user_func(array($hook, $tag), $attr, null, $tag) . $m[6];
-            }
-        }
-
-        return false;
-    }
-
-    private function __hookTagParseAtts($text) {
-        $atts       = array();
-        $pattern    = '/(\w+)\s*=\s*"([^"]*)"(?:\s|$)|(\w+)\s*=\s*\'([^\']*)\'(?:\s|$)|(\w+)\s*=\s*([^\s\'"]+)(?:\s|$)|"([^"]*)"(?:\s|$)|(\S+)(?:\s|$)/';
-        $text       = preg_replace("/[\x{00a0}\x{200b}]+/u", " ", $text);
-
-        if (preg_match_all($pattern, $text, $match, PREG_SET_ORDER)) {
-            foreach ($match as $m) {
-                if (!empty($m[1])) {
-                    $atts[strtolower($m[1])] = stripcslashes($m[2]);
-                } elseif (!empty($m[3])) {
-                    $atts[strtolower($m[3])] = stripcslashes($m[4]);
-                } elseif (!empty($m[5])) {
-                    $atts[strtolower($m[5])] = stripcslashes($m[6]);
-                } elseif (isset($m[7]) and strlen($m[7])) {
-                    $atts[] = stripcslashes($m[7]);
-                } elseif (isset($m[8])) {
-                    $atts[] = stripcslashes($m[8]);
-                }
-            }
-        } else {
-            $atts = ltrim($text);
-        }
-
-        return $atts;
-    }    
-    
 /**
- * replace some core useful tags:
- * [date=FORMAT] -> return date(FORMAT)
- * [language.OPTION] -> current language option (code, name, native, direction)
- * [language] -> shortcut to [language.code] wich return current language code
- * [url]YourURL[/url] or [url=YourURL] -> formatted url
- * [url=LINK]LABEL[/url] -> <href="LINK">LABEL</a>
- * [t=stringToTranslate] or [t]stringToTranslate[/t] -> text translation: __t(stringToTranslate)
- * [t=domain@@stringToTranslate] -> text translation by domain __d(domain, stringToTranslate)
+ * Replace some core useful tags:
+ *  `[date=FORMAT]` Return current date(FORMAT).
+ *  `[language.OPTION]` Current language option (code, name, native, direction).
+ *  `[language]` Shortcut to [language.code] wich return current language code.
+ *  `[url]YourURL[/url]` or `[url=YourURL]` Formatted url.
+ *  `[url=LINK]LABEL[/url]` Returns link tag <href="LINK">LABEL</a>
+ *  `[t=stringToTranslate]` or `[t]stringToTranslate[/t]` text translation: __t(stringToTranslate)
+ *  `[t=domain@@stringToTranslate]` Translation by domain __d(domain, stringToTranslate)
  *
- * @param string $text original text to replace tags
+ * @param string $text original text where to replace tags
  * @return string
  */	
     public function specialTags($text) {
@@ -938,6 +879,68 @@ class LayoutHelper extends AppHelper {
     public function default_renderNode($node) {
         return $this->_View->element('default_renderNode', array('node' => $node)); #could not render node
     }
+    
+/**
+ * Callback function
+ * 
+ * @see hookTags()
+ * @return mixed Hook response or false in case of no response.
+ */       
+    private function __doHookTag($m) {
+        // allow [[foo]] syntax for escaping a tag
+        if ($m[1] == '[' && $m[6] == ']') {
+            return substr($m[0], 1, -1);
+        }
+
+        $tag = $m[2];
+        $attr = $this->__hookTagParseAtts( $m[3] );
+        $hook = isset($this->eventMap[$tag]) ? $this->eventMap[$tag] : false;
+        
+        if ($hook) {
+            $hook =& $this->{$hook};
+            if (isset( $m[5] )) {
+                // enclosing tag - extra parameter
+                return $m[1] . call_user_func(array($hook, $tag), $attr, $m[5], $tag) . $m[6];
+            } else {
+                // self-closing tag
+                return $m[1] . call_user_func(array($hook, $tag), $attr, null, $tag) . $m[6];
+            }
+        }
+
+        return false;
+    }
+
+/**
+ * Parse hook tags attributes
+ * 
+ * @param string $text Tag string to parse
+ * @return Array array of attributes
+ */
+    private function __hookTagParseAtts($text) {
+        $atts       = array();
+        $pattern    = '/(\w+)\s*=\s*"([^"]*)"(?:\s|$)|(\w+)\s*=\s*\'([^\']*)\'(?:\s|$)|(\w+)\s*=\s*([^\s\'"]+)(?:\s|$)|"([^"]*)"(?:\s|$)|(\S+)(?:\s|$)/';
+        $text       = preg_replace("/[\x{00a0}\x{200b}]+/u", " ", $text);
+
+        if (preg_match_all($pattern, $text, $match, PREG_SET_ORDER)) {
+            foreach ($match as $m) {
+                if (!empty($m[1])) {
+                    $atts[strtolower($m[1])] = stripcslashes($m[2]);
+                } elseif (!empty($m[3])) {
+                    $atts[strtolower($m[3])] = stripcslashes($m[4]);
+                } elseif (!empty($m[5])) {
+                    $atts[strtolower($m[5])] = stripcslashes($m[6]);
+                } elseif (isset($m[7]) and strlen($m[7])) {
+                    $atts[] = stripcslashes($m[7]);
+                } elseif (isset($m[8])) {
+                    $atts[] = stripcslashes($m[8]);
+                }
+            }
+        } else {
+            $atts = ltrim($text);
+        }
+
+        return $atts;
+    }    
 	
 /**
  * Evaluate a string of PHP code.
@@ -955,7 +958,6 @@ class LayoutHelper extends AppHelper {
  *   A string containing the printed output of the code, followed by the returned
  *   output of the code.
  *
- * @ingroup php_wrappers
  */
     private function __php_eval($code) {
       ob_start();
@@ -971,7 +973,6 @@ class LayoutHelper extends AppHelper {
  *
  * @param $path The path to match.
  * @param $patterns String containing a set of patterns separated by \n, \r or \r\n.
- *
  * @return Boolean value: TRUE if the path matches a pattern, FALSE otherwise.
  */
     private function __matchPath($patterns, $path = false) {

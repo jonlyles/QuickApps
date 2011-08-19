@@ -58,7 +58,7 @@ $(document).ready(function() {
     function theme_default_slider_settings($data) {
         return $this->_View->element('theme_default_slider_settings', array('block' => $data), array('plugin' => 'ThemeDefault'));
     }
-    
+
 /**
  * Returns formated menu
  *

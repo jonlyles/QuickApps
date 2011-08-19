@@ -22,7 +22,6 @@ class FieldHookComponent extends Component {
  * All fields information is returned otherwise.
  *
  * @param string $field optional, return only information for the specified field
- *
  * @return array associative array with field(s) information
  */
     public function field_info($field = '') {

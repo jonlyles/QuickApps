@@ -11,77 +11,80 @@
  */
 class AppModel extends Model {
 	public $cacheQueries = false;
-	public $actsAs = array(
+	public $listeners = array();
+	public $events = array();
+    public $actsAs = array(
         'WhoDidIt' => array(
             'auth_session' => 'Auth.User.id', 
             'user_model' => 'User.User'
         )
     ); 
 
-	public $listeners = array();
-	public $events = array();
-	
 	public function __construct($id = false, $table = null, $ds = null) {
 		$this->__loadHooks();
 		parent::__construct($id, $table, $ds);
 		$this->__loadHookEvents();
     }
-	
+
 /**
- * Wrapper method to $this->dispatchEvent()
+ * Marks a field as invalid, optionally setting the name of validation
+ * rule (in case of multiple validation for field) that was broken.
  *
- * @param string $hook Name of the event
- * @param mix $data Any data to attach
- * @param bool $raw_return false means return asociative data, true will return a listed array
- * 
- * @return mixed FALSE -or- result array
+ * @param string $field The name of the field to invalidate
+ * @param mixed $value Name of validation rule that was not failed, or validation message to
+ *    be returned. If no validation key is provided, defaults to true.
+ * @return void
  */
-	public function hook($hook, &$data = array(), $options = array()) {
-		return $this->__dispatchEvent($hook, $data, $options);
+	public function invalidate($field, $value = true) {
+        $value = is_string($value) ? __t($value) : $value;
+		parent::invalidate($field, $value);
+
+        return;
 	}
-	
+
 /**
  * Chech if hook exists
  *
  * @param string $hook Name of the hook to check
- * 
  * @return bool
  */
 	public function hook_defined($hook) {
 		return (in_array($hook, $this->events) == true);
-	}
-	
-/**
- * Translate validation messages
- *
- */
-	public function invalidate($field, $value = true) {
-		return parent::invalidate($field, __t($value));
-	}
-	
-/**
- * Utility function
- *
- */
-	public function optimize() {
-		$db =& ConnectionManager::getDataSource($this->useDbConfig);
-		$tablename = $db->fullTableName($this);
+	}    
 
-		if (!empty($tablename)) {
-            return $db->query('OPTIMIZE TABLE ' . $tablename . ';');
-		} else {
-            return false;
-		}
-	}
-    
 /**
- * Dispatch Helper-hooks from all the plugins and core
+ * Trigger a callback method on every HookBehavior.
  *
- * @param string $hook Name of the hook to trigger
- * @param array $data Any data to pass to the hook function
- * @param array $options
+ * ### Options
+ *
+ * - `breakOn` Set to the value or values you want the callback propagation to stop on.
+ *    Can either be a scalar value, or an array of values to break on. 
+ *    Defaults to `false`.
+ *
+ * - `break` Set to true to enabled breaking. When a trigger is broken, the last returned value
+ *    will be returned.  If used in combination with `collectReturn` the collected results will be returned.
+ *    Defaults to `false`.
+ *
+ * - `collectReturn` Set to true to collect the return of each object into an array.
+ *    This array of return values will be returned from the hook() call. Defaults to `false`.
+ *
+ * - `alter` Allows each callback gets called on to modify the parameters to the next object.
+ *    Defaults to true.
  * 
- * @return mixed result array if collectReturn is set to true or NULL in case of no response
+ * @param string $event name of the hook to call
+ * @param mixed $data data for the triggered callback
+ * @param array $option Array of options
+ * @return mixed Either the last result or all results if collectReturn is on. Or null in case of no response
+ */
+	public function hook($hook, &$data = array(), $options = array()) {
+		return $this->__dispatchEvent($hook, $data, $options);
+	}    
+
+/**
+ * Dispatch Component-hooks from all the plugins and core
+ *
+ * @see AppModel::hook()
+ * @return mixed Either the last result or all results if collectReturn is on. Or NULL in case of no response
  */
 	private function __dispatchEvent($event, &$data = array(), $options = array()) {
 		$options = array_merge(
@@ -111,7 +114,7 @@ class AppModel extends Model {
                     if (!$options['alter']) {
                         $result = call_user_func(array($this->Behaviors->{$object}, $event), $_data);
                     } else {
-                        $result = call_user_func(array($this->Behaviors->{$object}, $event), &$data);
+                        $result = call_user_func(array($this->Behaviors->{$object}, $event), $data);
                     }
                     
                     if ($options['collectReturn'] === true) {
@@ -126,21 +129,21 @@ class AppModel extends Model {
 				}
 			}
 		}
-        
+
         if (empty($collected) && empty($result)) {
             return null;
         }
-        
+
         return $options['collectReturn'] ? $collected : $result;    
 	}
     
 	private function __loadHooks() {
         $b = Configure::read('Hook.behaviors');
-        
+
         if (!$b){
             return false; # fix for AppController __preloadHooks()
         }
-        
+
 		foreach ($b as $hook) {
 			$this->actsAs[$hook] = array();
 		}

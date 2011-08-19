@@ -16,10 +16,8 @@ class FieldHookBehavior extends ModelBehavior {
  * All fields information is returned otherwise.
  *
  * @param string $field optional, return only information for the specified field
- *
- * @return array associative array with field(s) information
- *
  * @see FieldHookComponent::field_info()
+ * @return array associative array with field(s) information
  */
     public function field_info($field = '') {
         $field = is_string($field) ? Inflector::underscore($field) : '';

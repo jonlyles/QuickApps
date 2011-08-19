@@ -104,7 +104,6 @@ class AppController extends Controller {
  * shortcut for $this->set(`title_for_layout`...)
  *
  * @param string $str layout title
- *
  * @return void
  */
     public function title($str) {
@@ -116,7 +115,6 @@ class AppController extends Controller {
  *
  * @param string $msg mesagge to display
  * @param string $class type of message: error, success, alert, bubble
- *
  * @return void
  */
     public function flashMsg($msg, $class = 'success') {
@@ -128,7 +126,6 @@ class AppController extends Controller {
  *
  * @param array $data formatted block array
  * @param string $region theme region where to push
- *
  * @return boolean
  */
     public function blockPush($block = array(), $region = null, $show_on = true) {
@@ -139,7 +136,6 @@ class AppController extends Controller {
  * Wrapper method to Hook::hook_defined
  *
  * @param string $hook Name of the event
- * 
  * @return bool
  */
     public function hook_defined($hook) {
@@ -152,7 +148,6 @@ class AppController extends Controller {
  * @param string $hook Name of the event
  * @param mix $data Any data to attach
  * @param bool $raw_return false means return asociative data, true will return a listed array
- * 
  * @return mixed FALSE -or- result array
  */
     public function hook($hook, &$data = array(), $options = array()) {
@@ -164,7 +159,6 @@ class AppController extends Controller {
  *
  * @param mixed $url if is array then will push de formated array to the crumbs list
  *                   else will set base crum from string parsing
- * 
  * @return void
  */
     public function setCrumb($url = false) {

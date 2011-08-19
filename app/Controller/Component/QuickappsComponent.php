@@ -21,7 +21,6 @@ class QuickAppsComponent extends Component {
  * Called before the Controller::beforeFilter().
  *
  * @param object $controller Controller with components to initialize
- *
  * @return void
  */
 	public function initialize(&$Controller) {
@@ -335,7 +334,6 @@ jQuery.extend(QuickApps.settings, {
  * shortcut for $this->set(`title_for_layout`...)
  *
  * @param string $str layout title
- *
  * @return void
  */
     public function title($str) {
@@ -347,7 +345,6 @@ jQuery.extend(QuickApps.settings, {
  *
  * @param string $msg mesagge to display
  * @param string $class type of message: error, success, alert, bubble
- *
  * @return void
  */
     public function flashMsg($msg, $class = 'success') {
@@ -359,7 +356,6 @@ jQuery.extend(QuickApps.settings, {
  *
  * @param mixed $url if is array then will push de formated array to the crumbs list
  *                   else will set base crum from string parsing
- * 
  * @return void
  */
     public function setCrumb($url = false) {
@@ -442,7 +438,6 @@ jQuery.extend(QuickApps.settings, {
  *
  * @param array $data formatted block array
  * @param string $region theme region where to push
- *
  * @return boolean
  */
     public function blockPush($block = array(), $region = null, $show_on = true) {

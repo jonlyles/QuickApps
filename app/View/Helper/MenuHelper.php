@@ -39,6 +39,7 @@ class MenuHelper extends AppHelper {
  * @access public
  */
     var $name = 'Menu';
+
 /**
  * settings property
  *
@@ -46,6 +47,7 @@ class MenuHelper extends AppHelper {
  * @access private
  */
     var $__settings = array();
+
 /**
  * typeAttributes property
  *
@@ -53,6 +55,7 @@ class MenuHelper extends AppHelper {
  * @access private
  */
     var $__typeAttributes = array();
+
 /**
  * typeAttributesNext property
  *
@@ -60,6 +63,7 @@ class MenuHelper extends AppHelper {
  * @access private
  */
     var $__typeAttributesNext = array();
+
 /**
  * itemAttributes property
  *
@@ -69,6 +73,7 @@ class MenuHelper extends AppHelper {
     var $__itemAttributes = array();
     
     var $__crumb_urls = array();
+
 /**
  * helpers variable
  *
@@ -76,7 +81,7 @@ class MenuHelper extends AppHelper {
  * @access public
  */
     var $helpers = array ('Html' => array('className' => 'QaHtml'));
-    
+
 /**
  * Tree generation method.
  *
@@ -114,10 +119,12 @@ class MenuHelper extends AppHelper {
     function generate($data, $settings = array ()) {
         /* Hook */
         $data = array('data' => $data, 'settings' => $settings);
+        
         $this->hook('menu_generate_alter', $data , array('alter' => true, 'collectReturn' => true));
         extract($data);
-        
-        $this->__settings = array_merge(array(
+
+        $this->__settings = array_merge(
+            array(
                 'model' => 'MenuLink',
                 'alias' => 'link_title',
                 'url' => 'router_path',
@@ -139,30 +146,32 @@ class MenuHelper extends AppHelper {
                 'splitDepth' => false,
                 'splitCount' => 3,
 				'plugin' => false
-            ), (array)$settings);
+            ), 
+            (array)$settings
+        );
 
         if ($this->__settings['autoPath'] && !isset($this->__settings['autoPath'][2])) {
             $this->__settings['autoPath'][2] = 'active';
         }
-        
+
         if (empty($this->__crumb_urls)) {
             $this->__crumb_urls = (array)Set::extract("{n}.{$this->__settings['model']}.router_path", $this->_View->viewVars['breadCrumb']);
         }
-        
+
         extract($this->__settings);
-        
+
         # prevent bad formated data
         if (isset($data[$this->__settings['model']])) {
             $data = $data[$this->__settings['model']];
             $data = $this->__prepareMenuLink($data);
         }
-        
+
         if ($indent === null && Configure::read()) {
             $indent = true;
         }
-        
+
         $view =& ClassRegistry:: getObject('view');
-        
+
         if ($model === null) {
             $model = Inflector::classify($view->request->params['models'][0]);
         }
@@ -170,30 +179,30 @@ class MenuHelper extends AppHelper {
         if (!$model) {
             $model = '_NULL_';
         }
-        
+
         $stack = array();
-        
+
         if ($depth == 0) {
             if ($class) {
                 $this->addTypeAttribute('class', $class, null, 'previous');
             }
+
             if ($id) {
                 $this->addTypeAttribute('id', $id, null, 'previous');
             }
         }
-        
+
         $return = '';
-        
+
         if ($indent) {
             $return = "\r\n";
         }
-        
+
         $__addType = true;
         $count = 1;
         $total = count($data);
-        
+
         foreach ($data as $i => $result) {
-           
             /* Allow 2d data arrays */
             if ($model == '_NULL_') {
                 $_result = $result;
@@ -204,69 +213,69 @@ class MenuHelper extends AppHelper {
             if (!isset($result[$model][$left]) && !isset($result['children'])) {
                 $result['children'] = array();
             }
-            
+
             /* Close open items as appropriate */
             while ($stack && ($stack[count($stack)-1] < $result[$model][$right])) {
                 array_pop($stack);
-                
+
                 if ($indent) {
                     $whiteSpace = str_repeat("\t", count($stack));
                     $return .= "\r\n" . $whiteSpace . "\t";
                 }
-                
+
                 if ($type) {
                     $return .= '</' . $type . '>';
                 }
-                
+
                 if ($itemType) {
                     $return .= '</' . $itemType . '>';
                 }
             }
-            
+
             /* Some useful vars */
             $hasChildren = $firstChild = $lastChild = $hasVisibleChildren = false;
             $numberOfDirectChildren = $numberOfTotalChildren = null;
-            
+
             if (isset($result['children'])) {
                 if ($result['children']) {
                     $hasChildren = $hasVisibleChildren = true;
                     $numberOfDirectChildren = count($result['children']);
                 }
-                
+
                 $prevRow = prev($data);
-                
+
                 if (!$prevRow) {
                     $firstChild = true;
                 }
-                
+
                 next($data);
-                
+
                 $nextRow = next($data);
-                
+
                 if (!$nextRow) {
                     $lastChild = true;
                 }
-                
+
                 prev($data);
             } elseif (isset($result[$model][$left])) {
                 if ($result[$model][$left] != ($result[$model][$right] - 1)) {
                     $hasChildren = true;
                     $numberOfTotalChildren = ($result[$model][$right] - $result[$model][$left] - 1) / 2;
-                    
+
                     if (isset($data[$i + 1]) && $data[$i + 1][$model][$right] < $result[$model][$right]) {
                         $hasVisibleChildren = true;
                     }
                 }
-                
+
                 if (!isset($data[$i - 1]) || ($data[$i - 1][$model][$left] == ($result[$model][$left] - 1))) {
                     $firstChild = true;
                 }
-                
+
                 if (!isset($data[$i + 1]) || ($stack && $stack[count($stack) - 1] == ($result[$model][$right] + 1))) {
                     $lastChild = true;
                 }
             }
-            
+
             $elementOptions = is_string($plugin) ? array('plugin' => $plugin) : array();
             $elementData = array(
                 'data' => $result,
@@ -280,7 +289,7 @@ class MenuHelper extends AppHelper {
                 'hasVisibleChildren' => $hasVisibleChildren
             );
             $this->__settings = array_merge($this->__settings, $elementData);
-            
+
             /* Main Content */
             if ($element) {
                 $content = $view->element($element, $elementData, $elementOptions);
@@ -291,35 +300,37 @@ class MenuHelper extends AppHelper {
                 $title = !empty($result[$model][$alt_text]) ? __t($result[$model][$alt_text]) : '';
                 $content = $this->Html->link("<span>" . __t($result[$model][$alias]) . "</span>", __t($_url), array('escape' => false, 'title' => $title)); # href
             }
-            
+
             if (!$content) {
                 continue;
             }
-            
+
             $whiteSpace = str_repeat("\t", $depth);
-            
+
             if ($indent && strpos($content, "\r\n", 1)) {
                 $content = str_replace("\r\n", "\n" . $whiteSpace . "\t", $content);
             }
-            
+
             /* Prefix */
             if ($__addType) {
                 if ($indent) {
                     $return .= "\r\n" . $whiteSpace;
                 }
+
                 if ($type) {
                     $typeAttributes = $this->__attributes($type, array('data' => $elementData));
                     $return .= '<' . $type .  $typeAttributes . '>';
                 }
             }
+
             if ($indent) {
                 $return .= "\r\n" . $whiteSpace . "\t";
             }
-            
+
             if ($count===1) {
                 $this->addItemAttribute('class', 'first');
             }
-            
+
             if ($count===$total) {
                 $this->addItemAttribute('class', 'last');
             }
@@ -328,14 +339,14 @@ class MenuHelper extends AppHelper {
                 $itemAttributes = $this->__attributes($itemType, $elementData, true, $_url);
                 $return .= '<' . $itemType . $itemAttributes . '>';
             }
-            
+
             unset($this->__itemAttributes['class']);
-            
+
             $return .= $content;
-            
+
             /* Suffix */
             $__addType = false;
-            
+
             if ($hasVisibleChildren) {
                 if ($numberOfDirectChildren) {
                     $settings['depth'] = $depth + 1;
@@ -356,7 +367,7 @@ class MenuHelper extends AppHelper {
                 
                 $return .= $this->__suffix();
             }
-            
+
             $count++;
         }
         
@@ -384,6 +395,7 @@ class MenuHelper extends AppHelper {
         
         if ($type) {
             $return .= '</' . $type . '>';
+
             if ($indent) {
                 $return .= "\r\n";
             }
@@ -391,6 +403,7 @@ class MenuHelper extends AppHelper {
         
         return $this->_View->Layout->hookTags($return);
     }
+
 /**
  * addItemAttribute function
  *
@@ -410,6 +423,7 @@ class MenuHelper extends AppHelper {
             $this->__itemAttributes[$id][] = $key;
         }
     }
+
 /**
  * addTypeAttribute function
  *
@@ -462,7 +476,9 @@ class MenuHelper extends AppHelper {
     function __suffix() {
         static $__splitCount = 0;
         static $__splitCounter = 0;
+
         extract($this->__settings);
+
         if ($splitDepth) {
             if ($depth == $splitDepth -1) {
                 $total = $numberOfDirectChildren?$numberOfDirectChildren:$numberOfTotalChildren;
@@ -470,18 +486,22 @@ class MenuHelper extends AppHelper {
                     $__splitCounter = 0;
                     $__splitCount = $total / $splitCount;
                     $rounded = (int)$__splitCount;
+
                     if ($rounded < $__splitCount) {
                         $__splitCount = $rounded + 1;
                     }
                 }
             }
+
             if ($depth == $splitDepth) {
                 $__splitCounter++;
+
                 if ($type && ($__splitCounter % $__splitCount) == 0) {
                     return '</' . $type . '><' . $type . '>';
                 }
             }
         }
+
         return;
     }
 
@@ -500,7 +520,7 @@ class MenuHelper extends AppHelper {
         
         if ($rType == $type) {
             $attributes = $this->__typeAttributes;
-            
+
             if ($clear) {
                 $this->__typeAttributes = $this->__typeAttributesNext;
                 $this->__typeAttributesNext = array();
@@ -508,7 +528,7 @@ class MenuHelper extends AppHelper {
         } else {
             $attributes = $this->__itemAttributes;
             $this->__itemAttributes = array();
-            
+
             if ($clear) {
                 $this->__itemAttributes = array();
             }
@@ -525,11 +545,8 @@ class MenuHelper extends AppHelper {
         $crumb_urls = $this->__crumb_urls;
 
         if (
-            (
-                (isset($elementData['data'][$this->__settings['model']]) && in_array($elementData['data'][$this->__settings['model']][$this->__settings['url']], $crumb_urls))
-                ||
-                (isset($elementData['data']['data'][$this->__settings['model']]) && in_array($elementData['data']['data'][$this->__settings['model']][$this->__settings['url']], $crumb_urls))
-            ) && 
+            ((isset($elementData['data'][$this->__settings['model']]) && in_array($elementData['data'][$this->__settings['model']][$this->__settings['url']], $crumb_urls)) ||
+             (isset($elementData['data']['data'][$this->__settings['model']]) && in_array($elementData['data']['data'][$this->__settings['model']][$this->__settings['url']], $crumb_urls))) && 
             $rType == $this->__settings['itemType'] && 
             empty($elementData['data'][$this->__settings['model']][$this->__settings['external_url']])
         ) {
@@ -540,7 +557,6 @@ class MenuHelper extends AppHelper {
         if (isset($elementData['data'][$this->__settings['model']][$this->__settings['url']]) && 
             $elementData['data'][$this->__settings['model']][$this->__settings['url']] == '/' && 
             $this->_View->here === $this->_View->Html->url('/')
-            
         ) {
             $attributes['class'][] = $this->__settings['selectedClass'];
         }
@@ -548,7 +564,7 @@ class MenuHelper extends AppHelper {
         /* translated url */
         if($_url){
             $getURL = $this->__getUrl();
-            
+
             if (isset($getURL[0]) && $getURL[0] == __t($_url)) {
                 $attributes['class'][] = $this->__settings['selectedClass'];
             }
@@ -559,31 +575,31 @@ class MenuHelper extends AppHelper {
                 foreach ($values as $key => $val) {
                     if (is_array($val)) {
                         $attributes[$type][$key] = '';
-                        
+
                         foreach ($val as $vKey => $v) {
                             $attributes[$type][$key][$vKey] .= $vKey . ':' . $v;
                         }
-                        
+
                         $attributes[$type][$key] = implode(';', $attributes[$type][$key]);
                     }
-                    
+
                     if (is_string($key)) {
                         $attributes[$type][$key] = $key . ':' . $val . ';';
                     }
                 }
-                
+
                 $attributes[$type] = $type . '="' . implode(' ', $attributes[$type]) . '"';
             }
-            
+
             return ' ' . implode(' ', $attributes);
         }
-        
+
         return '';
     }
     
     private function __prepareMenuLink($links) {
         $no_expanded = array();
-        
+
         foreach ($links as &$link) {
             $_link = $link;
             $link = array();
@@ -593,7 +609,7 @@ class MenuHelper extends AppHelper {
                 $no_expanded[] = $link;
             }
         }
-        
+
         /* Remove childs from no expanded nodes */
         $remove_ids = array();
         
@@ -606,13 +622,14 @@ class MenuHelper extends AppHelper {
         $remove_ids = array_unique($remove_ids);
       
         foreach ($links as $i => $l) {
-            if (in_array($l[$this->__settings['model']]['id'], $remove_ids))
+            if (in_array($l[$this->__settings['model']]['id'], $remove_ids)) {
                 unset($links[$i]);
+            }
         }
-        
+
         return $links;
     }
-    
+
     private function __getUrl() {
         $url = '/' . $this->_View->request->url;
         $out = array();

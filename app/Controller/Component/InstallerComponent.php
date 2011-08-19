@@ -56,7 +56,6 @@ class InstallerComponent extends Component {
  *
  * @param array $data form POST submit of the .app package ($this->data)
  * @param array $settings optional settings, see $settings
- *
  * @return bool true on success or false otherwise
  */ 
     public function install($data = false, $settings = array()) {
@@ -410,7 +409,6 @@ class InstallerComponent extends Component {
  * @param string $pluginName name of the plugin to uninstall, it could be a theme plugin
  *                           (ThemeMyThemeName or theme_my_theme_name) or module plugin 
  *                           (MyModuleName or my_module_name)
- *
  * @return boolean true on success or false otherwise                           
  */
     public function uninstall($pluginName = false) {
@@ -687,7 +685,6 @@ class InstallerComponent extends Component {
  * Verify if all the plugins that $plugin depends on are available and match the required version.
  *
  * @param  string $plugin plugin alias
- *
  * @return boolean
  */
     public function checkDependency($plugin = null) {
@@ -719,11 +716,9 @@ class InstallerComponent extends Component {
  * @param  string $plugin plugin alias
  * @param  boolean $returnList set to true to return an array list of all plugins that uses $plugin.
  *                             The array list contains all the plugin information Configure::read('Modules.{plugin}')
- *
  * @return mixed boolean (if $returnList = false), false return means that there are no plugins that uses $plugin.
  *                       Or an array list of all plugins that uses $plugin ($returnList = true), empty arrray is returned
  *                       if there are no plugins that uses $plugin.
- *
  */
     function checkReverseDependency($plugin, $returnList = true) {
         $list = array();

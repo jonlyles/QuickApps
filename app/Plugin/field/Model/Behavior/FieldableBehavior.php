@@ -118,7 +118,6 @@ class FieldableBehavior extends ModelBehavior {
  *
  * @param object $Model instance of model
  * @param array $settings array of configuration settings.
- * 
  * @return void
  */
 	public function setup(&$Model, $settings = array()) {
@@ -135,7 +134,6 @@ class FieldableBehavior extends ModelBehavior {
  * Check if field instances should be fetch or not to the Model
  * 
  * @param object $Model instance of model
- * 
  * @return boolean true
  */
     public function beforeFind(&$Model, $query) {
@@ -161,7 +159,6 @@ class FieldableBehavior extends ModelBehavior {
  * Remember: Field's storing process must always be executed after Model's save()
  * 
  * @param object $Model instance of model
- * 
  * @return boolean False if any of the fields has returned false. True otherwise
  */    
     public function beforeSave(&$Model) {
@@ -196,7 +193,6 @@ class FieldableBehavior extends ModelBehavior {
  * @param object $Model instance of model
  * @param boolean $created wich indicate if a new record has been inserted
  * @see $this::beforeSave()
- * 
  * @return void
  */
     public function afterSave(&$Model, $created) {
@@ -221,7 +217,6 @@ class FieldableBehavior extends ModelBehavior {
  * Call each Model's field instances callback
  * 
  * @param object $Model instance of model
- * 
  * @return boolean False if any of the fields has returned false. True otherwise.
  */
     public function beforeDelete(&$Model) {
@@ -232,7 +227,6 @@ class FieldableBehavior extends ModelBehavior {
  * Call each Model's field instances callback
  * 
  * @param object $Model instance of model
- * 
  * @return boolean False if any of the fields has returned false. True otherwise.
  */
     public function afterDelete(&$Model) {
@@ -249,7 +243,6 @@ class FieldableBehavior extends ModelBehavior {
  *  may invalidate its field input in form.
  * 
  * @param object $Model instance of model
- * 
  * @return boolean True if all the fields are valid, false otherwise
  */
     public function beforeValidate(&$Model) {
@@ -279,7 +272,6 @@ class FieldableBehavior extends ModelBehavior {
  * @param object $Model instance of model
  * @param array $results The results of the Model's find operation
  * @param boolean $primary Whether Model is being queried directly (vs. being queried as an association)
- * 
  * @return mixed An array value will replace the value of $results - any other value will be ignored.
  */
     public function afterFind(&$Model, $results, $primary) {
@@ -334,7 +326,6 @@ class FieldableBehavior extends ModelBehavior {
  *  - label: Field input label. i.e.: 'Article Body' for a textarea
  *  - name: Filed unique name. underscored and alphanumeric characters only. i.e.: 'field_article_body'
  *  - field_module: Name of the module that handle this instance. i.e.: 'filed_textarea'
- * 
  * @return mixed Return (int) Field instance ID if it was added correctly. False otherwise.
  */
     public function attachFieldInstance(&$Model, $data) {
@@ -390,7 +381,6 @@ class FieldableBehavior extends ModelBehavior {
  * Useful when rendering forms.
  * 
  * @param object $Model instance of model
- * 
  * @return array List array of all attached fields
  */
     public function fieldInstances(&$Model) {
@@ -412,7 +402,6 @@ class FieldableBehavior extends ModelBehavior {
  * 
  * @param object $Model instance of model
  * @param string $type callback to execute, possible values: 'before' or 'after'
- * 
  * @return boolean False if any of the fields has returned false. True otherwise
  */    
     private function __beforeAfterDelete(&$Model, $type = 'before') {
@@ -463,7 +452,6 @@ class FieldableBehavior extends ModelBehavior {
  *
  * @param string $belongsTo string to parse
  * @param array $result a Node model row
- *
  * @return string
  */
     private function __parseBelongsTo($belongsTo, $result = array()){
@@ -482,7 +470,6 @@ class FieldableBehavior extends ModelBehavior {
  * Do not fetch fields instances on Model->find()
  * 
  * @param object $Model instance of model
- * 
  * @return void
  */    
     public function unbindFields(&$Model) {
@@ -493,7 +480,6 @@ class FieldableBehavior extends ModelBehavior {
  * Fetch all field instances on Model->find()
  * 
  * @param object $Model instance of model
- * 
  * @return void
  */    
     public function bindFields(&$Model) {

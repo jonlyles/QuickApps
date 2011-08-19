@@ -11,12 +11,6 @@
  */
 class HookComponent extends Component {
 	public $Controller;
-	
-/**
- * Array with loaded event listener classes
- *
- * @var array
- */
 	public $listeners = array();
 	public $events = array();
 	public $eventMap = array();
@@ -27,9 +21,10 @@ class HookComponent extends Component {
     public function beforeRedirect() {}
 	
 /**
- * On every controller startup
+ * Called before the Controller::beforeFilter().
  *
- * @param unknown_type $controller
+ * @param object $controller Controller with components to initialize
+ * @return void
  */
 	public function initialize(&$Controller) {
 		$this->Controller =& $Controller;
@@ -71,69 +66,18 @@ class HookComponent extends Component {
         
         return preg_replace_callback('/(.?)\[(' . $tags . ')\b(.*?)(?:(\/))?\](?:(.+?)\[\/\2\])?(.?)/s', array($this, '__doHookTag'), $text);
     }
-    
-    private function __doHookTag($m) {
-        // allow [[foo]] syntax for escaping a tag
-        if ($m[1] == '[' && $m[6] == ']') {
-            return substr($m[0], 1, -1);
-        }
 
-        $tag = $m[2];
-        $attr = $this->__hookTagParseAtts( $m[3] );
-        $hook = isset($this->eventMap[$tag]) ? $this->eventMap[$tag] : false;
-        
-        if ($hook) {
-            $hook =& $this->Controller->{$hook};
-            
-            if (isset( $m[5] )) {
-                // enclosing tag - extra parameter
-                return $m[1] . call_user_func(array($hook, $tag), $attr, $m[5], $tag) . $m[6];
-            } else {
-                // self-closing tag
-                return $m[1] . call_user_func(array($hook, $tag), $attr, null, $tag) . $m[6];
-            }
-        }
-
-        return false;
-    }
-    
-    private function __hookTagParseAtts($text) {
-        $atts       = array();
-        $pattern    = '/(\w+)\s*=\s*"([^"]*)"(?:\s|$)|(\w+)\s*=\s*\'([^\']*)\'(?:\s|$)|(\w+)\s*=\s*([^\s\'"]+)(?:\s|$)|"([^"]*)"(?:\s|$)|(\S+)(?:\s|$)/';
-        $text       = preg_replace("/[\x{00a0}\x{200b}]+/u", " ", $text);
-        
-        if (preg_match_all($pattern, $text, $match, PREG_SET_ORDER)) {
-            foreach ($match as $m) {
-                if (!empty($m[1])) {
-                    $atts[strtolower($m[1])] = stripcslashes($m[2]);
-                } elseif (!empty($m[3])) {
-                    $atts[strtolower($m[3])] = stripcslashes($m[4]);
-                } elseif (!empty($m[5])) {
-                    $atts[strtolower($m[5])] = stripcslashes($m[6]);
-                } elseif (isset($m[7]) and strlen($m[7])) {
-                    $atts[] = stripcslashes($m[7]);
-                } elseif (isset($m[8])) {
-                    $atts[] = stripcslashes($m[8]);
-                }
-            }
-        } else {
-            $atts = ltrim($text);
-        }
-
-        return $atts;
-    }    
-    
 /**
- * replace some core useful tags:
- * [date=FORMAT] -> return date(FORMAT)
- * [language.OPTION] -> current language option (code, name, native, direction)
- * [language] -> shortcut to [language.code] wich return current language code
- * [url]YourURL[/url] or [url=YourURL] -> formatted url
- * [url=LINK]LABEL[/url] -> <href="LINK">LABEL</a>
- * [t=stringToTranslate] or [t]stringToTranslate[/t] -> text translation: __t(stringToTranslate)
- * [t=domain@@stringToTranslate] -> text translation by domain __d(domain, stringToTranslate)
+ * Replace some core useful tags:
+ *  `[date=FORMAT]` Return current date(FORMAT).
+ *  `[language.OPTION]` Current language option (code, name, native, direction).
+ *  `[language]` Shortcut to [language.code] wich return current language code.
+ *  `[url]YourURL[/url]` or `[url=YourURL]` Formatted url.
+ *  `[url=LINK]LABEL[/url]` Returns link tag <href="LINK">LABEL</a>
+ *  `[t=stringToTranslate]` or `[t]stringToTranslate[/t]` text translation: __t(stringToTranslate)
+ *  `[t=domain@@stringToTranslate]` Translation by domain __d(domain, stringToTranslate)
  *
- * @param string $text original text to replace tags
+ * @param string $text original text where to replace tags
  * @return string
  */	
     public function specialTags($text) {
@@ -189,7 +133,7 @@ class HookComponent extends Component {
         foreach ($dateMatches[1] as $format) {
             $text = str_replace("[date={$format}]", date($format), $text);
         }
-        
+
         # pass text to modules so they can apply their own special tags
         $this->hook('specialTags_alter', $text);
         
@@ -200,7 +144,6 @@ class HookComponent extends Component {
  * Chech if hook exists
  *
  * @param string $hook Name of the hook to check
- * 
  * @return boolean
  */
 	public function hook_defined($hook) {
@@ -208,26 +151,101 @@ class HookComponent extends Component {
 	}
 	
 /**
- * Wrapper method to Hook::__dispatchEvent()
+ * Trigger a callback method on every HookComponent.
  *
- * @param string $hook Name of the event
- * @param array $data Any data to attach
- * @param bool $raw_return false means return asociative data, true will return a listed array
+ * ### Options
+ *
+ * - `breakOn` Set to the value or values you want the callback propagation to stop on.
+ *    Can either be a scalar value, or an array of values to break on. 
+ *    Defaults to `false`.
+ *
+ * - `break` Set to true to enabled breaking. When a trigger is broken, the last returned value
+ *    will be returned.  If used in combination with `collectReturn` the collected results will be returned.
+ *    Defaults to `false`.
+ *
+ * - `collectReturn` Set to true to collect the return of each object into an array.
+ *    This array of return values will be returned from the hook() call. Defaults to `false`.
+ *
+ * - `alter` Allows each callback gets called on to modify the parameters to the next object.
+ *    Defaults to true.
  * 
- * @return mixed FALSE -or- result array
- */
+ * @param string $event name of the hook to call
+ * @param mixed $data data for the triggered callback
+ * @param array $option Array of options
+ * @return mixed Either the last result or all results if collectReturn is on. Or null in case of no response
+ */ 
 	public function hook($event, &$data = array(), $options = array()) {
 		return $this->__dispatchEvent($event, &$data, $options);
 	}
-	
+
 /**
- * Dispatch Helper-hooks from all the plugins and core
- *
- * @param string $hook Name of the hook to trigger
- * @param array $data Any data to pass to the hook function
- * @param array $options
+ * Parse hook tags attributes
  * 
- * @return mixed result array if collectReturn is set to true or NULL in case of no response
+ * @param string $text Tag string to parse
+ * @return Array array of attributes
+ */
+    private function __hookTagParseAtts($text) {
+        $atts       = array();
+        $pattern    = '/(\w+)\s*=\s*"([^"]*)"(?:\s|$)|(\w+)\s*=\s*\'([^\']*)\'(?:\s|$)|(\w+)\s*=\s*([^\s\'"]+)(?:\s|$)|"([^"]*)"(?:\s|$)|(\S+)(?:\s|$)/';
+        $text       = preg_replace("/[\x{00a0}\x{200b}]+/u", " ", $text);
+        
+        if (preg_match_all($pattern, $text, $match, PREG_SET_ORDER)) {
+            foreach ($match as $m) {
+                if (!empty($m[1])) {
+                    $atts[strtolower($m[1])] = stripcslashes($m[2]);
+                } elseif (!empty($m[3])) {
+                    $atts[strtolower($m[3])] = stripcslashes($m[4]);
+                } elseif (!empty($m[5])) {
+                    $atts[strtolower($m[5])] = stripcslashes($m[6]);
+                } elseif (isset($m[7]) and strlen($m[7])) {
+                    $atts[] = stripcslashes($m[7]);
+                } elseif (isset($m[8])) {
+                    $atts[] = stripcslashes($m[8]);
+                }
+            }
+        } else {
+            $atts = ltrim($text);
+        }
+
+        return $atts;
+    } 
+
+/**
+ * Callback function
+ * 
+ * @see hookTags()
+ * @return mixed Hook response or false in case of no response.
+ */   
+    private function __doHookTag($m) {
+        // allow [[foo]] syntax for escaping a tag
+        if ($m[1] == '[' && $m[6] == ']') {
+            return substr($m[0], 1, -1);
+        }
+
+        $tag = $m[2];
+        $attr = $this->__hookTagParseAtts( $m[3] );
+        $hook = isset($this->eventMap[$tag]) ? $this->eventMap[$tag] : false;
+        
+        if ($hook) {
+            $hook =& $this->Controller->{$hook};
+            
+            if (isset( $m[5] )) {
+                // enclosing tag - extra parameter
+                return $m[1] . call_user_func(array($hook, $tag), $attr, $m[5], $tag) . $m[6];
+            } else {
+                // self-closing tag
+                return $m[1] . call_user_func(array($hook, $tag), $attr, null, $tag) . $m[6];
+            }
+        }
+
+        return false;
+    }       
+
+/**
+ * Dispatch Component-hooks from all the plugins and core
+ *
+ * @see HookComponent::hook()
+ * @return mixed Either the last result or all results if collectReturn is on. Or NULL in case of no response
  */
 	private function __dispatchEvent($event, &$data = array(), $options = array()) {
 		$options = array_merge(

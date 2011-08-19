@@ -63,21 +63,23 @@ class ManageController extends BlockAppController {
                 }
 
                 if (isset($data['Variable'])) {
-                     $this->Variable->save($data['Variable']);
+                    $this->Variable->save($data['Variable']);
                     Cache::delete('Variable'); 
                     $this->Quickapps->loadVariables();
                 }
-                
+
                 $this->flashMsg(__t('Block has been saved'), 'success');
             } else {
                 $this->flashMsg(__t('Block could not be saved. Please, try again.'), 'error');
             }
+
             $this->redirect("/admin/block/manage/edit/{$bid}");
         }
 
         $themes = $this->__themesYaml();
         foreach ($themes as $theme => $yaml) {
             $_regions["{$yaml['info']['name']}@|@{$theme}"] = array();
+
             foreach ($yaml['regions'] as $name => $title) {
                 $_regions["{$yaml['info']['name']}@|@{$theme}"]["{$name}"] = $title;
             }
@@ -98,12 +100,13 @@ class ManageController extends BlockAppController {
         
         if (isset($this->data['Block'])) {
             $data = $this->data;
+
             foreach ($data['BlockRegion'] as $key => $br) {
                 if (empty($br['region'])) {
                     unset($data['BlockRegion'][$key]);
                 }
             }
-                    
+
             $data['Block']['module'] = 'block';
             $data['Block']['locale'] = !empty($data['Block']['locale']) ? array_values($data['Block']['locale']) : array();            
             $data['Block']['themes_cache'] = $this->__themesCache($data['BlockRegion']);
@@ -116,8 +119,9 @@ class ManageController extends BlockAppController {
                 $this->flashMsg(__t('Block could not be saved. Please, try again.'), 'error');
             }
         }   
-        
+
         $themes = $this->__themesYaml();
+
         foreach ($themes as $theme => $yaml) {
             $_regions["{$yaml['info']['name']}@|@{$theme}"] = array();
             foreach ($yaml['regions'] as $name => $title) {
@@ -131,6 +135,7 @@ class ManageController extends BlockAppController {
     
     public function admin_delete($id) {
         $block = $this->Block->findById($id);
+
         if (empty($block) || $block['Block']['module'] != 'block') {
             $this->redirect('/admin');
         } else {
@@ -141,11 +146,13 @@ class ManageController extends BlockAppController {
     
     private function __themesCache($BlockRegion) {
         $o = array();
+
         foreach ($BlockRegion as $key => $r) {
             if (!empty($r['region'])) {
                 $o[] = $r['theme'];
             }
         }
+
         return implode("\n", array_unique($o));
     }
     
@@ -154,13 +161,14 @@ class ManageController extends BlockAppController {
         $folder = new Folder;
         $folder->path = APP . 'View' . DS . 'Themed';
         $folders = $folder->read();
+
         foreach ($folders[0] as $theme) {
             if (APP . 'View' . DS . 'Themed' . DS . $theme . DS . "{$theme}.yaml") {
                 $yaml = Spyc::YAMLLoad(APP . 'View' . DS . 'Themed' . DS . $theme . DS . "{$theme}.yaml");
                 $return[$theme] = $yaml;
             }
         }
-        
+
         return $return;
     }    
 }

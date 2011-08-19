@@ -16,13 +16,13 @@ class BlockRegion extends BlockAppModel {
 	public $primaryKey = 'id';
     
     public function beforeSave() {
-        // add last if its a new assignment
         if (!isset($this->data['BlockRegion']['id'])) {
             $r = $this->data['BlockRegion']['region'];
             $t = $this->data['BlockRegion']['theme'];
             $c = $this->find('count', array('conditions' => array('BlockRegion.theme' => $t, 'BlockRegion.region' => $r)));
             $this->data['BlockRegion']['ordering'] = $c+1;
         }
+
         return true;
     }
     
@@ -30,7 +30,7 @@ class BlockRegion extends BlockAppModel {
         if (!$record = $this->findById($id)) {
             return false;
         }
-        
+
         $nodes = $this->find('all',
             array(
                 'conditions' => array(
@@ -42,7 +42,6 @@ class BlockRegion extends BlockAppModel {
                 'recursive' => -1
             )
         );
-            
         $ids = Set::extract('/BlockRegion/id', $nodes);
         
         if (($dir == 'down' && $ids[count($ids)-1] == $record['BlockRegion']['id']) || 
@@ -56,8 +55,9 @@ class BlockRegion extends BlockAppModel {
         $tmp = $ids[$key];
         $ids[$key] = $ids[$position];
         $ids[$position] = $tmp;
-        
+
         $i = 1;
+
         foreach ($ids as $id) {
             $this->id = $id;
             $this->saveField('ordering', $i, false);
