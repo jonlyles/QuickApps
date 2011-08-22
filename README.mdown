@@ -5,7 +5,7 @@
 ## Requirements
 
   * Apache with mod_rewrite
-  * PHP 5.2 or higher
+  * PHP 5.2.6 or higher
   * MySQL 4.1 or higher
 
 ## Installation
@@ -17,7 +17,7 @@
   * visit http://your-site.com/ from your browser and follow the instructions.
   
 #### Quick-Installer
-    
+
   * Download the one-file installer from [here](http://cms.quickapps.es/files/installer/index.install)
   * Rename from 'index.install' to 'index.php'
   * Upload the new 'index.php' to your server

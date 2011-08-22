@@ -9,8 +9,7 @@
  * @author   Christopher Castro <chris@quickapps.es>
  * @link     http://cms.quickapps.es
  */
-App::uses('AppController', 'Controller');
-
+App::uses('Controller', 'Controller');
 class InstallController extends Controller {
     public $name = 'Install';
     public $uses = array();
@@ -65,7 +64,7 @@ class InstallController extends Controller {
         
         $tests = array(
             'php' => array(
-                'test' => version_compare(PHP_VERSION, '5.2', '>='),
+                'test' => version_compare(PHP_VERSION, '5.2.6', '>='),
                 'msg'  => __t('Your php version is not suported. check that your version is 5.2 or newer.')
             ),
             'mysql' => array(
@@ -109,7 +108,7 @@ class InstallController extends Controller {
                 'msg'  => __t('APP/Config/core.php file is not writable')
             )            
         );
-        
+
         $results = array_unique(Set::extract('{s}.test', $tests));
 
         if (!(count($results) === 1 && $results[0] === true)) {
