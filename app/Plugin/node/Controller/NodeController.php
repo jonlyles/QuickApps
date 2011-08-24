@@ -217,19 +217,55 @@ class NodeController extends NodeAppController {
                 $criteria = str_replace("type:{$type}", '', $criteria);
                 $scope['Node.node_type_id'] = explode(',', $type);
             }
+            
+            if ($vocabulary = $this->__search_expression_extract($criteria, 'vocabulary')) {
+                $criteria = str_replace("vocabulary:{$vocabulary}", '', $criteria);
+                $vSlugs = explode(',', $vocabulary);
+                $vSlugs = Set::filter($vSlugs);
+                
+                if (!empty($vSlugs)) {
+                    $Vocabulary = ClassRegistry::init('Taxonomy.Vocabulary');
 
-            if ($term = $this->__search_expression_extract($criteria, 'term')) {
-                $criteria = str_replace("term:{$term}", '', $criteria);
-                $term = explode(',', $term);
+                    $Vocabulary->bindModel(
+                        array(
+                            'hasMany' => array(
+                                'Term' => array(
+                                    'className' => 'Taxonomy.Term',
+                                    'foreignKey' => 'vocabulary_id',
+                                    'fields' => array('Term.id', 'Term.slug')
+                                )
+                            )
+                        )
+                    );
 
-                foreach ($term as $t) {
-                    $t = trim($t);
+                    $vocabularies = ClassRegistry::init('Taxonomy.Vocabulary')->find('all',
+                        array(
+                            'conditions' => array(
+                                'Vocabulary.slug' => $vSlugs
+                            )
+                        )
+                    );
 
-                    if (empty($t)) {
+                    $vocabulary_terms = Set::extract('/Term/slug', $vocabularies);
+                }
+            }
+
+            if ($terms = $this->__search_expression_extract($criteria, 'term') || isset($vocabulary_terms)) {
+                $criteria = str_replace("term:{$terms}", '', $criteria);
+                $terms = explode(',', $terms);
+                
+                if (isset($vocabulary_terms)) {
+                    $terms = array_merge($terms, $vocabulary_terms);
+                }
+
+                foreach ($terms as $term) {
+                    $term = trim($term);
+
+                    if (empty($term)) {
                         continue;
                     }
 
-                    $scope['OR'][] = array('Node.terms_cache LIKE' => "%:{$t}%" );
+                    $scope['OR'][] = array('Node.terms_cache LIKE' => "%:{$term}%" );
                 }
             }
 
