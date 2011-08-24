@@ -250,7 +250,7 @@ class NodeController extends NodeAppController {
                 }
             }
 
-            if ($terms = $this->__search_expression_extract($criteria, 'term') || isset($vocabulary_terms)) {
+            if (($terms = $this->__search_expression_extract($criteria, 'term')) || isset($vocabulary_terms)) {
                 $criteria = str_replace("term:{$terms}", '', $criteria);
                 $terms = explode(',', $terms);
                 
