@@ -562,7 +562,7 @@ class App {
 		foreach ($paths as $path) {
 			$file = $path . $className . '.php';
 			if (file_exists($file)) {
-				self::__map($file, $className);
+				self::__map($file, $className, $plugin);
 				return include $file;
 			}
 		}
