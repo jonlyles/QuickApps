@@ -71,14 +71,17 @@ Cache::config('default', array('engine' => 'File'));
     }
 
     $__searchPath[] = ROOT . DS . 'Modules' . DS;
-    App::build( array('plugins' => $__searchPath));
+
+    App::build(array('plugins' => $__searchPath));
+
     $plugins = App::objects('plugins', null, false);
-    
+
     foreach ($plugins as $plugin) {
         CakePlugin::load($plugin, array('bootstrap' => true, 'routes' => true));
+
         $ppath = CakePlugin::path($plugin);
         $ppath = str_replace(DS . $plugin . DS, DS . Inflector::underscore($plugin) . DS, $ppath);
-        
+
         if (file_exists($ppath . 'Fields' . DS)) {
             App::build(array('plugins' => array($ppath . 'Fields' . DS)));
         }
@@ -117,7 +120,6 @@ Cache::config('default', array('engine' => 'File'));
  * Translation function, domain search order: current plugin, default (global)
  *
  * @param string $singular String to translate
- *
  * @return string the translated string
  */
     function __t($singular, $args = null) {
@@ -151,7 +153,6 @@ Cache::config('default', array('engine' => 'File'));
  * Create Unique Arrays using an md5 hash
  *
  * @param array $array
- *
  * @return array
  */
     function arrayUnique($array, $preserveKeys = false) {
@@ -181,7 +182,6 @@ Cache::config('default', array('engine' => 'File'));
  * @param string $str_pattern what to find for
  * @param string $str_replacement the replacement for $str_pattern
  * @param string $string the original to find and replace
- *
  * @return string
  */    
     function str_replace_once($str_pattern, $str_replacement, $string) {
