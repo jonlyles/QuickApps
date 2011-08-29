@@ -269,3 +269,11 @@ msgstr "No contenga estas palabras"
 msgid "Read More"
 msgstr "Leer Más"
 
+msgid "published by <a href="%s">%s</a>"
+msgstr "publicado por <a href="%s">%s</a>"
+
+msgid "on %s"
+msgstr "el %s"
+
+msgid "M d, Y H:i"
+msgstr "d/m/Y \\a \\l\\a\\s H:i"
