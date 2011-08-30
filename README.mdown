@@ -10,7 +10,7 @@
 
 ## Installation
 
-#### Github based installer
+#### Github based installer (Recomended)
 
   * Download from github the latest version as zip.
   * Extract the archive. Upload the content to your server.
