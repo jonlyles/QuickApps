@@ -36,6 +36,7 @@ blockquote  { margin: 1.5em; padding: 1em; color: #666666; background: #e6e6e6; 
 input[type=text], .text input, .email input, .textarea textarea, select, .password input { background-color:#fff; border:1px solid #bbb; padding: 2px; color: #4e4e4e; }
 input[type=text]:focus, input.text:focus, input.title:focus, textarea:focus, select:focus { border-color:#2D3940; color: #3e3e3e; }
 input[type=text], input.text, input.title, textarea, select { margin:0.5em 0; }
+div.checkbox { padding-top:6px;}
 .text input.form-error, .textarea textarea.form-error, select.form-error, .password input.form-error {
     border:1px solid #CF240D !important;
 }
